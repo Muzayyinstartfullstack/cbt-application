@@ -1,23 +1,40 @@
 package com.example.cbt
 
+import android.content.Intent // Tambahkan ini agar Intent tidak merah
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.cbt.ui.theme.CBTTheme
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 
-class LoginActivity : ComponentActivity() {
+class LoginActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        enableEdgeToEdge()
 
+        // 1. Inisialisasi View
+        val etNis = findViewById<EditText>(R.id.etNis)
+        val etPassword = findViewById<EditText>(R.id.etPassword)
+        val btnLogin = findViewById<Button>(R.id.btnLogin)
+
+        // 2. Set klik listener
+        btnLogin.setOnClickListener {
+            val nis = etNis.text.toString()
+            val password = etPassword.text.toString()
+
+            // 3. Logika Validasi (Urutan harus benar)
+            if (nis.isEmpty() || password.isEmpty()) {
+                // Jika kosong, tampilkan peringatan
+                Toast.makeText(this, "Harap isi NIS dan Password!", Toast.LENGTH_SHORT).show()
+            } else {
+                // Jika terisi, baru pindah ke Dashboard
+                Toast.makeText(this, "Login Berhasil! Selamat mengerjakan.", Toast.LENGTH_SHORT).show()
+
+                val intent = Intent(this, DashboardActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+        }
     }
 }
