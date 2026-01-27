@@ -15,6 +15,7 @@ import com.google.android.material.slider.RangeSlider
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class HistoryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +41,7 @@ class HistoryActivity : AppCompatActivity() {
         val btn7Hari = view.findViewById<Button>(R.id.btn7Hari)
         val btn30Hari = view.findViewById<Button>(R.id.btn30Hari)
         val btnKustom = view.findViewById<Button>(R.id.btnKustom)
-        val chipGroupMapel = view.findViewById<ChipGroup>(R.id.chipGroupMapel)
+        //val chipGroupMapel = view.findViewById<ChipGroup>(R.id.chipGroupMapel)
         val radioGroupStatus = view.findViewById<RadioGroup>(R.id.radioGroupStatus)
         val rangeSlider = view.findViewById<RangeSlider>(R.id.rangeSliderNilai)
         val txtRangeValue = view.findViewById<TextView>(R.id.txtRangeValue)
@@ -95,17 +96,17 @@ class HistoryActivity : AppCompatActivity() {
         }
 
         // 4. Terapkan
-        btnTerapkan.setOnClickListener {
-            val mapel = view.findViewById<Chip>(chipGroupMapel.checkedChipId)?.text ?: "Semua"
-            val status = when(radioGroupStatus.checkedRadioButtonId) {
-                R.id.rbLulus -> "Lulus"
-                R.id.rbGagal -> "Gagal"
-                R.id.rbRemedial -> "Remedial"
-                else -> "None"
-            }
-            Toast.makeText(this, "Filter: $mapel, Status: $status", Toast.LENGTH_SHORT).show()
-            dialog.dismiss()
-        }
+        //btnTerapkan.setOnClickListener {
+          //  val mapel = view.findViewById<Chip>(chipGroupMapel.checkedChipId)?.text ?: "Semua"
+          //  val status = when(radioGroupStatus.checkedRadioButtonId) {
+            //    R.id.rbLulus -> "Lulus"
+            //    R.id.rbGagal -> "Gagal"
+            //    R.id.rbRemedial -> "Remedial"
+            //    else -> "None"
+            //}
+            //Toast.makeText(this, "Filter: $mapel, Status: $status", Toast.LENGTH_SHORT).show()
+            //dialog.dismiss()
+        //}
 
         dialog.setContentView(view)
         dialog.show()
