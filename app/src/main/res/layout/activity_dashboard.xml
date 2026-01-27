@@ -1,4 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_dashboard"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_gradient">
@@ -6,7 +9,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottomNav">
+        android:layout_above="@id/bottomNavigation"
+        android:clipToPadding="false"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -16,8 +21,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp">
+                android:layout_height="wrap_content">
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -26,148 +30,293 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Jan 15, Kamis"
-                        android:textColor="#555555" />
+                        android:textColor="#455A64"
+                        android:textSize="13sp" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
                         android:text="Selamat Datang,\nUser"
-                        android:textSize="24sp"
+                        android:textColor="#000000"
+                        android:textSize="26sp"
                         android:textStyle="bold"
-                        android:textColor="#000000" />
+                        android:lineSpacingExtra="2dp"/>
                 </LinearLayout>
+
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:id="@+id/btnNotification"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_alignParentRight="true"
-                    android:src="@android:drawable/ic_popup_reminder" />
+                    android:layout_marginTop="15dp"
+                    android:src="@drawable/ic_notification"
+                    app:tint="#000000" />
             </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="20dp">
-                <ImageView
+                android:layout_marginTop="25dp"
+                android:gravity="center_vertical">
+                <androidx.cardview.widget.CardView
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:src="@android:drawable/ic_menu_gallery" /> <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginStart="15dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="User Menuser"
-                    android:textStyle="bold" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="NIS/NIP: 202422123 - XI RPL"
-                    android:textSize="12sp" />
-            </LinearLayout>
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ujian Tersedia"
-                android:textStyle="bold"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="10dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_card"
-                android:orientation="vertical"
-                android:elevation="4dp"
-                android:paddingBottom="15dp">
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:scaleType="centerCrop"
-                    android:src="@android:drawable/ic_menu_report_image" /> <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Matematika"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:padding="15dp"/>
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:text="Mulai Ujian →"
-                    android:layout_marginHorizontal="15dp"
-                    android:backgroundTint="#0097B2"
-                    android:textAllCaps="false"/>
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Segera Dimulai"
-                android:textStyle="bold"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="10dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_card"
-                android:padding="15dp"
-                android:layout_marginBottom="10dp"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content"
-                    android:text="Jan\n15"
-                    android:textAlignment="center"
-                    android:textStyle="bold"/>
+                    app:cardCornerRadius="30dp"
+                    app:cardElevation="0dp">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_person"
+                        android:scaleType="centerCrop" />
+                </androidx.cardview.widget.CardView>
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:orientation="vertical"
-                    android:layout_marginStart="10dp">
+                    android:layout_marginStart="15dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Bahasa Inggris"
+                        android:text="User Menuser"
+                        android:textColor="#000000"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="12:00AM | 90m"
+                        android:text="NIS/NIP: 202422123 - XI RPL"
+                        android:textColor="#78909C"
                         android:textSize="12sp" />
                 </LinearLayout>
             </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ujian Tersedia"
+                    android:textColor="#333333"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/red_dot" />
+            </RelativeLayout>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                app:cardCornerRadius="25dp"
+                app:cardElevation="12dp"
+                app:cardBackgroundColor="#FFFFFF">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/math_image" />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="20dp">
+                        <TextView
+                            android:id="@+id/titleMain"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Matematika"
+                            android:textColor="#212121"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignBottom="@id/titleMain"
+                            android:text="90 Menit\n45 Pertanyaan"
+                            android:textColor="#9E9E9E"
+                            android:textSize="11sp"
+                            android:gravity="right" />
+                        <Button
+                            android:id="@+id/btnMulaiUjian"
+                            android:layout_width="match_parent"
+                            android:layout_height="58dp"
+                            android:layout_below="@id/titleMain"
+                            android:layout_marginTop="20dp"
+                            android:backgroundTint="#0097B2"
+                            android:text="Mulai Ujian →"
+                            android:textColor="#FFFFFF"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textAllCaps="false"
+                            app:cornerRadius="15dp" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:layout_marginBottom="15dp"
+                android:text="Segera Dimulai"
+                android:textColor="#333333"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="#FFFFFF">
+                <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp">
+                    <TextView android:id="@+id/d0" android:layout_width="45dp" android:layout_height="wrap_content" android:text="Jan\n15" android:gravity="center" android:textStyle="bold" android:textColor="#212121" android:textSize="16sp"/>
+                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toRightOf="@id/d0" android:layout_marginStart="20dp" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Matematika" android:textStyle="bold" android:textColor="#212121" android:textSize="17sp"/>
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginTop="4dp">
+                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_time" app:tint="#757575"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" 07:30AM" android:textSize="12sp" android:textColor="#757575" android:layout_marginEnd="15dp"/>
+                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_timer" app:tint="#757575"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" 90m" android:textSize="12sp" android:textColor="#757575"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/menu_matematika"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_more_vert"
+                        app:tint="#757575"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="#FFFFFF">
+                <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp">
+                    <TextView android:id="@+id/d1" android:layout_width="45dp" android:layout_height="wrap_content" android:text="Jan\n15" android:gravity="center" android:textStyle="bold" android:textColor="#212121" android:textSize="16sp"/>
+                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toRightOf="@id/d1" android:layout_marginStart="20dp" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sejarah" android:textStyle="bold" android:textColor="#212121" android:textSize="17sp"/>
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginTop="4dp">
+                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_time" app:tint="#757575"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" 10:00AM" android:textSize="12sp" android:textColor="#757575" android:layout_marginEnd="15dp"/>
+                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_timer" app:tint="#757575"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" 90m" android:textSize="12sp" android:textColor="#757575"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/menu_sejarah"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_more_vert"
+                        app:tint="#757575"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="#FFFFFF">
+                <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp">
+                    <TextView android:id="@+id/d2" android:layout_width="45dp" android:layout_height="wrap_content" android:text="Jan\n15" android:gravity="center" android:textStyle="bold" android:textColor="#212121" android:textSize="16sp"/>
+                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toRightOf="@id/d2" android:layout_marginStart="20dp" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Bahasa Inggris" android:textStyle="bold" android:textColor="#212121" android:textSize="17sp"/>
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginTop="4dp">
+                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_time" app:tint="#757575"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" 12:00PM" android:textSize="12sp" android:textColor="#757575" android:layout_marginEnd="15dp"/>
+                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_timer" app:tint="#757575"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" 90m" android:textSize="12sp" android:textColor="#757575"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/menu_inggris"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_more_vert"
+                        app:tint="#757575"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="#FFFFFF">
+                <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp">
+                    <TextView android:id="@+id/d3" android:layout_width="45dp" android:layout_height="wrap_content" android:text="Jan\n16" android:gravity="center" android:textStyle="bold" android:textColor="#212121" android:textSize="16sp"/>
+                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toRightOf="@id/d3" android:layout_marginStart="20dp" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Bahasa Indonesia" android:textStyle="bold" android:textColor="#212121" android:textSize="17sp"/>
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginTop="4dp">
+                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_time" app:tint="#757575"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" 08:00AM" android:textSize="12sp" android:textColor="#757575" android:layout_marginEnd="15dp"/>
+                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_timer" app:tint="#757575"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" 90m" android:textSize="12sp" android:textColor="#757575"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/menu_indonesia"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_more_vert"
+                        app:tint="#757575"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <View android:layout_width="match_parent" android:layout_height="40dp"/>
         </LinearLayout>
     </ScrollView>
 
     <LinearLayout
-        android:id="@+id/bottomNav"
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="75dp"
         android:layout_alignParentBottom="true"
         android:background="#0097B2"
         android:orientation="horizontal"
+        android:elevation="10dp"
         android:gravity="center">
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:src="@android:drawable/ic_menu_today" />
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:src="@android:drawable/ic_menu_recent_history" />
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:src="@android:drawable/ic_menu_mylocation" />
+        <ImageView android:id="@+id/navHome" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:src="@drawable/ic_home" app:tint="#FFFFFF" android:padding="22dp"/>
+        <ImageView android:id="@+id/navHistory" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:src="@drawable/ic_history" app:tint="#FFFFFF" android:padding="22dp"/>
+        <ImageView android:id="@+id/navProfile" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:src="@drawable/ic_person" app:tint="#FFFFFF" android:padding="22dp"/>
     </LinearLayout>
+
 </RelativeLayout>

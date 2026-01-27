@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_bottom_sheet"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="20dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="25dp">
+                <ImageView
+                    android:id="@+id/btnCloseFilter"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_close"
+                    app:tint="#212121" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="Filter Riwayat Ujian"
+                    android:textColor="#212121"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/btnResetAtas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:text="Atur Ulang"
+                    android:textColor="#0097B2"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RENTANG TANGGAL"
+                android:textColor="#90A4AE"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp"/>
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2">
+                <Button android:id="@+id/btnHariIni" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_height="45dp" android:text="Hari Ini" android:textAllCaps="false" android:backgroundTint="#0097B2" app:cornerRadius="10dp" android:layout_margin="4dp"/>
+                <Button android:id="@+id/btn7Hari" style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_height="45dp" android:text="7 Hari" android:textAllCaps="false" android:textColor="#212121" app:strokeColor="#E0E0E0" app:cornerRadius="10dp" android:layout_margin="4dp"/>
+                <Button android:id="@+id/btn30Hari" style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_height="45dp" android:text="30 Hari Terakhir" android:textAllCaps="false" android:textColor="#212121" app:strokeColor="#E0E0E0" app:cornerRadius="10dp" android:layout_margin="4dp"/>
+                <Button android:id="@+id/btnKustom" style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_height="45dp" android:text="Kustom" android:textAllCaps="false" android:textColor="#212121" app:strokeColor="#E0E0E0" app:cornerRadius="10dp" android:layout_margin="4dp" android:drawableLeft="@drawable/ic_calendar" android:paddingLeft="15dp"/>
+            </GridLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MATA PELAJARAN"
+                android:textColor="#90A4AE"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="12dp"/>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupMataPelajaran"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:singleSelection="true"
+                app:chipSpacing="8dp">
+                <com.google.android.material.chip.Chip android:id="@+id/chipSemua" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Semua" checked="true"/>
+                <com.google.android.material.chip.Chip android:id="@+id/chipMatematika" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Matematika"/>
+                <com.google.android.material.chip.Chip android:id="@+id/chipSejarah" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sejarah"/>
+                <com.google.android.material.chip.Chip android:id="@+id/chipInggris" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Bahasa Inggris"/>
+                <com.google.android.material.chip.Chip android:id="@+id/chipIndonesia" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Bahasa Indonesia"/>
+            </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="STATUS KELULUSAN"
+                android:textColor="#90A4AE"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"/>
+
+            <RadioGroup
+                android:id="@+id/radioGroupStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout android:layout_width="match_parent" android:layout_height="50dp">
+                    <ImageView android:id="@+id/iconLulus" android:layout_width="24dp" android:layout_height="24dp" android:layout_centerVertical="true" android:src="@drawable/ic_check_circle" app:tint="#4CAF50"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toRightOf="@id/iconLulus" android:layout_centerVertical="true" android:layout_marginStart="16dp" android:text="Lulus" android:textColor="#212121" android:textStyle="bold"/>
+                    <RadioButton android:id="@+id/rbLulus" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:layout_centerVertical="true" android:buttonTint="#0097B2"/>
+                </RelativeLayout>
+
+                <RelativeLayout android:layout_width="match_parent" android:layout_height="50dp">
+                    <ImageView android:id="@+id/iconGagal" android:layout_width="24dp" android:layout_height="24dp" android:layout_centerVertical="true" android:src="@drawable/ic_cancel_circle" app:tint="#F44336"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toRightOf="@id/iconGagal" android:layout_centerVertical="true" android:layout_marginStart="16dp" android:text="Tidak Lulus" android:textColor="#212121" android:textStyle="bold"/>
+                    <RadioButton android:id="@+id/rbGagal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:layout_centerVertical="true" android:buttonTint="#0097B2"/>
+                </RelativeLayout>
+
+                <RelativeLayout android:layout_width="match_parent" android:layout_height="50dp">
+                    <ImageView android:id="@+id/iconRemedial" android:layout_width="24dp" android:layout_height="24dp" android:layout_centerVertical="true" android:src="@drawable/ic_timer" app:tint="#FF9800"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toRightOf="@id/iconRemedial" android:layout_centerVertical="true" android:layout_marginStart="16dp" android:text="Remedial" android:textColor="#212121" android:textStyle="bold"/>
+                    <RadioButton android:id="@+id/rbRemedial" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:layout_centerVertical="true" android:buttonTint="#0097B2"/>
+                </RelativeLayout>
+            </RadioGroup>
+
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="RENTANG NILAI" android:textColor="#90A4AE" android:textSize="12sp" android:textStyle="bold" />
+                <TextView android:id="@+id/txtRangeValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:text="0% - 100%" android:textColor="#0097B2" android:textSize="12sp" android:textStyle="bold" />
+            </RelativeLayout>
+
+            <com.google.android.material.slider.RangeSlider
+                android:id="@+id/rangeSliderNilai"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:valueFrom="0"
+                android:valueTo="100"
+                app:values="@array/initial_range_values"
+                app:thumbColor="#0097B2"
+                app:trackColorActive="#0097B2"
+                app:labelBehavior="gone"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="20dp"
+        android:background="#FFFFFF">
+        <Button
+            android:id="@+id/btnResetBawah"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="10dp"
+            android:text="Atur Ulang"
+            android:textAllCaps="false"
+            android:textColor="#212121"
+            android:backgroundTint="#E0E0E0"
+            app:cornerRadius="12dp" />
+        <Button
+            android:id="@+id/btnTerapkan"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight="1.5"
+            android:text="Terapkan"
+            android:textAllCaps="false"
+            android:backgroundTint="#0097B2"
+            app:cornerRadius="12dp" />
+    </LinearLayout>
+
+</LinearLayout>

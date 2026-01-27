@@ -81,7 +81,7 @@
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="Login To Exam →"
+        android:text="Login To Exam"
         android:backgroundTint="#0097B2"
         android:textAllCaps="false"/>
 
