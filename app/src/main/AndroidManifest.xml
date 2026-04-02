@@ -16,7 +16,7 @@
             android:name=".ProfilActivity"
             android:exported="false" />
         <activity
-            android:name=".HistoryActivity"
+            android:name=".FilterHistoryActivity"
             android:exported="false" />
         <activity
             android:name=".DashboardActivity"
