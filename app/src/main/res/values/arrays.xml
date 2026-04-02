@@ -1,6 +1,6 @@
 <resources>
-    <array name="initial_slider_values">
-        <item>0.0</item>
-        <item>100.0</item>
-    </array>
+    <integer-array name="slider_default_values">
+        <item>0</item>
+        <item>100</item>
+    </integer-array>
 </resources>

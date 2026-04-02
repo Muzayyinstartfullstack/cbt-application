@@ -1,0 +1,20 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- State Checked (True) - Biru solid -->
+    <item android:state_checked="true">
+        <shape android:shape="oval">
+            <solid android:color="#00BCD4" />
+            <size android:width="20dp" android:height="20dp" />
+        </shape>
+    </item>
+
+    <!-- State Unchecked (False) - Pinggir abu, tengah transparan -->
+    <item android:state_checked="false">
+        <shape android:shape="oval">
+            <solid android:color="#00000000" />
+            <stroke
+                android:width="2dp"
+                android:color="#9E9E9E" />
+            <size android:width="20dp" android:height="20dp" />
+        </shape>
+    </item>
+</selector>
