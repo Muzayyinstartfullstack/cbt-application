@@ -40,24 +40,14 @@ class DashboardActivity : AppCompatActivity() {
         // 4. Inisialisasi Ikon Titik Tiga (More Vert)
         // TAMBAHKAN menuMatematika DI SINI
         val menuMatematika = findViewById<ImageView>(R.id.menu_matematika)
-        val menuSejarah = findViewById<ImageView>(R.id.menu_sejarah)
-        val menuInggris = findViewById<ImageView>(R.id.menu_inggris)
-        val menuIndonesia = findViewById<ImageView>(R.id.menu_indonesia)
+
 
         // 5. Logika Klik Menu Titik Tiga (Popup Menu)
         // TAMBAHKAN LOGIKA UNTUK menuMatematika DI SINI
         menuMatematika.setOnClickListener { view ->
             tampilkanMenu(view, "Matematika")
         }
-        menuSejarah.setOnClickListener { view ->
-            tampilkanMenu(view, "Sejarah")
-        }
-        menuInggris.setOnClickListener { view ->
-            tampilkanMenu(view, "Bahasa Inggris")
-        }
-        menuIndonesia.setOnClickListener { view ->
-            tampilkanMenu(view, "Bahasa Indonesia")
-        }
+
 
         // 6. Logika Tombol Utama (Banner Matematika Atas)
         btnMulai.setOnClickListener {
@@ -66,7 +56,7 @@ class DashboardActivity : AppCompatActivity() {
 
         // 7. Navigasi Bottom Bar
         navHistory.setOnClickListener {
-            val intent = Intent(this, HistoryActivity::class.java)
+            val intent = Intent(this, FilterHistoryActivity::class.java)
             startActivity(intent)
         }
 
