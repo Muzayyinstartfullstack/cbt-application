@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_gradient">
@@ -18,33 +19,62 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CBT Platform"
-            android:textSize="28sp"
-            android:textStyle="bold|normal"
+            android:layout_marginTop="20dp"
+            android:text="EduTest"
             android:textColor="#000000"
-            android:layout_marginTop="20dp" />
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Mendukung transformasi digital pendidikan melalui sistem evaluasi yang efisien, transparan, dan mudah digunakan."
+            android:textAlignment="center"
+            android:textColor="#555555" />
     </LinearLayout>
 
     <TextView
+        android:id="@+id/tvVersion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp"
-        android:textStyle="bold"
         android:text="V 1.0 + Secure CBT Environment"
-        android:textColor="@color/grey1" />
+        android:textColor="@color/grey1"
+        android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/tvDots"
+    <LinearLayout
+        android:id="@+id/loadingContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="..."
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:alpha="0.2"
-        android:layout_gravity="center"
-        android:textColor="#0099CC" />
+        android:layout_above="@id/tvVersion"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:orientation="horizontal">
 
+        <View
+            android:id="@+id/dot1"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/dot_background" />
+
+        <View
+            android:id="@+id/dot2"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/dot_background" />
+
+        <View
+            android:id="@+id/dot3"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/dot_background" />
+    </LinearLayout>
 
 </RelativeLayout>
