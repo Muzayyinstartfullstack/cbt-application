@@ -1,339 +1,562 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/rounded_top_sheet"
-    android:orientation="vertical"
-    android:padding="20dp">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
-    <RelativeLayout
+    <!-- ===== SCROLLABLE CONTENT ===== -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/layoutBottomButtons">
 
-        <ImageView
-            android:id="@+id/btnClose"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_centerVertical="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"
-            android:src="@drawable/ic_close"
-            app:tint="#333333" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="Filter Riwayat Ujian"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvAturUlangAtas"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:text="Atur Ulang"
-            android:textColor="#0097B2"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-    </RelativeLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="RENTANG TANGGAL"
-        android:textColor="#9E9E9E"
-        android:textSize="12sp"
-        android:textStyle="bold" />
-
-    <GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:columnCount="2">
-
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_columnWeight="1"
-            android:layout_margin="4dp"
-            android:text="Hari Ini"
-            android:textAllCaps="false"
-            android:backgroundTint="#0097B2"
-            android:textColor="#FFFFFF"
-            app:cornerRadius="10dp" />
-
-        <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_columnWeight="1"
-            android:layout_margin="4dp"
-            android:text="7 Hari"
-            android:textAllCaps="false"
-            android:textColor="#000000"
-            app:cornerRadius="10dp"
-            app:strokeColor="#E0E0E0" />
-
-        <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_columnWeight="1"
-            android:layout_margin="4dp"
-            android:text="30 Hari Terakhir"
-            android:textAllCaps="false"
-            android:textColor="#000000"
-            app:cornerRadius="10dp"
-            app:strokeColor="#E0E0E0" />
-
-        <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_columnWeight="1"
-            android:layout_margin="4dp"
-            android:text="Kustom"
-            android:textAllCaps="false"
-            android:textColor="#000000"
-            app:cornerRadius="10dp"
-            app:icon="@drawable/ic_calendar"
-            app:iconGravity="textStart"
-            app:iconTint="#000000"
-            app:strokeColor="#E0E0E0" />
-    </GridLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="MATA PELAJARAN"
-        android:textColor="#9E9E9E"
-        android:textSize="12sp"
-        android:textStyle="bold" />
-
-    <com.google.android.flexbox.FlexboxLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:flexWrap="wrap">
-
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_margin="4dp"
-            android:backgroundTint="#000000"
-            android:paddingHorizontal="16dp"
-            android:text="Semua"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            app:cornerRadius="20dp" />
-
-        <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_margin="4dp"
-            android:text="Matematika"
-            android:textAllCaps="false"
-            android:textColor="#000000"
-            app:cornerRadius="20dp"
-            app:strokeColor="#E0E0E0" />
-
-        <ImageView
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="8dp"
-            android:src="@drawable/ic_menu"
-            app:tint="#000000" />
-    </com.google.android.flexbox.FlexboxLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="STATUS KELULUSAN"
-        android:textColor="#9E9E9E"
-        android:textSize="12sp"
-        android:textStyle="bold" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:id="@+id/layoutLulus"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/iconLulus"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_check_circle"
-                app:tint="#4CAF50" />
+            <!-- ===== HEADER ===== -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="16dp"
-                android:layout_toEndOf="@id/iconLulus"
-                android:text="Lulus"
-                android:textColor="#000000"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/btnClose"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="✕"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/checkLulus"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_check_circle"
-                app:tint="#4CAF50" />
-        </RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/btnClose"
+                    android:layout_marginStart="8dp"
+                    android:text="Filter Riwayat Ujian"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-        <RelativeLayout
-            android:id="@+id/layoutGagal"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true">
-
-            <ImageView
-                android:id="@+id/iconGagal"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_cancel_circle"
-                app:tint="#F44336" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="16dp"
-                android:layout_toEndOf="@id/iconGagal"
-                android:text="Tidak Lulus"
-                android:textColor="#000000"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tvResetHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:text="Atur Ulang"
+                    android:textColor="#0891B2"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
 
             <View
-                android:id="@+id/uncheckGagal"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/circle_outline" />
-        </RelativeLayout>
-    </LinearLayout>
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#E0E0E0" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp">
+            <!-- ===== RENTANG TANGGAL ===== -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                android:text="RENTANG TANGGAL"
+                android:textColor="#9E9E9E"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RENTANG NILAI"
-            android:textColor="#9E9E9E"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
+                android:columnCount="2"
+                android:rowCount="2"
+                android:useDefaultMargins="false">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="0% - 100%"
-            android:textColor="#0097B2"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-    </RelativeLayout>
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipHariIni"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="8dp"
+                    android:checkable="true"
+                    android:checked="true"
+                    android:text="Hari Ini"
+                    android:textAlignment="center"
+                    android:textColor="@color/chip_text_color"
+                    android:textSize="18sp"
+                    android:gravity="center"
+                    app:chipCornerRadius="8dp"
+                    app:chipBackgroundColor="@color/chip_color_selector"
+                    app:chipStrokeColor="#40000000"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconVisible="false"
+                    android:layout_columnWeight="1" />
 
-    <com.google.android.material.slider.RangeSlider
-        android:id="@+id/rangeSlider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:valueFrom="0.0"
-        android:valueTo="100.0"
-        app:labelBehavior="gone"
-        app:thumbColor="#0097B2"
-        app:trackColorActive="#0097B2"
-        app:trackColorInactive="#E0E0E0"
-        app:values="@array/initial_slider_values" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip7Hari"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginBottom="8dp"
+                    android:checkable="true"
+                    android:text="7 Hari"
+                    android:textAlignment="center"
+                    android:textColor="@color/chip_text_color"
+                    android:textSize="18sp"
+                    android:gravity="center"
+                    app:chipCornerRadius="8dp"
+                    app:chipBackgroundColor="@color/chip_color_selector"
+                    app:chipStrokeColor="#40000000"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconVisible="false"
+                    android:layout_columnWeight="1" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip30Hari"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="4dp"
+                    android:checkable="true"
+                    android:text="30 Hari Terakhir"
+                    android:textAlignment="center"
+                    android:textColor="@color/chip_text_color"
+                    android:textSize="18sp"
+                    android:gravity="center"
+                    app:chipCornerRadius="8dp"
+                    app:chipBackgroundColor="@color/chip_color_selector"
+                    app:chipStrokeColor="#40000000"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconVisible="false"
+                    android:layout_columnWeight="1" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="MIN 0%"
-            android:textColor="#757575"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipKustom"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="4dp"
+                    android:checkable="true"
+                    android:text="📅 Kustom"
+                    android:textAlignment="center"
+                    android:textSize="18sp"
+                    android:gravity="center"
+                    app:chipCornerRadius="8dp"
+                    app:chipBackgroundColor="@color/chip_color_selector"
+                    app:chipStrokeColor="#40000000"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconVisible="false"
+                    android:layout_columnWeight="1" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="MAX 100%"
-            android:textColor="#757575"
-            android:textSize="10sp"
-            android:textStyle="bold" />
-    </RelativeLayout>
+            </GridLayout>
 
+            <!-- ===== MATA PELAJARAN ===== -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:text="MATA PELAJARAN"
+                android:textColor="#9E9E9E"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupMataPelajaran"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
+                app:singleSelection="false"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipSemua"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:checked="true"
+                    android:text="Semua"
+                    android:textColor="@color/chip_text_color"
+                    android:textSize="13sp"
+                    app:chipCornerRadius="20dp"
+                    app:chipBackgroundColor="@color/chip_color_selector"
+                    app:chipStrokeColor="#14000000"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconVisible="false" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipMatematika"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Matematika"
+                    android:textColor="@color/chip_text_color"
+                    android:textSize="13sp"
+                    app:chipCornerRadius="20dp"
+                    app:chipBackgroundColor="@color/chip_color_selector"
+                    app:chipStrokeColor="#40000000"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconVisible="false" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipSejarah"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Sejarah"
+                    android:textColor="@color/chip_text_color"
+                    android:textSize="13sp"
+                    app:chipCornerRadius="20dp"
+                    app:chipBackgroundColor="@color/chip_color_selector"
+                    app:chipStrokeColor="#40000000"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconVisible="false" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipBahasaInggris"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Bahasa Inggris"
+                    android:textColor="@color/chip_text_color"                    android:textSize="13sp"
+                    app:chipCornerRadius="20dp"
+                    app:chipBackgroundColor="@color/chip_color_selector"
+                    app:chipStrokeColor="#40000000"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconVisible="false" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipBahasaIndonesia"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Bahasa Indonesia"
+                    android:textColor="@color/chip_text_color"
+                    android:textSize="13sp"
+                    app:chipCornerRadius="20dp"
+                    app:chipBackgroundColor="@color/chip_color_selector"
+                    app:chipStrokeColor="#40000000"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconVisible="false" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipFisika"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Fisika"
+                    android:textColor="@color/chip_text_color"
+                    android:textSize="13sp"
+                    app:chipCornerRadius="20dp"
+                    app:chipBackgroundColor="@color/chip_color_selector"
+                    app:chipStrokeColor="#40000000"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconVisible="false" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipKimia"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Kimia"
+                    android:textColor="@color/chip_text_color"
+                    android:textSize="13sp"
+                    app:chipCornerRadius="20dp"
+                    app:chipBackgroundColor="@color/chip_color_selector"
+                    app:chipStrokeColor="#40000000"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconVisible="false" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipBiologi"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Biologi"
+                    android:textColor="@color/chip_text_color"
+                    android:textSize="13sp"
+                    app:chipCornerRadius="20dp"
+                    app:chipBackgroundColor="@color/chip_color_selector"
+                    app:chipStrokeColor="#40000000"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconVisible="false" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipGeografi"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Geografi"
+                    android:textColor="@color/chip_text_color"
+                    android:textSize="13sp"
+                    app:chipCornerRadius="20dp"
+                    app:chipBackgroundColor="@color/chip_color_selector"
+                    app:chipStrokeColor="#40000000"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconVisible="false" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipEkonomi"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Ekonomi"
+                    android:textColor="@color/chip_text_color"
+                    android:textSize="13sp"
+                    app:chipCornerRadius="20dp"
+                    app:chipBackgroundColor="@color/chip_color_selector"
+                    app:chipStrokeColor="#40000000"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconVisible="false" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipSosiologi"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Sosiologi"
+                    android:textColor="@color/chip_text_color"
+                    android:textSize="13sp"
+                    app:chipCornerRadius="20dp"
+                    app:chipBackgroundColor="@color/chip_color_selector"
+                    app:chipStrokeColor="#40000000"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconVisible="false" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipPKN"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="PKN"
+                    android:textColor="@color/chip_text_color"
+                    android:textSize="13sp"
+                    app:chipCornerRadius="20dp"
+                    app:chipBackgroundColor="@color/chip_color_selector"
+                    app:chipStrokeColor="#40000000"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconVisible="false" />
+
+            </com.google.android.material.chip.ChipGroup>
+            <!-- ===== STATUS KELULUSAN ===== -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:text="STATUS KELULUSAN"
+                android:textColor="#9E9E9E"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <!-- Lulus -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_check_circle"
+                    app:tint="#2E7D32" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:text="Lulus"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <CheckBox
+                    android:id="@+id/cbRemedial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/cb_circle_selector"
+                    android:checked="true"/>
+            </LinearLayout>
+
+            <!-- Remedial -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_refresh"
+                    app:tint="#F59E0B" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:text="Remedial"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <CheckBox
+                    android:id="@+id/cbRemedial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/cb_circle_selector"
+                    android:checked="false"/>
+            </LinearLayout>
+
+            <!-- ===== RENTANG NILAI ===== -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="RENTANG NILAI"
+                    android:textColor="#9E9E9E"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvRentangNilai"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0% - 100%"
+                    android:textColor="#0891B2"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <com.google.android.material.slider.RangeSlider
+                android:id="@+id/rangeSlider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:valueFrom="0"
+                android:valueTo="100"
+                app:thumbColor="#0891B2"
+                app:trackColorActive="#0891B2"
+                app:trackColorInactive="#D4D4D8"
+                app:trackHeight="4dp"
+                app:values="@array/slider_default_values" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="MIN 0%"
+                    android:textColor="#9E9E9E"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MAX 100%"
+                    android:textColor="#9E9E9E"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- ===== BOTTOM BUTTONS ===== -->
     <LinearLayout
+        android:id="@+id/layoutBottomButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="8dp"
-        android:orientation="horizontal">
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFF"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="10dp"
+        android:layout_marginBottom="30dp">
 
-        <com.google.android.material.button.MaterialButton
+        <TextView
+            android:id="@+id/btnAturUlang"
             android:layout_width="0dp"
-            android:layout_height="56dp"
+            android:layout_height="48dp"
+            android:layout_weight="2"
             android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:backgroundTint="#F5F5F5"
+            android:gravity="center"
             android:text="Atur Ulang"
-            android:textAllCaps="false"
-            android:textColor="#333333"
-            app:cornerRadius="12dp" />
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:background="@drawable/bg_button_secondary" />
 
-        <com.google.android.material.button.MaterialButton
+        <TextView
             android:id="@+id/btnTerapkan"
             android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_weight="1.2"
-            android:backgroundTint="#0097B2"
+            android:layout_height="48dp"
+            android:layout_weight="3"
+            android:layout_marginStart="8dp"
+            android:gravity="center"
             android:text="Terapkan"
-            android:textAllCaps="false"
             android:textColor="#FFFFFF"
+            android:textSize="15sp"
             android:textStyle="bold"
-            app:cornerRadius="12dp" />
+            android:background="@drawable/bg_button_primary" />
+
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
