@@ -32,6 +32,9 @@
             android:name=".LoginActivity"
             android:exported="false"
             android:label="Login Page" />
+        <activity
+            android:name=".DetailHasilActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

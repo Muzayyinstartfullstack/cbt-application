@@ -1,19 +1,15 @@
 package com.example.cbt
 
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.cardview.widget.CardView
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
-import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.slider.RangeSlider
-import java.text.SimpleDateFormat
-import java.util.*
 
 class HistoryActivity : AppCompatActivity() {
 
@@ -22,92 +18,71 @@ class HistoryActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContentView(R.layout.activity_history)
 
-        findViewById<ImageView>(R.id.navHome2).setOnClickListener {
-            startActivity(Intent(this, DashboardActivity::class.java))
-            finish()
+        // --- 1. INISIALISASI CARDVIEW ---
+        val cardMath = findViewById<CardView>(R.id.cardMath)
+        val cardHistory = findViewById<CardView>(R.id.cardHistory)
+        val cardEnglish = findViewById<CardView>(R.id.cardEnglish)
+        val cardIndo = findViewById<CardView>(R.id.cardIndo) // <-- Tambah ini
+
+        // --- 2. LOGIKA KLIK PINDAH KE DETAIL ---
+
+        cardMath?.setOnClickListener {
+            pindahKeDetail("Matematika", 86)
         }
 
-        findViewById<ImageView>(R.id.btnFilter).setOnClickListener {
+        cardHistory?.setOnClickListener {
+            pindahKeDetail("Sejarah", 75)
+        }
+
+        cardEnglish?.setOnClickListener {
+            pindahKeDetail("B. Inggris", 43)
+        }
+
+        cardIndo?.setOnClickListener { // <-- Tambah blok ini
+            pindahKeDetail("B. Indonesia", 92)
+        }
+
+        // --- 3. LOGIKA FILTER & NAVIGASI ---
+
+        val btnFilter = findViewById<ImageView>(R.id.btnFilter)
+        btnFilter?.setOnClickListener {
             showFilterDialog()
+        }
+
+        val btnHome = findViewById<ImageView>(R.id.btnHomeNav)
+        btnHome?.setOnClickListener {
+            finish()
         }
     }
 
+    private fun pindahKeDetail(namaMapel: String, skor: Int) {
+        val intent = Intent(this, DetailHasilActivity::class.java)
+        intent.putExtra("MAPEL", namaMapel)
+        intent.putExtra("SKOR", skor)
+        startActivity(intent)
+    }
+
     private fun showFilterDialog() {
-        val dialog = BottomSheetDialog(this)
-        val view = layoutInflater.inflate(R.layout.layout_filter_riwayat, null)
+        try {
+            val dialog = BottomSheetDialog(this)
+            val view = layoutInflater.inflate(R.layout.layout_filter_history, null)
 
-        val btnHariIni = view.findViewById<Button>(R.id.btnHariIni)
-        val btn7Hari = view.findViewById<Button>(R.id.btn7Hari)
-        val btn30Hari = view.findViewById<Button>(R.id.btn30Hari)
-        val btnKustom = view.findViewById<Button>(R.id.btnKustom)
-        val chipGroupMapel = view.findViewById<ChipGroup>(R.id.chipGroupMapel)
-        val radioGroupStatus = view.findViewById<RadioGroup>(R.id.radioGroupStatus)
-        val rangeSlider = view.findViewById<RangeSlider>(R.id.rangeSliderNilai)
-        val txtRangeValue = view.findViewById<TextView>(R.id.txtRangeValue)
-        val btnTerapkan = view.findViewById<Button>(R.id.btnTerapkan)
-        val btnResetBawah = view.findViewById<Button>(R.id.btnResetBawah)
+            val btnClose = view.findViewById<ImageView>(R.id.btnClose)
+            val btnTerapkan = view.findViewById<Button>(R.id.btnTerapkan)
+            val tvAturUlang = view.findViewById<TextView>(R.id.tvAturUlangAtas)
 
-        // 1. Logika Klik Tanggal (Single Selection Warna)
-        val dateButtons = listOf(btnHariIni, btn7Hari, btn30Hari, btnKustom)
-        fun setDateActive(selected: Button) {
-            dateButtons.forEach {
-                it.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")))
-                it.setTextColor(Color.BLACK)
+            btnClose?.setOnClickListener { dialog.dismiss() }
+            tvAturUlang?.setOnClickListener {
+                Toast.makeText(this, "Filter diatur ulang", Toast.LENGTH_SHORT).show()
             }
-            selected.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#0097B2")))
-            selected.setTextColor(Color.WHITE)
-        }
-
-        dateButtons.forEach { btn ->
-            btn.setOnClickListener {
-                if (btn.id == R.id.btnKustom) {
-                    val picker = MaterialDatePicker.Builder.dateRangePicker().build()
-                    picker.show(supportFragmentManager, "DP")
-                    picker.addOnPositiveButtonClickListener {
-                        val fmt = SimpleDateFormat("dd MMM", Locale.getDefault())
-                        btnKustom.text = "${fmt.format(Date(it.first))} - ${fmt.format(Date(it.second))}"
-                        setDateActive(btnKustom)
-                    }
-                } else {
-                    btnKustom.text = "Kustom"
-                    setDateActive(btn)
-                }
+            btnTerapkan?.setOnClickListener {
+                dialog.dismiss()
             }
-        }
 
-        // 2. Slider Update
-        rangeSlider.addOnChangeListener { slider, _, _ ->
-            txtRangeValue.text = "${slider.values[0].toInt()}% - ${slider.values[1].toInt()}%"
+            dialog.setContentView(view)
+            dialog.show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Gagal memuat filter", Toast.LENGTH_SHORT).show()
         }
-
-        // 3. Reset Function
-        btnResetBawah.setOnClickListener {
-            dateButtons.forEach {
-                it.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE))
-                it.setTextColor(Color.BLACK)
-            }
-            btnHariIni.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#0097B2")))
-            btnHariIni.setTextColor(Color.WHITE)
-            view.findViewById<Chip>(R.id.chipSemua).isChecked = true
-            radioGroupStatus.clearCheck()
-            rangeSlider.setValues(0f, 100f)
-            btnKustom.text = "Kustom"
-        }
-
-        // 4. Terapkan
-        btnTerapkan.setOnClickListener {
-            val mapel = view.findViewById<Chip>(chipGroupMapel.checkedChipId)?.text ?: "Semua"
-            val status = when(radioGroupStatus.checkedRadioButtonId) {
-                R.id.rbLulus -> "Lulus"
-                R.id.rbGagal -> "Gagal"
-                R.id.rbRemedial -> "Remedial"
-                else -> "None"
-            }
-            Toast.makeText(this, "Filter: $mapel, Status: $status", Toast.LENGTH_SHORT).show()
-            dialog.dismiss()
-        }
-
-        dialog.setContentView(view)
-        dialog.show()
     }
 }
