@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_top_sheet"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/btnClose"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_close"
+            app:tint="#333333" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Filter Riwayat Ujian"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tvAturUlangAtas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="Atur Ulang"
+            android:textColor="#0097B2"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="RENTANG TANGGAL"
+        android:textColor="#9E9E9E"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:columnCount="2">
+        <Button android:layout_width="0dp" android:layout_height="48dp" android:layout_columnWeight="1" android:layout_margin="4dp" android:text="Hari Ini" android:textAllCaps="false" android:backgroundTint="#0097B2" android:textColor="#FFFFFF" app:cornerRadius="10dp" />
+        <Button style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="48dp" android:layout_columnWeight="1" android:layout_margin="4dp" android:text="7 Hari" android:textAllCaps="false" android:textColor="#000000" app:cornerRadius="10dp" app:strokeColor="#E0E0E0" />
+        <Button style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="48dp" android:layout_columnWeight="1" android:layout_margin="4dp" android:text="30 Hari Terakhir" android:textAllCaps="false" android:textColor="#000000" app:cornerRadius="10dp" app:strokeColor="#E0E0E0" />
+        <Button style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="48dp" android:layout_columnWeight="1" android:layout_margin="4dp" android:text="Kustom" android:textAllCaps="false" android:textColor="#000000" app:cornerRadius="10dp" app:strokeColor="#E0E0E0" app:icon="@drawable/ic_calendar" app:iconGravity="textStart" app:iconTint="#000000" />
+    </GridLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="MATA PELAJARAN"
+        android:textColor="#9E9E9E"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:flexWrap="wrap">
+        <Button android:layout_width="wrap_content" android:layout_height="40dp" android:text="Semua" android:backgroundTint="#000000" android:textColor="#FFFFFF" android:textAllCaps="false" app:cornerRadius="20dp" android:layout_margin="4dp" android:paddingHorizontal="16dp"/>
+        <Button style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="wrap_content" android:layout_height="40dp" android:text="Matematika" android:textColor="#000000" android:textAllCaps="false" app:cornerRadius="20dp" android:layout_margin="4dp" app:strokeColor="#E0E0E0" />
+        <Button style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="wrap_content" android:layout_height="40dp" android:text="Sejarah" android:textColor="#000000" android:textAllCaps="false" app:cornerRadius="20dp" android:layout_margin="4dp" app:strokeColor="#E0E0E0" />
+        <Button style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="wrap_content" android:layout_height="40dp" android:text="Bahasa Inggris" android:textColor="#000000" android:textAllCaps="false" app:cornerRadius="20dp" android:layout_margin="4dp" app:strokeColor="#E0E0E0" />
+        <Button style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="wrap_content" android:layout_height="40dp" android:text="Bahasa Indonesia" android:textColor="#000000" android:textAllCaps="false" app:cornerRadius="20dp" android:layout_margin="4dp" app:strokeColor="#E0E0E0" />
+        <ImageView android:layout_width="28dp" android:layout_height="28dp" android:src="@drawable/ic_menu" android:layout_gravity="center_vertical" android:layout_marginStart="8dp" app:tint="#000000"/>
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="STATUS KELULUSAN"
+        android:textColor="#9E9E9E"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="12dp">
+
+        <RelativeLayout android:id="@+id/layoutLulus" android:layout_width="match_parent" android:layout_height="56dp" android:clickable="true" android:focusable="true">
+            <ImageView android:id="@+id/iconLulus" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_check_circle" app:tint="#4CAF50" android:layout_centerVertical="true"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Lulus" android:textColor="#000000" android:textSize="15sp" android:textStyle="bold" android:layout_toEndOf="@id/iconLulus" android:layout_marginStart="16dp" android:layout_centerVertical="true"/>
+            <ImageView android:id="@+id/checkLulus" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_check_circle" app:tint="#4CAF50" android:layout_alignParentEnd="true" android:layout_centerVertical="true"/>
+        </RelativeLayout>
+
+        <RelativeLayout android:id="@+id/layoutGagal" android:layout_width="match_parent" android:layout_height="56dp" android:clickable="true" android:focusable="true">
+            <ImageView android:id="@+id/iconGagal" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_cancel_circle" app:tint="#F44336" android:layout_centerVertical="true"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tidak Lulus" android:textColor="#000000" android:textSize="15sp" android:textStyle="bold" android:layout_toEndOf="@id/iconGagal" android:layout_marginStart="16dp" android:layout_centerVertical="true"/>
+            <View android:id="@+id/uncheckGagal" android:layout_width="22dp" android:layout_height="22dp" android:background="@drawable/circle_outline" android:layout_alignParentEnd="true" android:layout_centerVertical="true"/>
+            <ImageView android:id="@+id/checkGagal" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_check_circle" app:tint="#4CAF50" android:layout_alignParentEnd="true" android:layout_centerVertical="true" android:visibility="gone"/>
+        </RelativeLayout>
+
+        <RelativeLayout android:id="@+id/layoutRemed" android:layout_width="match_parent" android:layout_height="56dp" android:clickable="true" android:focusable="true">
+            <ImageView android:id="@+id/iconRemed" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_refresh" app:tint="#FF9800" android:layout_centerVertical="true"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Remedial" android:textColor="#000000" android:textSize="15sp" android:textStyle="bold" android:layout_toEndOf="@id/iconRemed" android:layout_marginStart="16dp" android:layout_centerVertical="true"/>
+            <View android:id="@+id/uncheckRemed" android:layout_width="22dp" android:layout_height="22dp" android:background="@drawable/circle_outline" android:layout_alignParentEnd="true" android:layout_centerVertical="true"/>
+            <ImageView android:id="@+id/checkRemed" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_check_circle" app:tint="#4CAF50" android:layout_alignParentEnd="true" android:layout_centerVertical="true" android:visibility="gone"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="RENTANG NILAI" android:textColor="#9E9E9E" android:textSize="12sp" android:textStyle="bold" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:text="0% - 100%" android:textColor="#0097B2" android:textSize="14sp" android:textStyle="bold" />
+    </RelativeLayout>
+
+    <com.google.android.material.slider.RangeSlider
+        android:id="@+id/rangeSlider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:values="@array/initial_slider_values"
+        android:valueFrom="0.0"
+        android:valueTo="100.0"
+        app:thumbColor="#0097B2"
+        app:trackColorActive="#0097B2"
+        app:trackColorInactive="#E0E0E0"
+        app:labelBehavior="gone" />
+
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="MIN 0%" android:textColor="#757575" android:textSize="10sp" android:textStyle="bold"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="MAX 100%" android:textColor="#757575" android:textSize="10sp" android:textStyle="bold" android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:orientation="horizontal">
+        <Button android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1" android:layout_marginEnd="8dp" android:text="Atur Ulang" android:textAllCaps="false" android:textColor="#000000" android:backgroundTint="#E0E0E0" app:cornerRadius="12dp" />
+        <Button android:id="@+id/btnTerapkan" android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1.2" android:backgroundTint="#0097B2" android:text="Terapkan" android:textAllCaps="false" android:textColor="#FFFFFF" android:textStyle="bold" app:cornerRadius="12dp" />
+    </LinearLayout>
+</LinearLayout>
