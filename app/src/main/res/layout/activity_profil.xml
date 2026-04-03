@@ -27,13 +27,17 @@
                 android:elevation="4dp"
                 android:outlineProvider="background">
 
-                <View
-                    android:id="@+id/btnBack"
+                <ImageButton
+                    android:id="@+id/btn_back"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_marginStart="21dp"
+                    android:layout_marginStart="15dp"
                     android:layout_marginTop="75dp"
-                    android:background="@drawable/bg_circle_white_20" />
+                    android:src="@drawable/ic_chevron_left"
+                    android:tint="@color/white"
+                    android:background="@drawable/bg_circle_white_20"
+                    android:contentDescription="Kembali"
+                    android:scaleType="centerInside"/>
 
                 <TextView
                     android:id="@+id/header_page_text"
@@ -46,14 +50,6 @@
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold" />
-
-                <View
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="75dp"
-                    android:layout_marginEnd="21dp"
-                    android:background="@drawable/bg_circle_white_20" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/imgProfileContainer"
@@ -70,6 +66,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="#E2E8F0"
+                        android:padding="10dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_person" />
                 </androidx.cardview.widget.CardView>

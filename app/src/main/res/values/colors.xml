@@ -4,7 +4,11 @@
     <color name="grey1">#6E7A82</color>
     <color name="grey2">#BE8C9090</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="abuabu">#555555</color>
+    <color name="abuabu">#6E7A82</color>
     <color name="Transparant">#00FFFFFF</color>
     <color name="blue">#0493BF</color>
+    <color name="red">#FF0000</color>
+    <color name="green">#008000</color>
+    <color name="orange">#DA8D00</color>
+    <color name="yellow">#FBC563</color>
 </resources>
