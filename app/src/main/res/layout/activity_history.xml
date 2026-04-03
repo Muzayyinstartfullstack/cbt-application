@@ -270,17 +270,41 @@
     </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
-        android:id="@+id/bottomNav"
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="75dp"
         android:layout_alignParentBottom="true"
-        android:background="#0097B2"
-        android:orientation="horizontal"
-        android:elevation="8dp"
-        android:gravity="center">
-        <ImageView android:id="@+id/btnHomeNav" android:layout_width="0dp" android:layout_height="28dp" android:layout_weight="1" android:src="@drawable/ic_home" app:tint="#FFFFFF" android:alpha="0.7"/>
-        <ImageView android:id="@+id/btnHistoryNav" android:layout_width="0dp" android:layout_height="32dp" android:layout_weight="1" android:src="@drawable/ic_history" app:tint="#FFFFFF"/>
-        <ImageView android:id="@+id/btnProfileNav" android:layout_width="0dp" android:layout_height="28dp" android:layout_weight="1" android:src="@drawable/ic_person" app:tint="#FFFFFF" android:alpha="0.7"/>
+        android:background="@drawable/btn_blue"
+        android:elevation="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="22dp"
+            android:src="@drawable/ic_home"
+            app:tint="#FFFFFF" />
+
+        <ImageView
+            android:id="@+id/navHistory"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="22dp"
+            android:src="@drawable/ic_history"
+            app:tint="#FFFFFF" />
+
+        <ImageView
+            android:id="@+id/navProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="22dp"
+            android:src="@drawable/ic_person"
+            app:tint="#FFFFFF" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg_gradient_2"
+    android:id="@+id/activity_detail_ujian">
+
+    <!-- Header Section dengan Gradient Background -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical"
+        android:gravity="top|center_horizontal">
+
+        <!-- Top Bar: Back Button & Title -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Back Button -->
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="15dp"
+                android:src="@drawable/ic_chevron_left"
+                android:tint="@color/white"
+                android:background="@drawable/bg_circle_white_20"
+                android:contentDescription="Kembali"
+                android:scaleType="centerInside"
+                android:padding="8dp" />
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Detail Ujian"
+                android:textSize="28sp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:gravity="center" />
+
+            <!-- Spacer -->
+            <View
+                android:layout_width="40dp"
+                android:layout_height="1dp" />
+
+        </LinearLayout>
+
+        <!-- Subject Icon, Name, Type -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <!-- Subject Icon -->
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/logo_sekolah"
+                android:layout_marginTop="30dp" />
+
+            <!-- Subject Name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Matematika"
+                android:textSize="32sp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp"
+                android:textAlignment="center" />
+
+            <!-- Subject Type -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ulangan Harian"
+                android:textSize="16sp"
+                android:textColor="@color/grey2"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Main Content ScrollView -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="20dp"
+            android:paddingHorizontal="20dp"
+            android:layout_marginBottom="10dp"
+            android:elevation="10dp"
+            android:gravity="top"
+            android:background="@drawable/bg_card_stats_black">
+
+            <!-- Stats Card -->
+            <LinearLayout
+                android:id="@+id/stats_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_car"
+                android:padding="20dp"
+                android:gravity="center_horizontal"
+                android:baselineAligned="false">
+
+                <!-- Stat 1: Durasi -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_timer"
+                        android:contentDescription="Durasi"
+                        android:tint="@color/blue"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="DURASI"
+                        android:textSize="10sp"
+                        android:textColor="#64748b"
+                        android:textStyle="bold"
+                        android:layout_marginTop="8dp"
+                        android:letterSpacing="0.5" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="4dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="90"
+                            android:textSize="18sp"
+                            android:textColor="#1e293b"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" Menit"
+                            android:textSize="11sp"
+                            android:textColor="#94a3b8" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Stat 2: Soal -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_question"
+                        android:contentDescription="Soal"
+                        android:tint="@color/blue"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SOAL"
+                        android:textSize="10sp"
+                        android:textColor="#64748b"
+                        android:textStyle="bold"
+                        android:layout_marginTop="8dp"
+                        android:letterSpacing="0.5" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="4dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="45"
+                            android:textSize="18sp"
+                            android:textColor="#1e293b"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" Butir"
+                            android:textSize="11sp"
+                            android:textColor="#94a3b8" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Stat 3: KKM -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_star"
+                        android:contentDescription="KKM"
+                        android:tint="@color/blue"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="KKM"
+                        android:textSize="10sp"
+                        android:textColor="#64748b"
+                        android:textStyle="bold"
+                        android:layout_marginTop="8dp"
+                        android:letterSpacing="0.5" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="4dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="80"
+                            android:textSize="18sp"
+                            android:textColor="#1e293b"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" Poin"
+                            android:textSize="11sp"
+                            android:textColor="#94a3b8" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Spacer -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp" />
+
+            <!-- Rules Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Rules Header -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_warning"
+                        android:contentDescription="Perhatian"
+                        android:tint="#f59e0b"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Peraturan Ujian"
+                        android:textSize="18sp"
+                        android:textColor="#1e293b"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Rule Item 1 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="top"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_check_circle"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginTop="2dp"
+                        android:tint="@color/green"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Waktu berjalan otomatis saat tombol mulai ditekan"
+                        android:textSize="13sp"
+                        android:textColor="#64748b"
+                        android:lineSpacingMultiplier="1.5" />
+
+                </LinearLayout>
+
+                <!-- Rule Item 2 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="top"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_check_circle"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginTop="2dp"
+                        android:tint="@color/green"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Dilarang membuka aplikasi lain selama ujian berlangsung"
+                        android:textSize="13sp"
+                        android:textColor="#64748b"
+                        android:lineSpacingMultiplier="1.5" />
+
+                </LinearLayout>
+
+                <!-- Rule Item 3 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="top"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_check_circle"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginTop="2dp"
+                        android:tint="@color/green"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Pastikan koneksi internet stabil"
+                        android:textSize="13sp"
+                        android:textColor="#64748b"
+                        android:lineSpacingMultiplier="1.5" />
+
+                </LinearLayout>
+
+                <!-- Rule Item 4 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="top">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_check_circle"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginTop="2dp"
+                        android:tint="@color/green"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Kerjakan ujian dengan jujur"
+                        android:textSize="13sp"
+                        android:textColor="#64748b"
+                        android:lineSpacingMultiplier="1.5" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Spacer -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="24dp" />
+
+            <!-- Code Input Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Masukkan Kode Ujian"
+                    android:textSize="16sp"
+                    android:textColor="#1e293b"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:paddingStart="16dp"
+                    android:layout_marginBottom="20dp"
+                    android:paddingEnd="16dp"
+                    android:spacing="5dp"
+                    android:background="@drawable/bg_btn_outliner">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_key"
+                        android:contentDescription="Soal"/>
+                    <EditText
+                        android:id="@+id/et_code_1"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:background="#"
+                        android:contentDescription="Digit pertama kode ujian"
+                        android:drawablePadding="12dp"
+                        android:gravity="center"
+                        android:hint="X"
+                        android:inputType="text|textCapCharacters"
+                        android:maxLength="1"
+                        android:textColor="#cbd5e1"
+                        android:textSize="20sp" />
+
+                    <EditText
+                        android:id="@+id/et_code_2"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:hint="X"
+                        android:textSize="20sp"
+                        android:textColor="#cbd5e1"
+                        android:inputType="text|textCapCharacters"
+                        android:maxLength="1"
+                        android:gravity="center"
+                        android:background="#"
+                        android:contentDescription="Digit kedua kode ujian" />
+
+                    <EditText
+                        android:id="@+id/et_code_3"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:hint="X"
+                        android:textSize="20sp"
+                        android:textColor="#cbd5e1"
+                        android:inputType="text|textCapCharacters"
+                        android:maxLength="1"
+                        android:gravity="center"
+                        android:background="#"
+                        android:contentDescription="Digit ketiga kode ujian" />
+
+                    <EditText
+                        android:id="@+id/et_code_4"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:hint="X"
+                        android:textSize="20sp"
+                        android:textColor="#cbd5e1"
+                        android:inputType="text|textCapCharacters"
+                        android:maxLength="1"
+                        android:gravity="center"
+                        android:background="#"
+                        android:contentDescription="Digit keempat kode ujian" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Submit Button (Fixed at Bottom) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="30dp"
+        android:background="@android:color/white">
+
+        <Button
+            android:id="@+id/btn_submit_exam"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:text="Mulai Ujian Sekarang →"
+            android:textSize="20sp"
+            android:layout_marginBottom="20dp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:backgroundTint="@color/blue"
+            android:elevation="10dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
