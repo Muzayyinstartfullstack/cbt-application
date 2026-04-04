@@ -1,11 +1,14 @@
 package com.example.cbt
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -17,29 +20,44 @@ class DetailUjianActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_detail_ujian)
 
-        // Handling Window Insets
+        // 1. Handling Window Insets (Biar gak kepotong status bar)
         val rootView = findViewById<View>(R.id.activity_detail_ujian)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        rootView?.let {
+            ViewCompat.setOnApplyWindowInsetsListener(it) { v, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+                insets
+            }
         }
 
-        // Inisialisasi Input Kode Token
+        // 2. Inisialisasi Komponen Token & Navigasi
         val et1 = findViewById<EditText>(R.id.et_code_1)
         val et2 = findViewById<EditText>(R.id.et_code_2)
         val et3 = findViewById<EditText>(R.id.et_code_3)
         val et4 = findViewById<EditText>(R.id.et_code_4)
-
-        // Tombol Back (Opsional, sesuaikan ID di XML lo)
+        val btnMulai = findViewById<Button>(R.id.btn_submit_exam)
         val btnBack = findViewById<ImageView>(R.id.btn_back)
+
+        // 3. Logika Tombol Back
         btnBack?.setOnClickListener {
-            finish() // Menutup activity ini dan balik ke Dashboard
+            finish()
         }
 
-        // Fungsi Auto-Move Focus
-        fun autoMoveToNext(current: EditText, next: EditText?) {
-            current.addTextChangedListener(object : TextWatcher {
+        // 4. Logika Pindah ke SoalUjianActivity (Pakai Token Check)
+        btnMulai?.setOnClickListener {
+            val token = "${et1?.text}${et2?.text}${et3?.text}${et4?.text}"
+
+            if (token.length < 4) {
+                Toast.makeText(this, "Silakan masukkan token dengan lengkap!", Toast.LENGTH_SHORT).show()
+            } else {
+                val intent = Intent(this, SoalUjianActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
+        // 5. Fungsi Auto-Move Focus Token
+        fun autoMoveToNext(current: EditText?, next: EditText?) {
+            current?.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable?) {
