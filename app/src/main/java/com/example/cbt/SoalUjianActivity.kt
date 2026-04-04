@@ -18,18 +18,16 @@ class SoalUjianActivity : AppCompatActivity() {
     private var selectedOption = -1
     private var currentQuestion = 1
     private var totalQuestions = 45
-    private var timeRemaining = 1L * 3600 + 28 * 60 + 54 // Total detik
+    private var timeRemaining = 1L * 3600 + 28 * 60 + 54
     private var countDownTimer: CountDownTimer? = null
     private var isBookmarked = false
 
-    // Options
     private lateinit var optionA: LinearLayout
     private lateinit var optionB: LinearLayout
     private lateinit var optionC: LinearLayout
     private lateinit var optionD: LinearLayout
     private lateinit var optionE: LinearLayout
 
-    // Buttons
     private lateinit var btnPrevious: AppCompatButton
     private lateinit var btnNext: AppCompatButton
     private lateinit var btnBookmark: AppCompatButton
@@ -38,7 +36,6 @@ class SoalUjianActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Pastikan nama layout xml lo beneran R.layout.activity_soal_ujian
         setContentView(R.layout.activity_soal_ujian)
 
         initializeViews()
@@ -47,7 +44,6 @@ class SoalUjianActivity : AppCompatActivity() {
     }
 
     private fun initializeViews() {
-        // Hati-hati: Pastikan ID di XML (tv_timer, tv_question, dll) sudah benar tulisannya
         timerView = findViewById(R.id.tv_timer)
         questionView = findViewById(R.id.tv_question)
         progressButton = findViewById(R.id.btn_question_progress)
@@ -88,14 +84,12 @@ class SoalUjianActivity : AppCompatActivity() {
     }
 
     private fun updateOptionUI() {
-        // Reset background ke default (Pastikan file drawable ini ADA di folder res/drawable)
         optionA.setBackgroundResource(R.drawable.bg_unselected_option)
         optionB.setBackgroundResource(R.drawable.bg_unselected_option)
         optionC.setBackgroundResource(R.drawable.bg_unselected_option)
         optionD.setBackgroundResource(R.drawable.bg_unselected_option)
         optionE.setBackgroundResource(R.drawable.bg_unselected_option)
 
-        // Highlight yang dipilih
         when (selectedOption) {
             0 -> optionA.setBackgroundResource(R.drawable.bg_selected_option)
             1 -> optionB.setBackgroundResource(R.drawable.bg_selected_option)
@@ -129,13 +123,8 @@ class SoalUjianActivity : AppCompatActivity() {
 
     private fun toggleBookmark() {
         isBookmarked = !isBookmarked
-        if (isBookmarked) {
-            btnBookmark.text = "✓ Ragu-ragu"
-            btnBookmark.alpha = 0.8f
-        } else {
-            btnBookmark.text = "Ragu-ragu"
-            btnBookmark.alpha = 1.0f
-        }
+        btnBookmark.text = if (isBookmarked) "✓ Ragu-ragu" else "Ragu-ragu"
+        btnBookmark.alpha = if (isBookmarked) 0.8f else 1.0f
     }
 
     private fun updateProgressButton() {
@@ -149,7 +138,8 @@ class SoalUjianActivity : AppCompatActivity() {
                 updateTimerDisplay()
             }
             override fun onFinish() {
-                onTimeUp()
+                timerView.text = "00:00:00"
+                Toast.makeText(this@SoalUjianActivity, "Waktu Habis!", Toast.LENGTH_LONG).show()
             }
         }.start()
     }
@@ -161,11 +151,6 @@ class SoalUjianActivity : AppCompatActivity() {
         timerView.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
     }
 
-    private fun onTimeUp() {
-        countDownTimer?.cancel()
-        Toast.makeText(this, "Waktu Habis!", Toast.LENGTH_LONG).show()
-    }
-
     private fun increaseFontSize() {
         val currentSize = questionView.textSize / resources.displayMetrics.scaledDensity
         questionView.textSize = currentSize + 2
@@ -173,9 +158,7 @@ class SoalUjianActivity : AppCompatActivity() {
 
     private fun decreaseFontSize() {
         val currentSize = questionView.textSize / resources.displayMetrics.scaledDensity
-        if (currentSize > 12) {
-            questionView.textSize = currentSize - 2
-        }
+        if (currentSize > 12) questionView.textSize = currentSize - 2
     }
 
     override fun onDestroy() {
