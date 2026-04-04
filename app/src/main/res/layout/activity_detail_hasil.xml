@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- ===== HEADER BIRU ===== -->
         <RelativeLayout
             android:id="@+id/header_bg"
             android:layout_width="match_parent"
@@ -20,6 +19,19 @@
             android:background="@drawable/bg_header_rounded"
             android:elevation="4dp"
             android:outlineProvider="background">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="55dp"
+                android:background="@drawable/bg_circle_white_20"
+                android:src="@drawable/ic_chevron_left"
+                app:tint="@color/white"
+                android:scaleType="centerInside"
+                android:padding="8dp"
+                android:contentDescription="Kembali" />
 
             <TextView
                 android:id="@+id/tvTitle"
@@ -55,7 +67,6 @@
                 android:textSize="26sp"
                 android:textStyle="bold" />
 
-            <!-- Circular Progress (pakai ProgressBar diputar) -->
             <FrameLayout
                 android:id="@+id/frameProgress"
                 android:layout_width="160dp"
@@ -103,12 +114,10 @@
 
         </RelativeLayout>
 
-        <!-- ===== CARDS STATISTIK ===== -->
         <LinearLayout
             android:id="@+id/cardStats"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/header_bg"
             android:layout_marginStart="24dp"
             android:layout_marginTop="-80dp"
             android:layout_marginEnd="24dp"
@@ -116,16 +125,15 @@
             android:orientation="horizontal"
             android:padding="5dp">
 
-            <!-- Card Kiri: Waktu & Salah -->
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
+                android:layout_marginBottom="20dp"
                 android:layout_weight="1"
                 app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="17dp"
-                app:cardElevation="6dp"
-                android:layout_marginBottom="20dp">
+                app:cardElevation="6dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -133,7 +141,6 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <!-- Waktu -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -144,7 +151,6 @@
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:src="@drawable/ic_timer"
-                            android:gravity="center"
                             app:tint="@color/blue" />
 
                         <LinearLayout
@@ -178,7 +184,6 @@
                         android:layout_marginBottom="15dp"
                         android:background="#F0F0F0" />
 
-                    <!-- Salah -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -189,7 +194,7 @@
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:src="@drawable/ic_cancel_circle"
-                             app:tint="@color/red"/>
+                            app:tint="@color/red" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -214,20 +219,18 @@
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </LinearLayout>
-
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Card Kanan: Benar & Peringkat -->
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginBottom="20dp"
                 android:layout_weight="1"
                 app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="17dp"
-                app:cardElevation="6dp"
-                android:layout_marginBottom="20dp">
+                app:cardElevation="6dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -235,7 +238,6 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <!-- Benar -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -246,7 +248,7 @@
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:src="@drawable/ic_check_circle"
-                            app:tint="@color/green"/>
+                            app:tint="@color/green" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -279,7 +281,6 @@
                         android:layout_marginBottom="15dp"
                         android:background="#F0F0F0" />
 
-                    <!-- Peringkat -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -290,7 +291,7 @@
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:src="@drawable/ic_leaderboard"
-                            app:tint="@color/orange_primary"/>
+                            app:tint="@color/orange_primary" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -315,21 +316,15 @@
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </LinearLayout>
-
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
-        <!-- ===== ANALISIS TOPIK ===== -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="20dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:paddingBottom="8dp">
+            android:padding="20dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -339,26 +334,15 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="Analisis berdasarkan kategori topik soal"
-                android:textColor="#9E9E9E"
-                android:textSize="13sp" />
-
-            <!-- Item: Persamaan Kuadrat -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:orientation="vertical">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -367,7 +351,6 @@
                         android:textColor="#212121"
                         android:textSize="15sp"
                         android:textStyle="bold" />
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -376,31 +359,24 @@
                         android:textSize="15sp"
                         android:textStyle="bold" />
                 </LinearLayout>
-
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
                     android:layout_height="10dp"
                     android:layout_marginTop="8dp"
-                    android:indeterminate="false"
-                    android:max="100"
                     android:progress="100"
-                    android:progressTint="#0096C7"
-                    android:progressBackgroundTint="@color/grey1" />
+                    android:progressTint="#0096C7" />
             </LinearLayout>
 
-            <!-- Item: Persamaan Lingkaran -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:orientation="vertical">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -409,7 +385,6 @@
                         android:textColor="#212121"
                         android:textSize="15sp"
                         android:textStyle="bold" />
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -418,72 +393,22 @@
                         android:textSize="15sp"
                         android:textStyle="bold" />
                 </LinearLayout>
-
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
                     android:layout_height="10dp"
                     android:layout_marginTop="8dp"
-                    android:indeterminate="false"
-                    android:max="100"
                     android:progress="80"
-                    android:progressTint="#0096C7"
-                    android:progressBackgroundTint="@color/grey1" />
-            </LinearLayout>
-
-            <!-- Item: Persamaan Garis Singgung -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Persamaan Garis Singgung"
-                        android:textColor="#212121"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="80%"
-                        android:textColor="#0096C7"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <ProgressBar
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="10dp"
-                    android:layout_marginTop="8dp"
-                    android:indeterminate="false"
-                    android:max="100"
-                    android:progress="80"
-                    android:progressTint="#0096C7"
-                    android:progressBackgroundTint="@color/grey1" />
+                    android:progressTint="#0096C7" />
             </LinearLayout>
 
         </LinearLayout>
 
-        <!-- ===== TOMBOL ===== -->
         <Button
             android:id="@+id/btnKembali"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="20dp"
+            android:layout_margin="16dp"
             android:backgroundTint="@color/blue"
             android:text="Kembali ke Beranda"
             android:textAllCaps="false"
@@ -492,5 +417,4 @@
             android:textStyle="bold" />
 
     </LinearLayout>
-
 </ScrollView>
