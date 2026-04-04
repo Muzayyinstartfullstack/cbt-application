@@ -16,12 +16,9 @@ class DashboardActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // 1. Mengaktifkan fitur tampilan penuh (Edge-to-Edge)
         enableEdgeToEdge()
         setContentView(R.layout.activity_dashboard)
 
-        // 2. Mengatur padding sistem
         val mainView = findViewById<View>(R.id.main_dashboard)
         mainView?.let {
             ViewCompat.setOnApplyWindowInsetsListener(it) { v, insets ->
@@ -31,33 +28,23 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
 
-        // 3. Inisialisasi Komponen UI Dasar
         val btnMulai = findViewById<Button>(R.id.btnMulaiUjian)
         val navHome = findViewById<ImageView>(R.id.navHome)
         val navHistory = findViewById<ImageView>(R.id.navHistory)
         val navProfile = findViewById<ImageView>(R.id.navProfile)
-
-        // 4. Inisialisasi Ikon Titik Tiga (More Vert)
-        // TAMBAHKAN menuMatematika DI SINI
         val menuMatematika = findViewById<ImageView>(R.id.menu_matematika)
 
-
-        // 5. Logika Klik Menu Titik Tiga (Popup Menu)
-        // TAMBAHKAN LOGIKA UNTUK menuMatematika DI SINI
         menuMatematika.setOnClickListener { view ->
             tampilkanMenu(view, "Matematika")
         }
 
-
-        // 6. Logika Tombol Utama (Banner Matematika Atas)
+        // Tombol banner atas juga langsung ke DetailUjianActivity
         btnMulai.setOnClickListener {
-            Toast.makeText(this, "Mempersiapkan Soal Matematika...", Toast.LENGTH_SHORT).show()
+            bukaDetailUjian("Matematika")
         }
 
-        // 7. Navigasi Bottom Bar
         navHistory.setOnClickListener {
-            val intent = Intent(this, FilterHistoryActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, FilterHistoryActivity::class.java))
         }
 
         navHome.setOnClickListener {
@@ -69,9 +56,12 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Fungsi bantuan untuk menampilkan Popup Menu "Kerjakan"
-     */
+    private fun bukaDetailUjian(namaMapel: String) {
+        val intent = Intent(this, DetailUjianActivity::class.java)
+        intent.putExtra("NAMA_MAPEL", namaMapel)
+        startActivity(intent)
+    }
+
     private fun tampilkanMenu(view: View, namaMapel: String) {
         val popup = PopupMenu(this, view)
         popup.menuInflater.inflate(R.menu.popup_menu, popup.menu)
@@ -79,7 +69,7 @@ class DashboardActivity : AppCompatActivity() {
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_kerjakan -> {
-                    Toast.makeText(this, "Membuka ujian $namaMapel", Toast.LENGTH_SHORT).show()
+                    bukaDetailUjian(namaMapel)
                     true
                 }
                 else -> false
