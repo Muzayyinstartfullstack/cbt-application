@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- ===== HEADER ===== -->
         <RelativeLayout
             android:id="@+id/header_bg"
             android:layout_width="match_parent"
@@ -21,7 +20,6 @@
             android:elevation="4dp"
             android:outlineProvider="background">
 
-            <!-- Tombol Back -->
             <ImageButton
                 android:id="@+id/btnBack"
                 android:layout_width="40dp"
@@ -116,7 +114,7 @@
 
         </RelativeLayout>
 
-        <!-- ===== CARDS STATISTIK ===== -->
+        <!-- CARDS STATISTIK -->
         <LinearLayout
             android:id="@+id/cardStats"
             android:layout_width="match_parent"
@@ -133,8 +131,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:layout_weight="1"
                 android:layout_marginBottom="20dp"
+                android:layout_weight="1"
                 app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="17dp"
                 app:cardElevation="6dp">
@@ -145,7 +143,6 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <!-- Waktu -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -189,7 +186,6 @@
                         android:layout_marginBottom="15dp"
                         android:background="#F0F0F0" />
 
-                    <!-- Salah -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -234,8 +230,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_weight="1"
                 android:layout_marginBottom="20dp"
+                android:layout_weight="1"
                 app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="17dp"
                 app:cardElevation="6dp">
@@ -246,7 +242,6 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <!-- Benar -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -290,7 +285,6 @@
                         android:layout_marginBottom="15dp"
                         android:background="#F0F0F0" />
 
-                    <!-- Peringkat -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -331,7 +325,7 @@
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
-        <!-- ===== ANALISIS TOPIK ===== -->
+        <!-- ANALISIS TOPIK -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -357,7 +351,6 @@
                 android:textColor="#9E9E9E"
                 android:textSize="13sp" />
 
-            <!-- Item: Persamaan Kuadrat -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -399,7 +392,6 @@
                     android:progressBackgroundTint="@color/grey1" />
             </LinearLayout>
 
-            <!-- Item: Persamaan Lingkaran -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -441,7 +433,6 @@
                     android:progressBackgroundTint="@color/grey1" />
             </LinearLayout>
 
-            <!-- Item: Persamaan Garis Singgung -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -485,7 +476,7 @@
 
         </LinearLayout>
 
-        <!-- ===== TOMBOL ===== -->
+        <!-- TOMBOL -->
         <Button
             android:id="@+id/btnKembali"
             android:layout_width="match_parent"

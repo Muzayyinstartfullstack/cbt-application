@@ -2,6 +2,7 @@ package com.example.cbt
 
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -15,6 +16,9 @@ class DetailHasilActivity : AppCompatActivity() {
     }
 
     private fun setupClickListeners() {
+        findViewById<ImageButton>(R.id.btnBack).setOnClickListener {
+            finish()
+        }
         findViewById<Button>(R.id.btnKembali).setOnClickListener {
             finish()
         }
