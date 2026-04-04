@@ -1,15 +1,15 @@
-package com.example.quizapp
+package com.example.cbt
 
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.R
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 
-class QuizActivity : AppCompatActivity() {
+class SoalUjianActivity : AppCompatActivity() {
 
     private lateinit var timerView: TextView
     private lateinit var questionView: TextView
@@ -18,7 +18,7 @@ class QuizActivity : AppCompatActivity() {
     private var selectedOption = -1
     private var currentQuestion = 1
     private var totalQuestions = 45
-    private var timeRemaining = 1L * 60 * 60 + 28 * 60 + 54 // seconds
+    private var timeRemaining = 1L * 3600 + 28 * 60 + 54 // Total detik
     private var countDownTimer: CountDownTimer? = null
     private var isBookmarked = false
 
@@ -38,6 +38,7 @@ class QuizActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Pastikan nama layout xml lo beneran R.layout.activity_soal_ujian
         setContentView(R.layout.activity_soal_ujian)
 
         initializeViews()
@@ -46,6 +47,7 @@ class QuizActivity : AppCompatActivity() {
     }
 
     private fun initializeViews() {
+        // Hati-hati: Pastikan ID di XML (tv_timer, tv_question, dll) sudah benar tulisannya
         timerView = findViewById(R.id.tv_timer)
         questionView = findViewById(R.id.tv_question)
         progressButton = findViewById(R.id.btn_question_progress)
@@ -86,14 +88,14 @@ class QuizActivity : AppCompatActivity() {
     }
 
     private fun updateOptionUI() {
-        // Reset all options
+        // Reset background ke default (Pastikan file drawable ini ADA di folder res/drawable)
         optionA.setBackgroundResource(R.drawable.bg_unselected_option)
         optionB.setBackgroundResource(R.drawable.bg_unselected_option)
         optionC.setBackgroundResource(R.drawable.bg_unselected_option)
         optionD.setBackgroundResource(R.drawable.bg_unselected_option)
         optionE.setBackgroundResource(R.drawable.bg_unselected_option)
 
-        // Highlight selected option
+        // Highlight yang dipilih
         when (selectedOption) {
             0 -> optionA.setBackgroundResource(R.drawable.bg_selected_option)
             1 -> optionB.setBackgroundResource(R.drawable.bg_selected_option)
@@ -122,14 +124,11 @@ class QuizActivity : AppCompatActivity() {
     private fun loadQuestion() {
         selectedOption = -1
         updateOptionUI()
-        // Update question content from your data source
         questionView.text = "Pertanyaan Soal $currentQuestion: Hasil dari 2x + 5 = 15 adalah...."
     }
 
     private fun toggleBookmark() {
         isBookmarked = !isBookmarked
-
-        // Update button appearance based on bookmark state
         if (isBookmarked) {
             btnBookmark.text = "✓ Ragu-ragu"
             btnBookmark.alpha = 0.8f
@@ -149,27 +148,22 @@ class QuizActivity : AppCompatActivity() {
                 timeRemaining = millisUntilFinished / 1000
                 updateTimerDisplay()
             }
-
             override fun onFinish() {
                 onTimeUp()
             }
-        }
-        (countDownTimer as CountDownTimer).start()
+        }.start()
     }
 
     private fun updateTimerDisplay() {
         val hours = timeRemaining / 3600
         val minutes = (timeRemaining % 3600) / 60
         val seconds = timeRemaining % 60
-
         timerView.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
     }
 
     private fun onTimeUp() {
-        // Handle time up event
         countDownTimer?.cancel()
-        // Show dialog or submit quiz
-        // Example: show AlertDialog
+        Toast.makeText(this, "Waktu Habis!", Toast.LENGTH_LONG).show()
     }
 
     private fun increaseFontSize() {

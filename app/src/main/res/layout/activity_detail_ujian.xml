@@ -25,12 +25,12 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="15dp"
-                android:src="@drawable/ic_chevron_left"
-                app:tint="@color/white"
                 android:background="@drawable/bg_circle_white_20"
                 android:contentDescription="Kembali"
+                android:padding="8dp"
                 android:scaleType="centerInside"
-                android:padding="8dp" />
+                android:src="@drawable/ic_chevron_left"
+                app:tint="@color/white" />
 
             <TextView
                 android:layout_width="0dp"
