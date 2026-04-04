@@ -426,7 +426,7 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:src="@drawable/ic_refresh"
-                    app:tint="@color/orange" />
+                    app:tint="@color/orange_primary" />
 
                 <TextView
                     android:layout_width="0dp"
