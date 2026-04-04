@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/bg_gradient_2"
     android:id="@+id/activity_detail_ujian">
 
-    <!-- Header Section dengan Gradient Background -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="240dp"
@@ -14,27 +14,24 @@
         android:orientation="vertical"
         android:gravity="top|center_horizontal">
 
-        <!-- Top Bar: Back Button & Title -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <!-- Back Button -->
             <ImageButton
                 android:id="@+id/btn_back"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="15dp"
                 android:src="@drawable/ic_chevron_left"
-                android:tint="@color/white"
+                app:tint="@color/white"
                 android:background="@drawable/bg_circle_white_20"
                 android:contentDescription="Kembali"
                 android:scaleType="centerInside"
                 android:padding="8dp" />
 
-            <!-- Title -->
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -46,28 +43,24 @@
                 android:textAlignment="center"
                 android:gravity="center" />
 
-            <!-- Spacer -->
             <View
                 android:layout_width="40dp"
                 android:layout_height="1dp" />
 
         </LinearLayout>
 
-        <!-- Subject Icon, Name, Type -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal">
 
-            <!-- Subject Icon -->
             <ImageView
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:src="@drawable/logo_sekolah"
                 android:layout_marginTop="30dp" />
 
-            <!-- Subject Name -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -78,7 +71,6 @@
                 android:layout_marginTop="12dp"
                 android:textAlignment="center" />
 
-            <!-- Subject Type -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -92,7 +84,6 @@
 
     </LinearLayout>
 
-    <!-- Main Content ScrollView -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -110,13 +101,12 @@
             android:gravity="top"
             android:background="@drawable/bg_card_stats_black">
 
-            <!-- Stats Card -->
             <LinearLayout
                 android:id="@+id/stats_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:background="@drawable/bg_card"
+                android:background="@drawable/bg_card_stats_black"
                 android:padding="20dp"
                 android:gravity="center_horizontal"
                 android:baselineAligned="false">
@@ -134,7 +124,7 @@
                         android:layout_height="32dp"
                         android:src="@drawable/ic_timer"
                         android:contentDescription="Durasi"
-                        android:tint="@color/blue"/>
+                        app:tint="@color/blue"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -184,7 +174,7 @@
                         android:layout_height="32dp"
                         android:src="@drawable/ic_question"
                         android:contentDescription="Soal"
-                        android:tint="@color/blue"/>
+                        app:tint="@color/blue"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -234,7 +224,7 @@
                         android:layout_height="32dp"
                         android:src="@drawable/ic_star"
                         android:contentDescription="KKM"
-                        android:tint="@color/blue"/>
+                        app:tint="@color/blue"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -273,7 +263,6 @@
 
             </LinearLayout>
 
-            <!-- Spacer -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="15dp" />
@@ -284,7 +273,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Rules Header -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -297,7 +285,7 @@
                         android:layout_height="24dp"
                         android:src="@drawable/ic_warning"
                         android:contentDescription="Perhatian"
-                        android:tint="#f59e0b"
+                        app:tint="#f59e0b"
                         android:layout_marginEnd="8dp" />
 
                     <TextView
@@ -310,7 +298,7 @@
 
                 </LinearLayout>
 
-                <!-- Rule Item 1 -->
+                <!-- Rule 1 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -324,7 +312,7 @@
                         android:src="@drawable/ic_check_circle"
                         android:layout_marginEnd="12dp"
                         android:layout_marginTop="2dp"
-                        android:tint="@color/green"/>
+                        app:tint="@color/green"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -337,7 +325,7 @@
 
                 </LinearLayout>
 
-                <!-- Rule Item 2 -->
+                <!-- Rule 2 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -351,7 +339,7 @@
                         android:src="@drawable/ic_check_circle"
                         android:layout_marginEnd="12dp"
                         android:layout_marginTop="2dp"
-                        android:tint="@color/green"/>
+                        app:tint="@color/green"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -364,7 +352,7 @@
 
                 </LinearLayout>
 
-                <!-- Rule Item 3 -->
+                <!-- Rule 3 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -378,7 +366,7 @@
                         android:src="@drawable/ic_check_circle"
                         android:layout_marginEnd="12dp"
                         android:layout_marginTop="2dp"
-                        android:tint="@color/green"/>
+                        app:tint="@color/green"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -391,7 +379,7 @@
 
                 </LinearLayout>
 
-                <!-- Rule Item 4 -->
+                <!-- Rule 4 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -404,7 +392,7 @@
                         android:src="@drawable/ic_check_circle"
                         android:layout_marginEnd="12dp"
                         android:layout_marginTop="2dp"
-                        android:tint="@color/green"/>
+                        app:tint="@color/green"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -419,7 +407,6 @@
 
             </LinearLayout>
 
-            <!-- Spacer -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="24dp" />
@@ -449,8 +436,6 @@
                     android:paddingStart="16dp"
                     android:layout_marginBottom="20dp"
                     android:paddingEnd="16dp"
-                    android:paddingVertical="10dp"
-                    android:spacing="5dp"
                     android:background="@drawable/bg_btn_outliner">
 
                     <ImageView
@@ -458,12 +443,13 @@
                         android:layout_height="32dp"
                         android:src="@drawable/ic_key"
                         android:contentDescription="Soal"/>
+
                     <EditText
                         android:id="@+id/et_code_1"
                         android:layout_width="0dp"
                         android:layout_height="32dp"
                         android:layout_weight="1"
-                        android:background="@color/white"
+                        android:background="@android:color/transparent"
                         android:contentDescription="Digit pertama kode ujian"
                         android:drawablePadding="10dp"
                         android:gravity="center"
@@ -484,7 +470,7 @@
                         android:inputType="text|textCapCharacters"
                         android:maxLength="1"
                         android:gravity="center"
-                        android:background="@color/white"
+                        android:background="@android:color/transparent"
                         android:contentDescription="Digit kedua kode ujian" />
 
                     <EditText
@@ -498,7 +484,7 @@
                         android:inputType="text|textCapCharacters"
                         android:maxLength="1"
                         android:gravity="center"
-                        android:background="@color/white"
+                        android:background="@android:color/transparent"
                         android:contentDescription="Digit ketiga kode ujian" />
 
                     <EditText
@@ -512,7 +498,7 @@
                         android:inputType="text|textCapCharacters"
                         android:maxLength="1"
                         android:gravity="center"
-                        android:background="@color/white"
+                        android:background="@android:color/transparent"
                         android:contentDescription="Digit keempat kode ujian" />
 
                 </LinearLayout>
@@ -523,7 +509,6 @@
 
     </ScrollView>
 
-    <!-- Submit Button (Fixed at Bottom) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
