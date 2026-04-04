@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:id="@+id/activity_soal_ujian"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Header Section with Timer -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_weight="1"
+        android:layout_marginTop="-45dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/bg_header_rounded"
+        android:paddingVertical="0dp">
+
+        <TextView
+            android:id="@+id/tv_sisa_waktu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SISA WAKTU"
+            android:layout_marginTop="70dp"
+            android:textColor="@color/white_light"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05" />
+
+        <TextView
+            android:id="@+id/tv_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="01:28:54"
+            android:textColor="@android:color/white"
+            android:textSize="50sp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp" />
+
+        <!-- Question Progress Button -->
+        <TextView
+            android:id="@+id/btn_question_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Soal 1 dari 45"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:paddingHorizontal="30dp"
+            android:paddingVertical="10dp"
+            android:layout_marginTop="10dp" />
+
+    </LinearLayout>
+
+    <!-- Question Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Question Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pertanyaan :"
+                android:textColor="@color/gray_text"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Size"
+                    android:textColor="@color/gray_text"
+                    android:textSize="14sp"
+                    android:layout_marginEnd="10dp" />
+
+                <ImageButton
+                    android:id="@+id/btn_size_increase"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_plus"
+                    android:background="@drawable/bg_btn_size"
+                    android:layout_marginEnd="5dp" />
+
+                <ImageButton
+                    android:id="@+id/btn_size_decrease"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_minus"
+                    android:background="@drawable/bg_btn_size" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Question Text -->
+        <TextView
+            android:id="@+id/tv_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hasil dari 2x + 5 = 15 adalah...."
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="30dp"
+            android:paddingVertical="15dp" />
+
+        <!-- Answer Options -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scrollbars="none"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="top">
+
+                <!-- Option A -->
+                <LinearLayout
+                    android:id="@+id/option_a"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_unselected_option"
+                    android:paddingHorizontal="15dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:text="A"
+                        android:gravity="center"
+                        android:textColor="@color/blue_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_unselected_circle"
+                        android:layout_marginEnd="15dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Option B -->
+                <LinearLayout
+                    android:id="@+id/option_b"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_selected_option"
+                    android:paddingHorizontal="15dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:text="B"
+                        android:gravity="center"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_selected_circle"
+                        android:layout_marginEnd="15dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Option C -->
+                <LinearLayout
+                    android:id="@+id/option_c"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_unselected_option"
+                    android:paddingHorizontal="15dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:text="C"
+                        android:gravity="center"
+                        android:textColor="@color/blue_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_unselected_circle"
+                        android:layout_marginEnd="15dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="15"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Option D -->
+                <LinearLayout
+                    android:id="@+id/option_d"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_unselected_option"
+                    android:paddingHorizontal="15dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:text="D"
+                        android:gravity="center"
+                        android:textColor="@color/blue_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_unselected_circle"
+                        android:layout_marginEnd="15dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="20"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Option E -->
+                <LinearLayout
+                    android:id="@+id/option_e"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_unselected_option"
+                    android:paddingHorizontal="15dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:text="E"
+                        android:gravity="center"
+                        android:textColor="@color/blue_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_unselected_circle"
+                        android:layout_marginEnd="15dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="25"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+    <!-- Footer Navigation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingVertical="15dp"
+        android:background="@android:color/white">
+
+        <!-- Buttons Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingHorizontal="15dp"
+            android:layout_marginBottom="15dp">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_previous"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="Sebelumnya"
+                android:textColor="@color/blue_primary"
+                android:textSize="14sp"
+                android:background="@drawable/bg_btn_previous"
+                android:layout_marginEnd="10dp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_next"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="Selanjutnya"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:background="@drawable/bg_btn_next" />
+
+        </LinearLayout>
+
+        <!-- Bookmark Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_bookmark"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Ragu-ragu"
+            android:textColor="@color/orange_primary"
+            android:textSize="14sp"
+            android:background="@drawable/bg_btn_yellow"
+            android:paddingHorizontal="25dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

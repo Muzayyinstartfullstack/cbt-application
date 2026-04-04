@@ -14,7 +14,7 @@ class FilterHistoryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.layout_filter_history)  // pastikan ini layout activity utama, bukan dialog
+        setContentView(R.layout.activity_filter_history)  // pastikan ini layout activity utama, bukan dialog
 
         val btnFilter = findViewById<ImageView>(R.id.btnFilter)
         btnFilter?.setOnClickListener {
@@ -25,7 +25,7 @@ class FilterHistoryActivity : AppCompatActivity() {
     private fun showFilterDialog() {
         try {
             val dialog = BottomSheetDialog(this)
-            val view = layoutInflater.inflate(R.layout.layout_filter_history, null)
+            val view = layoutInflater.inflate(R.layout.activity_filter_history, null)
 
             val btnClose = view.findViewById<TextView>(R.id.btnClose)
             val btnTerapkan = view.findViewById<TextView>(R.id.btnTerapkan)
