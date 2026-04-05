@@ -1,7 +1,6 @@
 package com.example.cbt
 
 import android.os.Bundle
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.CheckBox
@@ -10,7 +9,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.chip.Chip
 
-class FilterHistoryActivity : AppCompatActivity() {
+class HistoryFilterActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +43,7 @@ class FilterHistoryActivity : AppCompatActivity() {
                 cbRemedial?.isChecked = false
                 rangeSlider?.setValues(0f, 100f)
                 tvRentangNilai?.text = "0% - 100%"
-                Toast.makeText(this@FilterHistoryActivity, "Filter diatur ulang", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@HistoryFilterActivity, "Filter diatur ulang", Toast.LENGTH_SHORT).show()
             }
 
             btnAturUlang?.setOnClickListener { resetFilter.invoke() }

@@ -13,7 +13,7 @@
         android:theme="@style/Theme.CBT"
         tools:targetApi="31">
         <activity
-            android:name=".ui.theme.HistoryDetailActivity"
+            android:name=".HistoryDetailActivity"
             android:exported="false" />
         <activity
             android:name=".ExamSubmitDialog"
@@ -25,10 +25,10 @@
             android:name=".DetailUjianActivity"
             android:exported="false" />
         <activity
-            android:name=".ProfilActivity"
+            android:name=".ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".FilterHistoryActivity"
+            android:name=".HistoryFilterActivity"
             android:exported="false" />
         <activity
             android:name=".DashboardActivity"
