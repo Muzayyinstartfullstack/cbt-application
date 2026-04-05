@@ -21,84 +21,70 @@ class DetailUjianActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_detail_ujian)
 
-        // 1. Handling Window Insets (Agar UI tidak tertutup status bar)
+        // 1. Insets Handling
         val rootView = findViewById<View>(R.id.activity_detail_ujian)
-        rootView?.let {
-            ViewCompat.setOnApplyWindowInsetsListener(it) { v, insets ->
-                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-                insets
-            }
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
         }
 
-        // 2. Inisialisasi Komponen UI
+        // 2. Inisialisasi View sesuai XML lo
+        val btnBack = findViewById<ImageButton>(R.id.btn_back)
+        val btnMulai = findViewById<Button>(R.id.btn_submit_exam)
         val et1 = findViewById<EditText>(R.id.et_code_1)
         val et2 = findViewById<EditText>(R.id.et_code_2)
         val et3 = findViewById<EditText>(R.id.et_code_3)
         val et4 = findViewById<EditText>(R.id.et_code_4)
-        val btnMulai = findViewById<Button>(R.id.btn_submit_exam)
-        val btnBack = findViewById<ImageView>(R.id.btn_back)
-        val progressBar = findViewById<ProgressBar>(R.id.progress_bar) // Pastikan ada di XML
 
-        // 3. Logika Tombol Back
-        btnBack?.setOnClickListener {
-            finish()
-        }
+        // View untuk update data dari Ktor
+        val tvMapel = findViewById<TextView>(R.id.activity_detail_ujian).findViewWithTag<TextView>("tv_subject") // Gue saranin kasih ID di XML nanti
 
-        // 4. Logika Submit & Validasi Token ke Ktor Backend
-        btnMulai?.setOnClickListener {
+        btnBack.setOnClickListener { finish() }
+
+        // 3. Logic Auto-Move Focus (Sesuai 4 digit di XML)
+        setupTokenAutoMove(et1, et2, et3, et4)
+
+        // 4. Logic Tombol Mulai (Submit Token)
+        btnMulai.setOnClickListener {
             val inputToken = "${et1.text}${et2.text}${et3.text}${et4.text}"
 
             if (inputToken.length < 4) {
-                Toast.makeText(this, "Silakan masukkan token 4 digit!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Masukkan kode ujian lengkap!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // Ambil JWT dari SharedPreferences (disimpan saat Login)
             val sharedPref = getSharedPreferences("CBT_PREF", MODE_PRIVATE)
             val tokenJWT = sharedPref.getString("jwt_token", "") ?: ""
 
-            if (tokenJWT.isEmpty()) {
-                Toast.makeText(this, "Sesi habis, silakan login kembali", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            // Jalankan Request API
             lifecycleScope.launch {
-                // Tampilkan Loading
-                progressBar.visibility = View.VISIBLE
                 btnMulai.isEnabled = false
+                btnMulai.text = "Memverifikasi..."
 
                 try {
                     val response = RetrofitClient.instance.checkExamToken("Bearer $tokenJWT", inputToken)
 
-                    if (response.isSuccessful) {
-                        val exam = response.body()
-                        Toast.makeText(this@DetailUjianActivity, "Berhasil masuk: ${exam?.judul}", Toast.LENGTH_SHORT).show()
+                    if (response.isSuccessful && response.body() != null) {
+                        val exam = response.body()!!
 
-                        // PINDAH KE SOAL & Kirim Data
+                        // Validasi Berhasil -> Ke SoalUjian
                         val intent = Intent(this@DetailUjianActivity, SoalUjianActivity::class.java)
-                        intent.putExtra("EXAM_ID", exam?.id)
-                        intent.putExtra("EXAM_TITLE", exam?.judul)
+                        intent.putExtra("EXAM_ID", exam.id)
+                        intent.putExtra("EXAM_TITLE", exam.judul)
                         startActivity(intent)
-                        finish() // Agar user tidak bisa balik ke halaman token saat ujian
+                        finish()
                     } else {
-                        // Jika token salah (404) atau tidak diizinkan (401/403)
-                        Toast.makeText(this@DetailUjianActivity, "Token Ujian Tidak Valid!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@DetailUjianActivity, "Kode Ujian Salah!", Toast.LENGTH_SHORT).show()
+                        clearTokenFields(et1, et2, et3, et4)
                     }
                 } catch (e: Exception) {
-                    // Jika Server Ktor mati atau masalah internet
-                    Toast.makeText(this@DetailUjianActivity, "Gagal koneksi: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@DetailUjianActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 } finally {
-                    // Sembunyikan Loading kembali
-                    progressBar.visibility = View.GONE
                     btnMulai.isEnabled = true
+                    btnMulai.text = "Mulai Ujian Sekarang →"
                 }
             }
         }
-
-        // 5. Fungsi Auto-Move Focus Token (User Experience)
-        setupTokenAutoMove(et1, et2, et3, et4)
     }
 
     private fun setupTokenAutoMove(vararg editTexts: EditText) {
@@ -113,5 +99,12 @@ class DetailUjianActivity : AppCompatActivity() {
                 }
             })
         }
+    }
+
+    private fun clearTokenFields(vararg editTexts: EditText) {
+        for (et in editTexts) {
+            et.text.clear()
+        }
+        editTexts[0].requestFocus()
     }
 }

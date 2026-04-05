@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_detail_ujian"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/bg_gradient_2"
-    android:id="@+id/activity_detail_ujian">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="240dp"
         android:layout_marginTop="30dp"
-        android:orientation="vertical"
-        android:gravity="top|center_horizontal">
+        android:gravity="top|center_horizontal"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/btn_back"
@@ -36,52 +36,50 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:text="Detail Ujian"
-                android:textSize="28sp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
                 android:textAlignment="center"
-                android:gravity="center" />
+                android:textColor="@android:color/white"
+                android:textSize="28sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="40dp"
                 android:layout_height="1dp" />
-
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@drawable/logo_sekolah"
-                android:layout_marginTop="30dp" />
+                android:layout_marginTop="30dp"
+                android:src="@drawable/logo_sekolah" />
 
             <TextView
+                android:id="@+id/tv_detail_mapel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Matematika"
-                android:textSize="32sp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
                 android:layout_marginTop="12dp"
-                android:textAlignment="center" />
+                android:text="Loading..."
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="32sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ulangan Harian"
-                android:textSize="16sp"
+                android:layout_marginTop="8dp"
+                android:text="Informasi Pelaksanaan"
                 android:textColor="@color/grey2"
-                android:textStyle="bold"
-                android:layout_marginTop="8dp" />
-
+                android:textSize="16sp"
+                android:textStyle="bold" />
         </LinearLayout>
-
     </LinearLayout>
 
     <ScrollView
@@ -93,172 +91,151 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_margin="20dp"
-            android:paddingHorizontal="20dp"
-            android:layout_marginBottom="10dp"
+            android:background="@drawable/bg_card_stats_black"
             android:elevation="10dp"
             android:gravity="top"
-            android:background="@drawable/bg_card_stats_black">
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp">
 
             <LinearLayout
                 android:id="@+id/stats_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/bg_card_stats_black"
-                android:padding="20dp"
+                android:baselineAligned="false"
                 android:gravity="center_horizontal"
-                android:baselineAligned="false">
+                android:orientation="horizontal"
+                android:padding="20dp">
 
-                <!-- Stat 1: Durasi -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal">
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/ic_timer"
                         android:contentDescription="Durasi"
-                        app:tint="@color/blue"/>
+                        android:src="@drawable/ic_timer"
+                        app:tint="@color/blue" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="DURASI"
-                        android:textSize="10sp"
-                        android:textColor="#64748b"
-                        android:textStyle="bold"
                         android:layout_marginTop="8dp"
-                        android:letterSpacing="0.5" />
+                        android:letterSpacing="0.5"
+                        android:text="DURASI"
+                        android:textColor="#64748b"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="4dp">
+                        android:layout_marginTop="4dp"
+                        android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/tv_detail_durasi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="90"
-                            android:textSize="18sp"
+                            android:text="--"
                             android:textColor="#1e293b"
+                            android:textSize="18sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text=" Menit"
-                            android:textSize="11sp"
-                            android:textColor="#94a3b8" />
-
+                            android:textColor="#94a3b8"
+                            android:textSize="11sp" />
                     </LinearLayout>
-
                 </LinearLayout>
 
-                <!-- Stat 2: Soal -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal">
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/ic_question"
                         android:contentDescription="Soal"
-                        app:tint="@color/blue"/>
+                        android:src="@drawable/ic_question"
+                        app:tint="@color/blue" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="SOAL"
-                        android:textSize="10sp"
-                        android:textColor="#64748b"
-                        android:textStyle="bold"
                         android:layout_marginTop="8dp"
-                        android:letterSpacing="0.5" />
+                        android:letterSpacing="0.5"
+                        android:text="SOAL"
+                        android:textColor="#64748b"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="4dp">
+                        android:layout_marginTop="4dp"
+                        android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/tv_detail_soal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="45"
-                            android:textSize="18sp"
+                            android:text="--"
                             android:textColor="#1e293b"
+                            android:textSize="18sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text=" Butir"
-                            android:textSize="11sp"
-                            android:textColor="#94a3b8" />
-
+                            android:textColor="#94a3b8"
+                            android:textSize="11sp" />
                     </LinearLayout>
-
                 </LinearLayout>
 
-                <!-- Stat 3: KKM -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal">
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
+                        android:contentDescription="Status"
                         android:src="@drawable/ic_star"
-                        android:contentDescription="KKM"
-                        app:tint="@color/blue"/>
+                        app:tint="@color/blue" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="KKM"
-                        android:textSize="10sp"
-                        android:textColor="#64748b"
-                        android:textStyle="bold"
                         android:layout_marginTop="8dp"
-                        android:letterSpacing="0.5" />
+                        android:letterSpacing="0.5"
+                        android:text="STATUS"
+                        android:textColor="#64748b"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tv_detail_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="4dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="80"
-                            android:textSize="18sp"
-                            android:textColor="#1e293b"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" Poin"
-                            android:textSize="11sp"
-                            android:textColor="#94a3b8" />
-
-                    </LinearLayout>
-
+                        android:layout_marginTop="4dp"
+                        android:text="Aktif"
+                        android:textColor="#1e293b"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -267,267 +244,133 @@
                 android:layout_width="match_parent"
                 android:layout_height="15dp" />
 
-            <!-- Rules Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="8dp">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_warning"
-                        android:contentDescription="Perhatian"
-                        app:tint="#f59e0b"
-                        android:layout_marginEnd="8dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Peraturan Ujian"
-                        android:textSize="18sp"
-                        android:textColor="#1e293b"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <!-- Rule 1 -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="top"
-                    android:layout_marginBottom="12dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_check_circle"
-                        android:layout_marginEnd="12dp"
-                        android:layout_marginTop="2dp"
-                        app:tint="@color/green"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Waktu berjalan otomatis saat tombol mulai ditekan"
-                        android:textSize="13sp"
-                        android:textColor="#64748b"
-                        android:lineSpacingMultiplier="1.5" />
-
-                </LinearLayout>
-
-                <!-- Rule 2 -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="top"
-                    android:layout_marginBottom="12dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_check_circle"
-                        android:layout_marginEnd="12dp"
-                        android:layout_marginTop="2dp"
-                        app:tint="@color/green"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Dilarang membuka aplikasi lain selama ujian berlangsung"
-                        android:textSize="13sp"
-                        android:textColor="#64748b"
-                        android:lineSpacingMultiplier="1.5" />
-
-                </LinearLayout>
-
-                <!-- Rule 3 -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="top"
-                    android:layout_marginBottom="12dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_check_circle"
-                        android:layout_marginEnd="12dp"
-                        android:layout_marginTop="2dp"
-                        app:tint="@color/green"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Pastikan koneksi internet stabil"
-                        android:textSize="13sp"
-                        android:textColor="#64748b"
-                        android:lineSpacingMultiplier="1.5" />
-
-                </LinearLayout>
-
-                <!-- Rule 4 -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="top">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_check_circle"
-                        android:layout_marginEnd="12dp"
-                        android:layout_marginTop="2dp"
-                        app:tint="@color/green"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Kerjakan ujian dengan jujur"
-                        android:textSize="13sp"
-                        android:textColor="#64748b"
-                        android:lineSpacingMultiplier="1.5" />
-
-                </LinearLayout>
+                    android:text="Peraturan Ujian"
+                    android:textSize="18sp"
+                    android:textColor="#1e293b"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="24dp" />
-
-            <!-- Code Input Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
                     android:text="Masukkan Kode Ujian"
-                    android:textSize="16sp"
                     android:textColor="#1e293b"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
-                    android:paddingStart="16dp"
                     android:layout_marginBottom="20dp"
-                    android:paddingEnd="16dp"
-                    android:background="@drawable/bg_btn_outliner">
+                    android:background="@drawable/bg_btn_outliner"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp">
 
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/ic_key"
-                        android:contentDescription="Soal"/>
+                        android:contentDescription="Icon Key"
+                        android:src="@drawable/ic_key" />
 
                     <EditText
                         android:id="@+id/et_code_1"
                         android:layout_width="0dp"
-                        android:layout_height="32dp"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
                         android:background="@android:color/transparent"
-                        android:contentDescription="Digit pertama kode ujian"
-                        android:drawablePadding="10dp"
                         android:gravity="center"
                         android:hint="X"
-                        android:inputType="text|textCapCharacters"
+                        android:inputType="textCapCharacters"
                         android:maxLength="1"
-                        android:textColor="#cbd5e1"
+                        android:textColor="#1e293b"
                         android:textSize="20sp" />
 
                     <EditText
                         android:id="@+id/et_code_2"
                         android:layout_width="0dp"
-                        android:layout_height="32dp"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
-                        android:hint="X"
-                        android:textSize="20sp"
-                        android:textColor="#cbd5e1"
-                        android:inputType="text|textCapCharacters"
-                        android:maxLength="1"
-                        android:gravity="center"
                         android:background="@android:color/transparent"
-                        android:contentDescription="Digit kedua kode ujian" />
+                        android:gravity="center"
+                        android:hint="X"
+                        android:inputType="textCapCharacters"
+                        android:maxLength="1"
+                        android:textColor="#1e293b"
+                        android:textSize="20sp" />
 
                     <EditText
                         android:id="@+id/et_code_3"
                         android:layout_width="0dp"
-                        android:layout_height="32dp"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
-                        android:hint="X"
-                        android:textSize="20sp"
-                        android:textColor="#cbd5e1"
-                        android:inputType="text|textCapCharacters"
-                        android:maxLength="1"
-                        android:gravity="center"
                         android:background="@android:color/transparent"
-                        android:contentDescription="Digit ketiga kode ujian" />
+                        android:gravity="center"
+                        android:hint="X"
+                        android:inputType="textCapCharacters"
+                        android:maxLength="1"
+                        android:textColor="#1e293b"
+                        android:textSize="20sp" />
 
                     <EditText
                         android:id="@+id/et_code_4"
                         android:layout_width="0dp"
-                        android:layout_height="32dp"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
-                        android:hint="X"
-                        android:textSize="20sp"
-                        android:textColor="#cbd5e1"
-                        android:inputType="text|textCapCharacters"
-                        android:maxLength="1"
-                        android:gravity="center"
                         android:background="@android:color/transparent"
-                        android:contentDescription="Digit keempat kode ujian" />
-
+                        android:gravity="center"
+                        android:hint="X"
+                        android:inputType="textCapCharacters"
+                        android:maxLength="1"
+                        android:textColor="#1e293b"
+                        android:textSize="20sp" />
                 </LinearLayout>
-
             </LinearLayout>
 
-        </LinearLayout>
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:visibility="gone" />
 
+        </LinearLayout>
     </ScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_margin="30dp"
-        android:background="@android:color/white">
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/btn_submit_exam"
             android:layout_width="match_parent"
             android:layout_height="65dp"
-            android:text="Mulai Ujian Sekarang →"
-            android:textSize="20sp"
-            android:layout_marginBottom="20dp"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
             android:backgroundTint="@color/blue"
-            android:elevation="10dp" />
-
+            android:elevation="10dp"
+            android:text="Mulai Ujian Sekarang →"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
-
 </LinearLayout>
