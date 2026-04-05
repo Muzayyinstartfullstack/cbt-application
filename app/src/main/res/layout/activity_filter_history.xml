@@ -45,17 +45,6 @@
                     android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvResetHeader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:text="Atur Ulang"
-                    android:textColor="#0891B2"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
             </RelativeLayout>
 
             <View
@@ -263,12 +252,12 @@
                     app:checkedIconVisible="false" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chipFisika"
+                    android:id="@+id/chipAgama"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checkable="true"
-                    android:text="Fisika"
+                    android:text="Agama"
                     android:textColor="@color/chip_text_color"
                     android:textSize="13sp"
                     app:chipCornerRadius="20dp"
@@ -278,12 +267,12 @@
                     app:checkedIconVisible="false" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chipKimia"
+                    android:id="@+id/chipMPP"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checkable="true"
-                    android:text="Kimia"
+                    android:text="MPP"
                     android:textColor="@color/chip_text_color"
                     android:textSize="13sp"
                     app:chipCornerRadius="20dp"
@@ -293,12 +282,12 @@
                     app:checkedIconVisible="false" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chipBiologi"
+                    android:id="@+id/chipKK"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checkable="true"
-                    android:text="Biologi"
+                    android:text="KK"
                     android:textColor="@color/chip_text_color"
                     android:textSize="13sp"
                     app:chipCornerRadius="20dp"
@@ -308,12 +297,12 @@
                     app:checkedIconVisible="false" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chipGeografi"
+                    android:id="@+id/chipOlahRaga"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checkable="true"
-                    android:text="Geografi"
+                    android:text="Olah Raga"
                     android:textColor="@color/chip_text_color"
                     android:textSize="13sp"
                     app:chipCornerRadius="20dp"
@@ -323,27 +312,12 @@
                     app:checkedIconVisible="false" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chipEkonomi"
+                    android:id="@+id/chipPKK"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checkable="true"
-                    android:text="Ekonomi"
-                    android:textColor="@color/chip_text_color"
-                    android:textSize="13sp"
-                    app:chipCornerRadius="20dp"
-                    app:chipBackgroundColor="@color/chip_color_selector"
-                    app:chipStrokeColor="#40000000"
-                    app:chipStrokeWidth="1dp"
-                    app:checkedIconVisible="false" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipSosiologi"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="Sosiologi"
+                    android:text="PKK"
                     android:textColor="@color/chip_text_color"
                     android:textSize="13sp"
                     app:chipCornerRadius="20dp"

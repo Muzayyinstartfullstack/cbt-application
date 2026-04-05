@@ -330,12 +330,19 @@
                 android:layout_marginEnd="10dp" />
 
             <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_square"/>
+
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_next"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:text="Selanjutnya"
                 android:textColor="@android:color/white"
+                android:layout_marginStart="10dp"
                 android:textSize="14sp"
                 android:background="@drawable/bg_btn_next" />
 

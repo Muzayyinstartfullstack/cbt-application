@@ -15,11 +15,6 @@ class FilterHistoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_filter_history)  // pastikan ini layout activity utama, bukan dialog
-
-        val btnFilter = findViewById<ImageView>(R.id.btnFilter)
-        btnFilter?.setOnClickListener {
-            showFilterDialog()
-        }
     }
 
     private fun showFilterDialog() {
@@ -37,7 +32,6 @@ class FilterHistoryActivity : AppCompatActivity() {
             val cbRemedial = view.findViewById<CheckBox>(R.id.cbRemedial)
             val rangeSlider = view.findViewById<RangeSlider>(R.id.rangeSlider)
             val tvRentangNilai = view.findViewById<TextView>(R.id.tvRentangNilai)
-            val tvResetHeader = view.findViewById<TextView>(R.id.tvResetHeader)
 
             btnClose?.setOnClickListener { dialog.dismiss() }
 
@@ -53,7 +47,6 @@ class FilterHistoryActivity : AppCompatActivity() {
                 Toast.makeText(this@FilterHistoryActivity, "Filter diatur ulang", Toast.LENGTH_SHORT).show()
             }
 
-            tvResetHeader?.setOnClickListener { resetFilter.invoke() }
             btnAturUlang?.setOnClickListener { resetFilter.invoke() }
 
             // Set label formatter untuk range slider
