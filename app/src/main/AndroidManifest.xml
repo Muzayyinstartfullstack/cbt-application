@@ -13,6 +13,12 @@
         android:theme="@style/Theme.CBT"
         tools:targetApi="31">
         <activity
+            android:name=".ui.theme.HistoryDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ExamSubmitDialog"
+            android:exported="false" />
+        <activity
             android:name=".SoalUjianActivity"
             android:exported="false" />
         <activity
