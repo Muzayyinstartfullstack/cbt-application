@@ -18,7 +18,7 @@
             android:name=".HistoryDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ExamSubmitDialog"
+            android:name=".ui.ExamSubmitDialog"
             android:exported="false" />
         <activity
             android:name=".SoalUjianActivity"
