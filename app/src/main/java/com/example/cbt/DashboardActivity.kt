@@ -36,12 +36,6 @@ class DashboardActivity : AppCompatActivity() {
         val navHome = findViewById<ImageView>(R.id.navHome)
         val navHistory = findViewById<ImageView>(R.id.navHistory)
         val navProfile = findViewById<ImageView>(R.id.navProfile)
-        val menuMatematika = findViewById<ImageView>(R.id.menu_matematika)
-
-        // 4. Logika Klik Menu Titik Tiga (Popup Menu)
-        menuMatematika.setOnClickListener { view ->
-            tampilkanMenu(view, "Matematika")
-        }
 
         // 5. Logika Tombol Utama (Banner Matematika) -> PINDAH KE DETAIL
         btnMulai.setOnClickListener {
@@ -51,7 +45,7 @@ class DashboardActivity : AppCompatActivity() {
 
         // 6. Navigasi Bottom Bar
         navHistory.setOnClickListener {
-            val intent = Intent(this, FilterHistoryActivity::class.java)
+            val intent = Intent(this, HistoryActivity::class.java)
             startActivity(intent)
         }
 
@@ -60,7 +54,8 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         navProfile.setOnClickListener {
-            Toast.makeText(this, "Fitur Profil akan segera datang", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, ProfileActivity::class.java)
+            startActivity(intent)
         }
     }
 
