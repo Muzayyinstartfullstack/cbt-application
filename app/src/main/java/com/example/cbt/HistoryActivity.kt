@@ -2,48 +2,65 @@ package com.example.cbt
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import android.widget.ImageView
-import android.widget.Toast
-import androidx.cardview.widget.CardView
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.cbt.adapter.ExamHistoryAdapter
+import com.example.cbt.api.RetrofitClient
+import com.example.cbt.repository.ExamRepository
 import com.google.android.material.chip.Chip
+import kotlinx.coroutines.launch
 
 class HistoryActivity : AppCompatActivity() {
+
+    private lateinit var repository: ExamRepository
+    private lateinit var recyclerHistory: RecyclerView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var historyAdapter: ExamHistoryAdapter
+
     private var isUpdatingChip = false
+    private var allExamHistory = listOf<com.example.cbt.model.ExamResultResponse>()
+
+    val recyclerView = findViewById<RecyclerView>(R.id.recyclerHistory)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_history)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_history)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
+        // Initialize repository
+        repository = ExamRepository(RetrofitClient.instance, this)
+
+        // Initialize views
+        recyclerHistory = findViewById(R.id.recyclerHistory)
+        progressBar = findViewById(R.id.progressBar)
+
+        // Setup recycler view
+        recyclerHistory.layoutManager = LinearLayoutManager(this)
+
+        // Setup click listeners
         setupClickListeners()
+
+        // Load exam history
+        loadExamHistory()
     }
 
     private fun setupClickListeners() {
-        // Card listeners - Navigasi ke detail page
-        findViewById<CardView>(R.id.cardMath).setOnClickListener {
-            navigateToDetail("Matematika", "86%", "15 Jan, 09:16", "90 Menit", true)
-        }
-
-        findViewById<CardView>(R.id.cardHistory).setOnClickListener {
-            navigateToDetail("Sejarah", "75%", "16 Jan, 10:00", "60 Menit", true)
-        }
-
-        findViewById<CardView>(R.id.cardEnglish).setOnClickListener {
-            navigateToDetail("Bahasa Inggris", "43%", "17 Jan, 11:30", "60 Menit", false)
-        }
-
-        findViewById<CardView>(R.id.cardIndo).setOnClickListener {
-            navigateToDetail("Bahasa Indonesia", "92%", "18 Jan, 08:00", "90 Menit", true)
-        }
+        // Card listeners - sudah tidak digunakan, diganti dengan adapter
 
         // Bottom Navigation
         findViewById<ImageView>(R.id.navHome).setOnClickListener {
@@ -115,35 +132,66 @@ class HistoryActivity : AppCompatActivity() {
         }
     }
 
-    private fun filterExamResults(selectedSubject: String) {
-        // TODO: Implementasi filter data
-        // Contoh: Tampilkan hanya hasil ujian untuk subject tertentu
-        // Jika "Semua" dipilih, tampilkan semua hasil ujian
-        when (selectedSubject) {
-            "Semua" -> {
-                // Tampilkan semua kartu
+    private fun loadExamHistory() {
+        progressBar.visibility = View.VISIBLE
+
+        lifecycleScope.launch {
+            try {
+                val result = repository.getExamHistory()
+
+                result.onSuccess { examHistory ->
+                    progressBar.visibility = View.GONE
+                    allExamHistory = examHistory
+
+                    if (examHistory.isNotEmpty()) {
+                        historyAdapter = ExamHistoryAdapter { exam ->
+                            val intent = Intent(this@HistoryActivity, HistoryDetailActivity::class.java)
+                            intent.putExtra("exam_id", exam.id)
+                            intent.putExtra("subject", exam.examTitle)
+                            intent.putExtra("score", "${exam.scorePercentage.toInt()}%")
+                            intent.putExtra("date", exam.tanggalUjian)
+                            intent.putExtra("duration", "${exam.waktuTempuhDetik / 60} Menit")
+                            intent.putExtra("isPassed", exam.status == "PASSED")
+                            startActivity(intent)
+                        }
+
+                        recyclerView.adapter = historyAdapter
+
+                        historyAdapter.submitList(examHistory)
+                        recyclerHistory.adapter = historyAdapter
+
+                    } else {
+                        Toast.makeText(this@HistoryActivity, "Tidak ada riwayat ujian", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                result.onFailure { error ->
+                    progressBar.visibility = View.GONE
+                    Toast.makeText(
+                        this@HistoryActivity,
+                        "Gagal memuat riwayat: ${error.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                progressBar.visibility = View.GONE
+                Toast.makeText(
+                    this@HistoryActivity,
+                    "Error: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-            "Matematika" -> {
-                // Tampilkan hanya hasil Matematika
-            }
-            // ... dan seterusnya untuk subject lainnya
         }
     }
 
-    private fun navigateToDetail(
-        subject: String,
-        score: String,
-        date: String,
-        duration: String,
-        isPassed: Boolean
-    ) {
-        val intent = Intent(this, HistoryDetailActivity::class.java)
-        intent.putExtra("subject", subject)
-        intent.putExtra("score", score)
-        intent.putExtra("date", date)
-        intent.putExtra("duration", duration)
-        intent.putExtra("isPassed", isPassed)
-        startActivity(intent)
+    private fun filterExamResults(selectedSubject: String) {
+        if (selectedSubject == "Semua") {
+            historyAdapter.submitList(allExamHistory)
+        } else {
+            val filtered = allExamHistory.filter { exam ->
+                exam.examTitle.contains(selectedSubject, ignoreCase = true)
+            }
+            historyAdapter.submitList(filtered)
+        }
     }
-
 }

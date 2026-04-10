@@ -15,8 +15,9 @@
         android:theme="@style/Theme.CBT"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
         <activity
-            android:name=".NavSoalActivity"
+            android:name=".HistoryActivity"
             android:exported="false" />
         <activity
             android:name=".HistoryDetailActivity"

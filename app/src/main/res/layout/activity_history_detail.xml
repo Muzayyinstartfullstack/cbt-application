@@ -12,6 +12,28 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- ========== PROGRESS BAR (sesuai instruksi) ========== -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:indeterminate="true" />
+
+        <!-- ========== STATUS TEXTVIEW (PASSED/FAILED) ========== -->
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Status: "
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:visibility="gone" />
+
+        <!-- ========== KONTEN ASLI ANDA ========== -->
         <RelativeLayout
             android:id="@+id/header_bg"
             android:layout_width="match_parent"
@@ -21,6 +43,7 @@
             android:elevation="4dp"
             android:outlineProvider="background">
 
+            <!-- ... isi RelativeLayout tetap sama ... -->
             <ImageButton
                 android:id="@+id/btnBack"
                 android:layout_width="40dp"
