@@ -13,10 +13,9 @@ object RetrofitClient {
     // 192.168.1.64 = IP lokal machine (untuk device fisik atau emulator yang di-bridge)
     private const val BASE_URL = "http://192.168.1.64:8080/"
 
-    // HTTP Client dengan logging dan timeout
     private fun getOkHttpClient(): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY // Ubah ke NONE untuk production
+            level = HttpLoggingInterceptor.Level.BODY
         }
 
         return OkHttpClient.Builder()

@@ -12,6 +12,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.cbt.api.RetrofitClient
+import com.example.cbt.model.ExamResultResponse
 import com.example.cbt.repository.ExamRepository
 import kotlinx.coroutines.launch
 
@@ -103,9 +104,9 @@ class DetailUjianActivity : AppCompatActivity() {
                     val intent = Intent(this@DetailUjianActivity, SoalUjianActivity::class.java)
                     intent.putExtra("EXAM_ID", exam.id)
                     intent.putExtra("EXAM_TITLE", exam.judul)
-                    intent.putExtra("EXAM_DURATION", exam.durasiMenit)
+                    intent.putExtra("EXAM_DURATION", exam.durasi)
                     intent.putExtra("TOTAL_QUESTIONS", exam.totalSoal)
-                    intent.putExtra("PASSING_GRADE", exam.passingGrade)
+                    intent.putExtra("PASSING_GRADE", exam.status)
                     startActivity(intent)
                     finish()
                 }

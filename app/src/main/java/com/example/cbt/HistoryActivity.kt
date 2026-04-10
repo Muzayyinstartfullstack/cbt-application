@@ -29,6 +29,8 @@ class HistoryActivity : AppCompatActivity() {
     private var isUpdatingChip = false
     private var allExamHistory = listOf<com.example.cbt.model.ExamResultResponse>()
 
+    val recyclerView = findViewById<RecyclerView>(R.id.recyclerHistory)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -142,8 +144,7 @@ class HistoryActivity : AppCompatActivity() {
                     allExamHistory = examHistory
 
                     if (examHistory.isNotEmpty()) {
-                        historyAdapter = ExamHistoryAdapter(examHistory) { exam ->
-                            // Navigate to detail
+                        historyAdapter = ExamHistoryAdapter { exam ->
                             val intent = Intent(this@HistoryActivity, HistoryDetailActivity::class.java)
                             intent.putExtra("exam_id", exam.id)
                             intent.putExtra("subject", exam.examTitle)
@@ -153,7 +154,12 @@ class HistoryActivity : AppCompatActivity() {
                             intent.putExtra("isPassed", exam.status == "PASSED")
                             startActivity(intent)
                         }
+
+                        recyclerView.adapter = historyAdapter
+
+                        historyAdapter.submitList(examHistory)
                         recyclerHistory.adapter = historyAdapter
+
                     } else {
                         Toast.makeText(this@HistoryActivity, "Tidak ada riwayat ujian", Toast.LENGTH_SHORT).show()
                     }

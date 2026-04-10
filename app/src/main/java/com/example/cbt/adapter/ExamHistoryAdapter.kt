@@ -1,5 +1,6 @@
 package com.example.cbt.adapter
 
+import android.R.*
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -89,16 +90,18 @@ class UpcomingExamAdapter(
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val tvTitle = itemView.findViewById<TextView>(R.id.tvExamTitle)
-        private val tvScore = itemView.findViewById<TextView>(R.id.tvScore)
-        private val tvDate = itemView.findViewById<TextView>(R.id.tvDate)
-        private val card = itemView.findViewById<LinearLayout>(R.id.cardUpcomingExam)
+        private val tvTime = itemView.findViewById<TextView>(R.id.tvScheduledTime)
+        private val tvDate = itemView.findViewById<TextView>(R.id.tvScheduledDate)
+        private val tvDuration = itemView.findViewById<TextView>(R.id.tvDuration)
 
         fun bind(exam: ExamResultResponse) {
             tvTitle.text = exam.examTitle
-            tvScore.text = "${exam.scorePercentage.toInt()}%"
+            tvTime.text = exam.waktuTempuhDetik as CharSequence?
             tvDate.text = exam.tanggalUjian
+            tvDuration.text = exam.durasiMenit.toString() + " Menit"
 
-            card.setOnClickListener {
+            // Jadikan seluruh item clickable
+            itemView.setOnClickListener {
                 onItemClick(exam)
             }
         }

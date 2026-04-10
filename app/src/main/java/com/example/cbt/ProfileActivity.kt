@@ -41,7 +41,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun loadUserData() {
         val tvUserName = findViewById<TextView>(R.id.tvUserName)
-        val tvUserNis = findViewById<TextView>(R.id.tvUserNis)
+        val tvUserNis = findViewById<TextView>(R.id.tvUserId)
 
         // Get data dari repository
         val studentName = repository.getStudentName()
