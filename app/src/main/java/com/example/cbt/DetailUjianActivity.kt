@@ -12,58 +12,78 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.cbt.api.RetrofitClient
-import com.example.cbt.model.ExamResultResponse
-import com.example.cbt.repository.ExamRepository
 import kotlinx.coroutines.launch
 
 class DetailUjianActivity : AppCompatActivity() {
-
-    private lateinit var repository: ExamRepository
-    private lateinit var btnBack: ImageButton
-    private lateinit var btnMulai: Button
-    private lateinit var et1: EditText
-    private lateinit var et2: EditText
-    private lateinit var et3: EditText
-    private lateinit var et4: EditText
-    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_detail_ujian)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_detail_ujian)) { v, insets ->
+        // 1. Insets Handling
+        val rootView = findViewById<View>(R.id.activity_detail_ujian)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Initialize repository
-        repository = ExamRepository(RetrofitClient.instance, this)
+        // 2. Inisialisasi View sesuai XML lo
+        val btnBack = findViewById<ImageButton>(R.id.btn_back)
+        val btnMulai = findViewById<Button>(R.id.btn_submit_exam)
+        val et1 = findViewById<EditText>(R.id.et_code_1)
+        val et2 = findViewById<EditText>(R.id.et_code_2)
+        val et3 = findViewById<EditText>(R.id.et_code_3)
+        val et4 = findViewById<EditText>(R.id.et_code_4)
 
-        // Initialize views
-        initializeViews()
-        setupClickListeners()
-    }
+        // View untuk update data dari Ktor
+        val tvMapel = findViewById<TextView>(R.id.activity_detail_ujian).findViewWithTag<TextView>("tv_subject") // Gue saranin kasih ID di XML nanti
 
-    private fun initializeViews() {
-        btnBack = findViewById(R.id.btn_back)
-        btnMulai = findViewById(R.id.btn_submit_exam)
-        et1 = findViewById(R.id.et_code_1)
-        et2 = findViewById(R.id.et_code_2)
-        et3 = findViewById(R.id.et_code_3)
-        et4 = findViewById(R.id.et_code_4)
-        progressBar = findViewById(R.id.progressBar)
-
-        // Setup auto-move focus for token input
-        setupTokenAutoMove(et1, et2, et3, et4)
-    }
-
-    private fun setupClickListeners() {
         btnBack.setOnClickListener { finish() }
 
+        // 3. Logic Auto-Move Focus (Sesuai 4 digit di XML)
+        setupTokenAutoMove(et1, et2, et3, et4)
+
+        // 4. Logic Tombol Mulai (Submit Token)
         btnMulai.setOnClickListener {
-            verifyExamToken()
+            val inputToken = "${et1.text}${et2.text}${et3.text}${et4.text}"
+
+            if (inputToken.length < 4) {
+                Toast.makeText(this, "Masukkan kode ujian lengkap!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val sharedPref = getSharedPreferences("CBT_PREF", MODE_PRIVATE)
+            val tokenJWT = sharedPref.getString("jwt_token", "") ?: ""
+
+            lifecycleScope.launch {
+                btnMulai.isEnabled = false
+                btnMulai.text = "Memverifikasi..."
+
+                try {
+                    val response = RetrofitClient.instance.checkExamToken("Bearer $tokenJWT", inputToken)
+
+                    if (response.isSuccessful && response.body() != null) {
+                        val exam = response.body()!!
+
+                        // Validasi Berhasil -> Ke SoalUjian
+                        val intent = Intent(this@DetailUjianActivity, SoalUjianActivity::class.java)
+                        intent.putExtra("EXAM_ID", exam.id)
+                        intent.putExtra("EXAM_TITLE", exam.judul)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        Toast.makeText(this@DetailUjianActivity, "Kode Ujian Salah!", Toast.LENGTH_SHORT).show()
+                        clearTokenFields(et1, et2, et3, et4)
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(this@DetailUjianActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                } finally {
+                    btnMulai.isEnabled = true
+                    btnMulai.text = "Mulai Ujian Sekarang →"
+                }
+            }
         }
     }
 
@@ -78,61 +98,6 @@ class DetailUjianActivity : AppCompatActivity() {
                     }
                 }
             })
-        }
-    }
-
-    private fun verifyExamToken() {
-        val inputToken = "${et1.text}${et2.text}${et3.text}${et4.text}"
-
-        if (inputToken.length < 4) {
-            Toast.makeText(this, "Masukkan kode ujian lengkap!", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Disable button and show loading
-        btnMulai.isEnabled = false
-        progressBar.visibility = View.VISIBLE
-
-        lifecycleScope.launch {
-            try {
-                val result = repository.checkExamToken(inputToken)
-
-                result.onSuccess { exam ->
-                    progressBar.visibility = View.GONE
-
-                    // Navigate to soal ujian
-                    val intent = Intent(this@DetailUjianActivity, SoalUjianActivity::class.java)
-                    intent.putExtra("EXAM_ID", exam.id)
-                    intent.putExtra("EXAM_TITLE", exam.judul)
-                    intent.putExtra("EXAM_DURATION", exam.durasi)
-                    intent.putExtra("TOTAL_QUESTIONS", exam.totalSoal)
-                    intent.putExtra("PASSING_GRADE", exam.status)
-                    startActivity(intent)
-                    finish()
-                }
-
-                result.onFailure { error ->
-                    btnMulai.isEnabled = true
-                    progressBar.visibility = View.GONE
-
-                    Toast.makeText(
-                        this@DetailUjianActivity,
-                        "Verifikasi gagal: ${error.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    clearTokenFields(et1, et2, et3, et4)
-                }
-            } catch (e: Exception) {
-                btnMulai.isEnabled = true
-                progressBar.visibility = View.GONE
-
-                Toast.makeText(
-                    this@DetailUjianActivity,
-                    "Error: ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
         }
     }
 

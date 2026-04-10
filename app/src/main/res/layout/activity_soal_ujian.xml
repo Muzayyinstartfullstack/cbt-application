@@ -6,12 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-
     <!-- Header Section with Timer -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -149,8 +143,7 @@
                     android:gravity="center_vertical"
                     android:background="@drawable/bg_unselected_option"
                     android:paddingHorizontal="15dp"
-                    android:layout_marginBottom="12dp"
-                    >
+                    android:layout_marginBottom="12dp">
 
                     <TextView
                         android:layout_width="40dp"
@@ -164,7 +157,6 @@
                         android:layout_marginEnd="15dp" />
 
                     <TextView
-                        android:id="@+id/option_a_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="5"
@@ -197,7 +189,6 @@
                         android:layout_marginEnd="15dp" />
 
                     <TextView
-                        android:id="@+id/option_b_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="10"
@@ -230,7 +221,6 @@
                         android:layout_marginEnd="15dp" />
 
                     <TextView
-                        android:id="@+id/option_c_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="15"
@@ -263,7 +253,6 @@
                         android:layout_marginEnd="15dp" />
 
                     <TextView
-                        android:id="@+id/option_d_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="20"
@@ -296,7 +285,6 @@
                         android:layout_marginEnd="15dp" />
 
                     <TextView
-                        android:id="@+id/option_e_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="25"
@@ -342,7 +330,6 @@
                 android:layout_marginEnd="10dp" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_navigasi"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
                 android:layout_gravity="center"

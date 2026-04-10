@@ -1,54 +1,44 @@
 package com.example.cbt
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.cbt.api.RetrofitClient
-import com.example.cbt.repository.ExamRepository
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
+import android.app.AlertDialog
+import android.widget.Toast
 
 class ProfileActivity : AppCompatActivity() {
-
-    private lateinit var repository: ExamRepository
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_profile)
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_profile)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Initialize repository
-        repository = ExamRepository(RetrofitClient.instance, this)
-
-        // Load user data
+        initViews()
         loadUserData()
-
-        // Setup click listeners
         setupClickListeners()
     }
 
+    private fun initViews() {
+        // Existing views initialization
+    }
+
     private fun loadUserData() {
+        // Load user name and ID dari SharedPreferences atau database
         val tvUserName = findViewById<TextView>(R.id.tvUserName)
-        val tvUserNis = findViewById<TextView>(R.id.tvUserId)
+        val tvUserId = findViewById<TextView>(R.id.tvUserId)
 
-        // Get data dari repository
-        val studentName = repository.getStudentName()
-        val studentNis = repository.getNis()
-
-        tvUserName.text = studentName.ifEmpty { "User" }
-        tvUserNis.text = "NIS: $studentNis"
+        // Example: tvUserName.text = "User Menuser"
+        // Example: tvUserId.text = "ID: 202422123"
     }
 
     private fun setupClickListeners() {
@@ -57,22 +47,25 @@ class ProfileActivity : AppCompatActivity() {
             finish()
         }
 
-        // Logout button
-        val btnLogout = findViewById<TextView>(R.id.btnLogout)
-        btnLogout?.setOnClickListener {
-            showLogoutDialog()
-        }
+        // Menu items
+        //val informasiPribadi = findViewById<LinearLayout>(R.id.menu_informasi_pribadi)
+        //informasiPribadi?.setOnClickListener {
+        //    startActivity(Intent(this, InformasiPribadiActivity::class.java))
+        //}
+
+        //val pengaturanAkun = findViewById<LinearLayout>(R.id.menu_pengaturan_akun)
+        //pengaturanAkun?.setOnClickListener {
+        //    startActivity(Intent(this, PengaturanAkunActivity::class.java))
+        //}
 
         // Bottom navigation
         findViewById<ImageView>(R.id.navHome).setOnClickListener {
-            val intent = Intent(this, DashboardActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, DashboardActivity::class.java))
             finish()
         }
 
         findViewById<ImageView>(R.id.navHistory).setOnClickListener {
-            val intent = Intent(this, HistoryActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, HistoryActivity::class.java))
             finish()
         }
 
@@ -94,15 +87,14 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun performLogout() {
-        // Clear session dari repository
-        repository.logout()
+        // Clear SharedPreferences session
+        val sharedPref = getSharedPreferences("user_session", MODE_PRIVATE)
+        sharedPref.edit().clear().apply()
 
         Toast.makeText(this, "Anda telah keluar", Toast.LENGTH_SHORT).show()
 
         // Navigate to LoginActivity
-        val intent = Intent(this, LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
+        startActivity(Intent(this, LoginActivity::class.java))
         finish()
     }
 }

@@ -5,85 +5,52 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.cbt.adapter.UpcomingExamAdapter
-import com.example.cbt.api.RetrofitClient
-import com.example.cbt.model.ExamResultResponse
-import com.example.cbt.repository.ExamRepository
-import kotlinx.coroutines.launch
 
 class DashboardActivity : AppCompatActivity() {
 
-    private lateinit var repository: ExamRepository
-    private lateinit var tvWelcome: TextView
-    private lateinit var btnMulaiUjian: Button
-    private lateinit var recyclerExams: RecyclerView
-    private lateinit var progressBar: ProgressBar
-    private lateinit var navHome: ImageView
-    private lateinit var navHistory: ImageView
-    private lateinit var navProfile: ImageView
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 1. Mengaktifkan fitur tampilan penuh (Edge-to-Edge)
         enableEdgeToEdge()
         setContentView(R.layout.activity_dashboard)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_dashboard)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        // 2. Mengatur padding sistem agar tidak tertutup status bar
+        val mainView = findViewById<View>(R.id.main_dashboard)
+        mainView?.let {
+            ViewCompat.setOnApplyWindowInsetsListener(it) { v, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+                insets
+            }
         }
 
-        // Initialize repository
-        repository = ExamRepository(RetrofitClient.instance, this)
+        // 3. Inisialisasi Komponen UI
+        val btnMulai = findViewById<Button>(R.id.btnMulaiUjian)
+        val navHome = findViewById<ImageView>(R.id.navHome)
+        val navHistory = findViewById<ImageView>(R.id.navHistory)
+        val navProfile = findViewById<ImageView>(R.id.navProfile)
 
-        // Check authentication
-        if (!repository.isLoggedIn()) {
-            navigateToLogin()
-            return
-        }
-
-        // Initialize views
-        tvWelcome = findViewById(R.id.tvWelcome)
-        btnMulaiUjian = findViewById(R.id.btnMulaiUjian)
-        recyclerExams = findViewById(R.id.recyclerExams)
-        progressBar = findViewById(R.id.progressBar)
-        navHome = findViewById(R.id.navHome)
-        navHistory = findViewById(R.id.navHistory)
-        navProfile = findViewById(R.id.navProfile)
-
-        // Set welcome message
-        val studentName = repository.getStudentName()
-        tvWelcome.text = "Selamat datang, $studentName!"
-
-        // Setup recycler view
-        recyclerExams.layoutManager = LinearLayoutManager(this)
-
-        // Load upcoming exams
-        loadUpcomingExams()
-
-        // Setup click listeners
-        btnMulaiUjian.setOnClickListener {
+        // 5. Logika Tombol Utama (Banner Matematika) -> PINDAH KE DETAIL
+        btnMulai.setOnClickListener {
             val intent = Intent(this, DetailUjianActivity::class.java)
+            startActivity(intent)
+        }
+
+        // 6. Navigasi Bottom Bar
+        navHistory.setOnClickListener {
+            val intent = Intent(this, HistoryActivity::class.java)
             startActivity(intent)
         }
 
         navHome.setOnClickListener {
             Toast.makeText(this, "Anda sudah berada di Beranda", Toast.LENGTH_SHORT).show()
-        }
-
-        navHistory.setOnClickListener {
-            val intent = Intent(this, HistoryActivity::class.java)
-            startActivity(intent)
         }
 
         navProfile.setOnClickListener {
@@ -92,61 +59,24 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadUpcomingExams() {
-        progressBar.visibility = View.VISIBLE
+    /**
+     * Fungsi untuk menampilkan Popup Menu dan Navigasi ke Detail
+     */
+    private fun tampilkanMenu(view: View, namaMapel: String) {
+        val popup = PopupMenu(this, view)
+        popup.menuInflater.inflate(R.menu.popup_menu, popup.menu)
 
-        lifecycleScope.launch {
-            try {
-                val result = repository.getExamHistory()
-
-                result.onSuccess { exams ->
-                    progressBar.visibility = View.GONE
-
-                    if (exams.isNotEmpty()) {
-                        // Filter upcoming exams (bisa disesuaikan dengan data dari server)
-                        val upcomingExams = exams.take(3) // Ambil 3 ujian terbaru/mendatang
-
-                        val adapter = UpcomingExamAdapter(upcomingExams) { exam ->
-                            // Navigate to detail when clicked
-                            val intent = Intent(this@DashboardActivity, HistoryDetailActivity::class.java)
-                            intent.putExtra("exam_id", exam.id)
-                            intent.putExtra("exam_title", exam.examTitle)
-                            intent.putExtra("score", "${exam.scorePercentage.toInt()}%")
-                            intent.putExtra("date", exam.tanggalUjian)
-                            intent.putExtra("duration", "${exam.waktuTempuhDetik / 60} Menit")
-                            intent.putExtra("isPassed", exam.status == "PASSED")
-                            startActivity(intent)
-                        }
-
-                        recyclerExams.adapter = adapter
-                    } else {
-                        // Show empty state
-                        Toast.makeText(this@DashboardActivity, "Tidak ada ujian", Toast.LENGTH_SHORT).show()
-                    }
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_kerjakan -> {
+                    // Pindah ke halaman Detail Ujian
+                    val intent = Intent(this, DetailUjianActivity::class.java)
+                    startActivity(intent)
+                    true
                 }
-
-                result.onFailure { error ->
-                    progressBar.visibility = View.GONE
-                    Toast.makeText(
-                        this@DashboardActivity,
-                        "Gagal memuat ujian: ${error.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            } catch (e: Exception) {
-                progressBar.visibility = View.GONE
-                Toast.makeText(
-                    this@DashboardActivity,
-                    "Error: ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                else -> false
             }
         }
-    }
-
-    private fun navigateToLogin() {
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
-        finish()
+        popup.show()
     }
 }
