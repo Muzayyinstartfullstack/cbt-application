@@ -324,14 +324,15 @@
         android:background="@drawable/btn_blue"
         android:elevation="10dp"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="10dp">
 
         <ImageView
             android:id="@+id/navHome"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="22dp"
+            android:padding="10dp"
             android:src="@drawable/ic_home"
             app:tint="#FFFFFF" />
 
@@ -340,7 +341,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="22dp"
+            android:padding="9dp"
             android:src="@drawable/ic_history"
             app:tint="#FFFFFF" />
 
@@ -349,7 +350,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="22dp"
+            android:padding="10dp"
             android:src="@drawable/ic_person"
             app:tint="#FFFFFF" />
     </LinearLayout>

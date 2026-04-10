@@ -1,4 +1,4 @@
-package com.example.examapp.ui.dialog
+package com.example.cbt.ui.dialog
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,18 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.example.examapp.data.models.QuestionFilter
-import com.example.examapp.data.models.QuestionStatus
-import com.example.examapp.ui.adapter.QuestionGridFilterAdapter
+import com.example.cbt.model.QuestionFilter
+import com.example.cbt.model.QuestionStatus
+import com.example.cbt.ui.adapter.QuestionGridFilterAdapter
+import com.example.cbt.R
 
-/**
- * Bottom Sheet Fragment untuk navigasi soal
- * Component standalone yang bisa digunakan di berbagai activity
- */
 class NavigationSoalBottomSheet : BottomSheetDialogFragment() {
 
     private lateinit var questionGridRecycler: RecyclerView
@@ -30,11 +26,9 @@ class NavigationSoalBottomSheet : BottomSheetDialogFragment() {
     private lateinit var btnSelesai: Button
     private lateinit var btnClose: Button
 
-    // Callback
     private var onQuestionClick: ((Int) -> Unit)? = null
     private var onSubmitClick: (() -> Unit)? = null
 
-    // Data
     private var totalQuestions = 45
     private var currentQuestion = 1
     private var questionStatus: Map<Int, QuestionStatus> = emptyMap()
@@ -42,7 +36,6 @@ class NavigationSoalBottomSheet : BottomSheetDialogFragment() {
     companion object {
         private const val ARG_TOTAL_QUESTIONS = "total_questions"
         private const val ARG_CURRENT_QUESTION = "current_question"
-        private const val ARG_QUESTION_STATUS = "question_status"
 
         fun newInstance(
             totalQuestions: Int = 45,
@@ -53,8 +46,8 @@ class NavigationSoalBottomSheet : BottomSheetDialogFragment() {
                 arguments = Bundle().apply {
                     putInt(ARG_TOTAL_QUESTIONS, totalQuestions)
                     putInt(ARG_CURRENT_QUESTION, currentQuestion)
-                    // Note: Untuk status map, pass via setter method lebih mudah
                 }
+                this.questionStatus = questionStatus
             }
         }
     }
@@ -64,13 +57,12 @@ class NavigationSoalBottomSheet : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.bottom_sheet_nav_soal, container, false)
+        return inflater.inflate(R.layout.activity_nav_soal, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Parse arguments
         arguments?.let {
             totalQuestions = it.getInt(ARG_TOTAL_QUESTIONS, 45)
             currentQuestion = it.getInt(ARG_CURRENT_QUESTION, 1)
@@ -133,23 +125,14 @@ class NavigationSoalBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    /**
-     * Set callback saat soal di-klik
-     */
     fun setOnQuestionClickListener(callback: (Int) -> Unit) {
         onQuestionClick = callback
     }
 
-    /**
-     * Set callback saat submit di-klik
-     */
     fun setOnSubmitClickListener(callback: () -> Unit) {
         onSubmitClick = callback
     }
 
-    /**
-     * Update question status
-     */
     fun updateQuestionStatus(questionNumber: Int, status: QuestionStatus) {
         questionStatus = questionStatus.toMutableMap().apply {
             put(questionNumber, status)
@@ -159,23 +142,10 @@ class NavigationSoalBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    /**
-     * Update current question
-     */
     fun updateCurrentQuestion(newCurrent: Int) {
         currentQuestion = newCurrent
         if (::gridAdapter.isInitialized) {
             gridAdapter.updateCurrentQuestion(newCurrent)
-        }
-    }
-
-    /**
-     * Set question status map
-     */
-    fun setQuestionStatus(statusMap: Map<Int, QuestionStatus>) {
-        questionStatus = statusMap
-        if (::gridAdapter.isInitialized) {
-            gridAdapter.notifyDataSetChanged()
         }
     }
 }
