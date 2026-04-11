@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 import android.R.attr.level
 
 object RetrofitClient {
-    private const val BASE_URL = "https://fhfwbhujnzoecmobqumi.supabase.co/auth/login"
+    private const val BASE_URL = "https://fhfwbhujnzoecmobqumi.supabase.co"
     private const val SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZoZndiaHVqbnpvZWNtb2JxdW1pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyMzQyNDMsImV4cCI6MjA4NTgxMDI0M30.6Qv2l-e28yp2h69HhyfqXDqcvWkf0mPuaNJPO-h0aOQ"
 
     private fun getOkHttpClient(): OkHttpClient {

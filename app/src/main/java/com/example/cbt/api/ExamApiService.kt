@@ -7,7 +7,7 @@ import retrofit2.http.*
 interface ExamApiService {
 
     // ==================== AUTHENTICATION ====================
-    @POST("auth/login")
+    @POST("/auth/v1/token?grant_type=password")
     suspend fun login(
         @Body loginRequest: LoginRequest
     ): Response<LoginResponse>
