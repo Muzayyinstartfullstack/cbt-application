@@ -8,10 +8,8 @@ import java.util.concurrent.TimeUnit
 import android.R.attr.level
 
 object RetrofitClient {
-    // Ganti dengan IP address server Anda
-    // 10.0.2.2 = localhost dari emulator (jika pakai emulator Android default)
-    // 192.168.1.64 = IP lokal machine (untuk device fisik atau emulator yang di-bridge)
-    private const val BASE_URL = "http://192.168.1.64:8080/"
+    private const val BASE_URL = "https://fhfwbhujnzoecmobqumi.supabase.co/auth/login"
+    private const val SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZoZndiaHVqbnpvZWNtb2JxdW1pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyMzQyNDMsImV4cCI6MjA4NTgxMDI0M30.6Qv2l-e28yp2h69HhyfqXDqcvWkf0mPuaNJPO-h0aOQ"
 
     private fun getOkHttpClient(): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
@@ -20,9 +18,15 @@ object RetrofitClient {
 
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
+            // Tambahkan interceptor untuk Header Supabase
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .addHeader("apikey", SUPABASE_KEY)
+                    .addHeader("Authorization", "Bearer $SUPABASE_KEY")
+                    .build()
+                chain.proceed(request)
+            }
             .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
             .build()
     }
 

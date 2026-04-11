@@ -85,3 +85,11 @@ data class ExamListResponse(
 data class ExamHistoryResponse(
     val data: List<ExamResultResponse>
 )
+
+data class ExamResponse(
+    val id: String,
+    val judul: String,
+    val durasi: Int,
+    val totalSoal: Int,
+    val status: String
+)
