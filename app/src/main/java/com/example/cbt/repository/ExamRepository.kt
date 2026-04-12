@@ -3,6 +3,7 @@ package com.example.cbt.repository
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.cbt.api.ExamApiService
+import com.example.cbt.api.TokenRequest
 import com.example.cbt.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -23,17 +24,16 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
     suspend fun login(nis: String, password: String): Result<LoginResponse> =
         withContext(Dispatchers.IO) {
             try {
-                val request = LoginRequest(nis = nis, password = password)
+                val request = LoginRequest(nisnNip = nis, password = password)
                 val response = apiService.login(request)
 
                 if (response.isSuccessful && response.body() != null) {
                     val loginData = response.body()!!
-                    // Simpan token dan data user
                     saveAuthData(
-                        token = loginData.accessToken,
-                        studentId = loginData.studentId,
-                        studentName = loginData.studentName,
-                        nis = loginData.nis
+                        token = loginData.token,
+                        studentId = loginData.id.toString(),
+                        studentName = loginData.nama,
+                        nis = ""
                     )
                     Result.success(loginData)
                 } else {
@@ -48,25 +48,11 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
         sharedPreferences.edit().clear().apply()
     }
 
-    fun getJwtToken(): String {
-        return sharedPreferences.getString(KEY_JWT_TOKEN, "") ?: ""
-    }
-
-    fun getStudentId(): String {
-        return sharedPreferences.getString(KEY_STUDENT_ID, "") ?: ""
-    }
-
-    fun getStudentName(): String {
-        return sharedPreferences.getString(KEY_STUDENT_NAME, "") ?: ""
-    }
-
-    fun getNis(): String {
-        return sharedPreferences.getString(KEY_NIS, "") ?: ""
-    }
-
-    fun isLoggedIn(): Boolean {
-        return getJwtToken().isNotEmpty()
-    }
+    fun getJwtToken(): String = sharedPreferences.getString(KEY_JWT_TOKEN, "") ?: ""
+    fun getStudentId(): String = sharedPreferences.getString(KEY_STUDENT_ID, "") ?: ""
+    fun getStudentName(): String = sharedPreferences.getString(KEY_STUDENT_NAME, "") ?: ""
+    fun getNis(): String = sharedPreferences.getString(KEY_NIS, "") ?: ""
+    fun isLoggedIn(): Boolean = getJwtToken().isNotEmpty()
 
     private fun saveAuthData(token: String, studentId: String, studentName: String, nis: String) {
         sharedPreferences.edit().apply {
@@ -82,9 +68,7 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
     suspend fun checkExamToken(token: String): Result<ExamResponse> =
         withContext(Dispatchers.IO) {
             try {
-                val jwtToken = getJwtToken()
-                val response = apiService.checkExamToken("Bearer $jwtToken", token)
-
+                val response = apiService.checkExamToken(TokenRequest(token))
                 if (response.isSuccessful && response.body() != null) {
                     Result.success(response.body()!!)
                 } else {
@@ -103,9 +87,7 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
     suspend fun getExamDetail(examId: String): Result<ExamResponse> =
         withContext(Dispatchers.IO) {
             try {
-                val jwtToken = getJwtToken()
-                val response = apiService.getExamDetail("Bearer $jwtToken", examId)
-
+                val response = apiService.getExamDetail(examId)
                 if (response.isSuccessful && response.body() != null) {
                     Result.success(response.body()!!)
                 } else {
@@ -120,9 +102,7 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
     suspend fun getQuestions(examId: String): Result<List<Question>> =
         withContext(Dispatchers.IO) {
             try {
-                val jwtToken = getJwtToken()
-                val response = apiService.getQuestions("Bearer $jwtToken", examId)
-
+                val response = apiService.getQuestions(examId)
                 if (response.isSuccessful && response.body() != null) {
                     Result.success(response.body()!!.data)
                 } else {
@@ -136,9 +116,7 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
     suspend fun getQuestionDetail(examId: String, questionId: String): Result<Question> =
         withContext(Dispatchers.IO) {
             try {
-                val jwtToken = getJwtToken()
-                val response = apiService.getQuestionDetail("Bearer $jwtToken", examId, questionId)
-
+                val response = apiService.getQuestionDetail(examId, questionId)
                 if (response.isSuccessful && response.body() != null) {
                     Result.success(response.body()!!)
                 } else {
@@ -158,16 +136,8 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
         isBookmarked: Boolean = false
     ): Result<AnswerResponse> = withContext(Dispatchers.IO) {
         try {
-            val jwtToken = getJwtToken()
-            val request = AnswerRequest(
-                examId = examId,
-                questionId = questionId,
-                nomorSoal = nomorSoal,
-                jawaban = jawaban,
-                isBookmarked = isBookmarked
-            )
-            val response = apiService.submitAnswer("Bearer $jwtToken", examId, request)
-
+            val request = AnswerRequest(examId, questionId, nomorSoal, jawaban, isBookmarked)
+            val response = apiService.submitAnswer(examId, request)
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!)
             } else {
@@ -181,9 +151,7 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
     suspend fun getExamAnswers(examId: String): Result<List<AnswerResponse>> =
         withContext(Dispatchers.IO) {
             try {
-                val jwtToken = getJwtToken()
-                val response = apiService.getExamAnswers("Bearer $jwtToken", examId)
-
+                val response = apiService.getExamAnswers(examId)
                 if (response.isSuccessful && response.body() != null) {
                     Result.success(response.body()!!)
                 } else {
@@ -201,16 +169,8 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
         isBookmarked: Boolean = false
     ): Result<AnswerResponse> = withContext(Dispatchers.IO) {
         try {
-            val jwtToken = getJwtToken()
-            val request = AnswerRequest(
-                examId = examId,
-                questionId = questionId,
-                nomorSoal = 0, // Tidak digunakan saat update
-                jawaban = jawaban,
-                isBookmarked = isBookmarked
-            )
-            val response = apiService.updateAnswer("Bearer $jwtToken", examId, questionId, request)
-
+            val request = AnswerRequest(examId, questionId, 0, jawaban, isBookmarked)
+            val response = apiService.updateAnswer(examId, questionId, request)
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!)
             } else {
@@ -231,23 +191,13 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
         waktuTempuhDetik: Long
     ): Result<ExamResultResponse> = withContext(Dispatchers.IO) {
         try {
-            val jwtToken = getJwtToken()
             val studentId = getStudentId()
             val status = if (scorePercentage >= 70) "PASSED" else "FAILED"
-
             val request = ExamResultRequest(
-                examId = examId,
-                studentId = studentId,
-                totalSoal = totalSoal,
-                jumlahTerjawab = jumlahTerjawab,
-                jumlahBenar = jumlahBenar,
-                scorePercentage = scorePercentage,
-                waktuTempuhDetik = waktuTempuhDetik,
-                status = status
+                examId, studentId, totalSoal, jumlahTerjawab,
+                jumlahBenar, scorePercentage, waktuTempuhDetik, status
             )
-
-            val response = apiService.submitExam("Bearer $jwtToken", examId, request)
-
+            val response = apiService.submitExam(examId, request)
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!)
             } else {
@@ -261,10 +211,7 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
     suspend fun getExamHistory(): Result<List<ExamResultResponse>> =
         withContext(Dispatchers.IO) {
             try {
-                val jwtToken = getJwtToken()
-                val studentId = getStudentId()
-                val response = apiService.getExamHistory("Bearer $jwtToken", studentId)
-
+                val response = apiService.getExamHistory(getStudentId())
                 if (response.isSuccessful && response.body() != null) {
                     Result.success(response.body()!!.data)
                 } else {
@@ -278,10 +225,7 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
     suspend fun getExamHistoryBySubject(subject: String): Result<List<ExamResultResponse>> =
         withContext(Dispatchers.IO) {
             try {
-                val jwtToken = getJwtToken()
-                val studentId = getStudentId()
-                val response = apiService.getExamHistoryBySubject("Bearer $jwtToken", studentId, subject)
-
+                val response = apiService.getExamHistoryBySubject(getStudentId(), subject)
                 if (response.isSuccessful && response.body() != null) {
                     Result.success(response.body()!!.data)
                 } else {

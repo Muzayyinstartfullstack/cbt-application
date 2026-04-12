@@ -5,7 +5,6 @@ import android.content.Context
 object TokenManager {
     private const val PREFS_NAME = "cbt_prefs"
     private const val KEY_TOKEN = "jwt_token"
-
     private var token: String? = null
 
     fun init(context: Context) {

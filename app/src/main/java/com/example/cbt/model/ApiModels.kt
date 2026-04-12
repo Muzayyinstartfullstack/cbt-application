@@ -1,22 +1,15 @@
 package com.example.cbt.model
 
-data class LoginRequest(
-    val nis: String,
-    val password: String
-)
+data class LoginRequest(val nisnNip: String, val password: String)
 
 data class LoginResponse(
-    val success: Boolean,
-    val accessToken: String,
-    val studentId: String,
-    val studentName: String,
-    val nis: String,
-    val message: String? = null
+    val token: String,
+    val id: Int,
+    val nama: String,
+    val role: String
 )
 
-data class QuestionListResponse(
-    val data: List<Question>
-)
+data class QuestionListResponse(val data: List<Question>)
 
 data class Question(
     val id: String,
@@ -55,7 +48,7 @@ data class ExamResultRequest(
 )
 
 data class ExamResultResponse(
-    val id: String,                      // session id atau result id
+    val id: String,
     val examTitle: String,
     val scorePercentage: Double,
     val tanggalUjian: String,
@@ -75,16 +68,11 @@ data class Exam(
     val endTime: String,
     val durationMinutes: Int,
     val totalQuestions: Int,
-    val passingGrade: Double? = null   // tambahan jika perlu
+    val passingGrade: Double? = null
 )
 
-data class ExamListResponse(
-    val data: List<Exam>
-)
-
-data class ExamHistoryResponse(
-    val data: List<ExamResultResponse>
-)
+data class ExamListResponse(val data: List<Exam>)
+data class ExamHistoryResponse(val data: List<ExamResultResponse>)
 
 data class ExamResponse(
     val id: String,

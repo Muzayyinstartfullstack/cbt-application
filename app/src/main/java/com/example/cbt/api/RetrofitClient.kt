@@ -7,9 +7,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    // Ganti dengan IP PC lo (cek via ipconfig)
-    // Kalau pakai ngrok: "https://abc123.ngrok-free.app/"
-    private const val BASE_URL = "https://purebred-mourner-stupor.ngrok-free.dev"
+    // Ganti dengan IP PC lo (cek via ipconfig) atau URL ngrok
+    private const val BASE_URL = "http://192.168.1.x:8080/"
 
     private fun getOkHttpClient(): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
@@ -34,12 +33,12 @@ object RetrofitClient {
             .build()
     }
 
-    val instance: ApiService by lazy {
+    val instance: ExamApiService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(getOkHttpClient())
             .build()
-            .create(ApiService::class.java)
+            .create(ExamApiService::class.java)
     }
 }
