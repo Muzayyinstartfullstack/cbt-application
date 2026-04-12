@@ -5,37 +5,41 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import android.R.attr.level
 
 object RetrofitClient {
-    private const val BASE_URL = "https://fhfwbhujnzoecmobqumi.supabase.co"
-    private const val SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZoZndiaHVqbnpvZWNtb2JxdW1pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyMzQyNDMsImV4cCI6MjA4NTgxMDI0M30.6Qv2l-e28yp2h69HhyfqXDqcvWkf0mPuaNJPO-h0aOQ"
+    // Ganti dengan IP PC lo (cek via ipconfig)
+    // Kalau pakai ngrok: "https://abc123.ngrok-free.app/"
+    private const val BASE_URL = "https://purebred-mourner-stupor.ngrok-free.dev"
 
     private fun getOkHttpClient(): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            setLevel(HttpLoggingInterceptor.Level.BODY)
         }
 
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            // Tambahkan interceptor untuk Header Supabase
             .addInterceptor { chain ->
+                val token = TokenManager.getToken()
                 val request = chain.request().newBuilder()
-                    .addHeader("apikey", SUPABASE_KEY)
-                    .addHeader("Authorization", "Bearer $SUPABASE_KEY")
+                    .addHeader("Content-Type", "application/json")
+                    .apply {
+                        if (token != null) addHeader("Authorization", "Bearer $token")
+                    }
                     .build()
                 chain.proceed(request)
             }
             .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .build()
     }
 
-    val instance: ExamApiService by lazy {
+    val instance: ApiService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(getOkHttpClient())
             .build()
-            .create(ExamApiService::class.java)
+            .create(ApiService::class.java)
     }
 }
