@@ -1,446 +1,364 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_history"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
+        android:id="@+id/headerContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/bottomNavigation">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true">
 
-        <LinearLayout
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="24dp">
+            android:visibility="gone"
+            android:indeterminate="true" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="20dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Riwayat Ujian"
-                    android:textColor="#000000"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-                <ImageView
-                    android:id="@+id/btnFilter"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_tune"
-                    app:tint="#000000" />
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="16dp"
-                android:weightSum="2">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="115dp"
-                    android:layout_weight="1"
-                    android:layout_margin="4dp"
-                    app:cardBackgroundColor="#0097B2"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="4dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="16dp"
-                        android:orientation="vertical">
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical">
-                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_poll" app:tint="#FFFFFF"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="RATA-RATA NILAI" android:textColor="#FFFFFF" android:textSize="10sp" android:layout_marginStart="6dp" android:textStyle="bold"/>
-                        </LinearLayout>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="85%" android:textColor="#FFFFFF" android:textSize="32sp" android:textStyle="bold" android:layout_marginTop="8dp"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="115dp"
-                    android:layout_weight="1"
-                    android:layout_margin="4dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="4dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="16dp"
-                        android:orientation="vertical">
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical">
-                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_check_circle" app:tint="#0097B2"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="SELESAI" android:textColor="#0097B2" android:textSize="10sp" android:layout_marginStart="6dp" android:textStyle="bold"/>
-                        </LinearLayout>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="12" android:textColor="#000000" android:textSize="32sp" android:textStyle="bold" android:layout_marginTop="4dp"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="7 hari terakhir" android:textColor="#9E9E9E" android:textSize="11sp"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none"
-                android:layout_marginTop="24dp"
-                android:paddingHorizontal="4dp"
-                android:layout_marginHorizontal="16dp">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipSemua"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:checked="true"
-                        android:text="Semua"
-                        android:layout_marginHorizontal="5dp"
-                        android:textColor="@color/chip_text_color"
-                        android:textSize="13sp"
-                        app:chipCornerRadius="20dp"
-                        app:chipBackgroundColor="@color/chip_color_selector"
-                        app:chipStrokeColor="#14000000"
-                        app:chipStrokeWidth="1dp"
-                        app:checkedIconVisible="false" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipMatematika"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:text="Matematika"
-                        android:layout_marginHorizontal="5dp"
-                        android:textColor="@color/chip_text_color"
-                        android:textSize="13sp"
-                        app:chipCornerRadius="20dp"
-                        app:chipBackgroundColor="@color/chip_color_selector"
-                        app:chipStrokeColor="#40000000"
-                        app:chipStrokeWidth="1dp"
-                        app:checkedIconVisible="false" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipSejarah"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:text="Sejarah"
-                        android:layout_marginHorizontal="5dp"
-                        android:textColor="@color/chip_text_color"
-                        android:textSize="13sp"
-                        app:chipCornerRadius="20dp"
-                        app:chipBackgroundColor="@color/chip_color_selector"
-                        app:chipStrokeColor="#40000000"
-                        app:chipStrokeWidth="1dp"
-                        app:checkedIconVisible="false" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipBahasaInggris"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:text="Bahasa Inggris"
-                        android:layout_marginHorizontal="5dp"
-                        android:textColor="@color/chip_text_color"                    android:textSize="13sp"
-                        app:chipCornerRadius="20dp"
-                        app:chipBackgroundColor="@color/chip_color_selector"
-                        app:chipStrokeColor="#40000000"
-                        app:chipStrokeWidth="1dp"
-                        app:checkedIconVisible="false" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipBahasaIndonesia"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:text="Bahasa Indonesia"
-                        android:layout_marginHorizontal="5dp"
-                        android:textColor="@color/chip_text_color"
-                        android:textSize="13sp"
-                        app:chipCornerRadius="20dp"
-                        app:chipBackgroundColor="@color/chip_color_selector"
-                        app:chipStrokeColor="#40000000"
-                        app:chipStrokeWidth="1dp"
-                        app:checkedIconVisible="false" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipAgama"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:text="Agama"
-                        android:layout_marginHorizontal="5dp"
-                        android:textColor="@color/chip_text_color"
-                        android:textSize="13sp"
-                        app:chipCornerRadius="20dp"
-                        app:chipBackgroundColor="@color/chip_color_selector"
-                        app:chipStrokeColor="#40000000"
-                        app:chipStrokeWidth="1dp"
-                        app:checkedIconVisible="false" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipMPP"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:text="MPP"
-                        android:layout_marginHorizontal="5dp"
-                        android:textColor="@color/chip_text_color"
-                        android:textSize="13sp"
-                        app:chipCornerRadius="20dp"
-                        app:chipBackgroundColor="@color/chip_color_selector"
-                        app:chipStrokeColor="#40000000"
-                        app:chipStrokeWidth="1dp"
-                        app:checkedIconVisible="false" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipKK"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:text="KK"
-                        android:layout_marginHorizontal="5dp"
-                        android:textColor="@color/chip_text_color"
-                        android:textSize="13sp"
-                        app:chipCornerRadius="20dp"
-                        app:chipBackgroundColor="@color/chip_color_selector"
-                        app:chipStrokeColor="#40000000"
-                        app:chipStrokeWidth="1dp"
-                        app:checkedIconVisible="false" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipOlahRaga"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:text="Olah Raga"
-                        android:layout_marginHorizontal="5dp"
-                        android:textColor="@color/chip_text_color"
-                        android:textSize="13sp"
-                        app:chipCornerRadius="20dp"
-                        app:chipBackgroundColor="@color/chip_color_selector"
-                        app:chipStrokeColor="#40000000"
-                        app:chipStrokeWidth="1dp"
-                        app:checkedIconVisible="false" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipPKK"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:text="PKK"
-                        android:layout_marginHorizontal="5dp"
-                        android:textColor="@color/chip_text_color"
-                        android:textSize="13sp"
-                        app:chipCornerRadius="20dp"
-                        app:chipBackgroundColor="@color/chip_color_selector"
-                        app:chipStrokeColor="#40000000"
-                        app:chipStrokeWidth="1dp"
-                        app:checkedIconVisible="false" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipPKN"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:text="PKN"
-                        android:layout_marginHorizontal="5dp"
-                        android:textColor="@color/chip_text_color"
-                        android:textSize="13sp"
-                        app:chipCornerRadius="20dp"
-                        app:chipBackgroundColor="@color/chip_color_selector"
-                        app:chipStrokeColor="#40000000"
-                        app:chipStrokeWidth="1dp"
-                        app:checkedIconVisible="false" />
-                </LinearLayout>
-            </HorizontalScrollView>
-
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="HASIL TERBARU"
+                android:text="Riwayat Ujian"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/btnFilter"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_tune"
+                app:tint="#000000" />
+        </RelativeLayout>
+
+        <!-- Statistik Cards -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:weightSum="2">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="115dp"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="@color/blue"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="16dp"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical">
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:src="@drawable/ic_poll"
+                            app:tint="#FFFFFF"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="RATA-RATA NILAI"
+                            android:textColor="#FFFFFF"
+                            android:textSize="10sp"
+                            android:layout_marginStart="6dp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tvRataNilai"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="85%"
+                        android:textColor="#FFFFFF"
+                        android:textSize="32sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="115dp"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="16dp"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical">
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:src="@drawable/ic_check_circle"
+                            app:tint="#0097B2"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="SELESAI"
+                            android:textColor="#0097B2"
+                            android:textSize="10sp"
+                            android:layout_marginStart="6dp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tvJumlahSelesai"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="12"
+                        android:textColor="#000000"
+                        android:textSize="32sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="4dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="7 hari terakhir"
+                        android:textColor="#9E9E9E"
+                        android:textSize="11sp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <!-- Chip Filter (Horizontal Scroll) -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:layout_marginTop="24dp"
+            android:paddingHorizontal="4dp"
+            android:layout_marginHorizontal="16dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <!-- Semua chip dari layout asli, silakan salin lengkap -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSemua"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:checkable="true"
+                android:checked="true"
+                android:text="Semua"
+                android:textColor="@color/chip_text_color"
                 android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="#757575"
-                android:layout_margin="16dp" />
+                app:checkedIconVisible="false"
+                app:chipBackgroundColor="@color/chip_color_selector"
+                app:chipCornerRadius="20dp"
+                app:chipStrokeColor="#14000000"
+                app:chipStrokeWidth="1dp" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardMath"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp" android:layout_marginVertical="8dp"
-                android:clickable="true" android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                app:cardCornerRadius="14dp" app:cardElevation="2dp">
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
-                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <androidx.cardview.widget.CardView android:id="@+id/iconMath" android:layout_width="48dp" android:layout_height="48dp" app:cardBackgroundColor="#FF4444" app:cardCornerRadius="10dp" app:cardElevation="0dp">
-                            <ImageView android:layout_width="26dp" android:layout_height="26dp" android:layout_gravity="center" android:src="@drawable/ic_matematika" app:tint="#FFFFFF" />
-                        </androidx.cardview.widget.CardView>
-                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toRightOf="@id/iconMath" android:layout_marginStart="14dp" android:orientation="vertical">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mata Pelajaran: Matematika" android:textColor="#000000" android:textStyle="bold" android:textSize="14sp" />
-                            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:gravity="center_vertical">
-                                <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_calendar" app:tint="#757575"/>
-                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" 15 Jan, 09:16" android:textColor="#757575" android:textSize="11sp"/>
-                            </LinearLayout>
-                        </LinearLayout>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:text="86%" android:textColor="#4CAF50" android:textSize="16sp" android:textStyle="bold" />
-                    </RelativeLayout>
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F5F5F5" android:layout_marginVertical="12dp" />
-                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center_vertical" android:layout_centerVertical="true">
-                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_time" app:tint="#757575" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" 90 Menit" android:textColor="#757575" android:textSize="12sp" android:layout_marginStart="4dp"/>
-                            <View android:layout_width="1dp" android:layout_height="12dp" android:background="#E0E0E0" android:layout_marginHorizontal="8dp" />
-                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_check_circle" app:tint="#4CAF50" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" Lulus" android:textColor="#757575" android:textSize="12sp" android:layout_marginStart="4dp"/>
-                        </LinearLayout>
-                        <ImageView android:layout_width="20dp" android:layout_height="20dp" android:layout_alignParentRight="true" android:layout_centerVertical="true" android:src="@drawable/ic_chevron_right" app:tint="#BDBDBD" />
-                    </RelativeLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipMatematika"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:checkable="true"
+                android:text="Matematika"
+                android:textColor="@color/chip_text_color"
+                android:textSize="13sp"
+                app:checkedIconVisible="false"
+                app:chipBackgroundColor="@color/chip_color_selector"
+                app:chipCornerRadius="20dp"
+                app:chipStrokeColor="#40000000"
+                app:chipStrokeWidth="1dp" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardHistory"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp" android:layout_marginVertical="8dp"
-                android:clickable="true" android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                app:cardCornerRadius="14dp" app:cardElevation="2dp">
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
-                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <androidx.cardview.widget.CardView android:id="@+id/iconHist" android:layout_width="48dp" android:layout_height="48dp" app:cardBackgroundColor="#9C27B0" app:cardCornerRadius="10dp" app:cardElevation="0dp">
-                            <ImageView android:layout_width="26dp" android:layout_height="26dp" android:layout_gravity="center" android:src="@drawable/ic_history" app:tint="#FFFFFF" />
-                        </androidx.cardview.widget.CardView>
-                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toRightOf="@id/iconHist" android:layout_marginStart="14dp" android:orientation="vertical">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mata Pelajaran: Sejarah" android:textColor="#000000" android:textStyle="bold" android:textSize="14sp" />
-                            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:gravity="center_vertical">
-                                <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_calendar" app:tint="#757575"/>
-                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" 16 Jan, 10:00" android:textColor="#757575" android:textSize="11sp"/>
-                            </LinearLayout>
-                        </LinearLayout>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:text="75%" android:textColor="#4CAF50" android:textSize="16sp" android:textStyle="bold" />
-                    </RelativeLayout>
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F5F5F5" android:layout_marginVertical="12dp" />
-                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center_vertical">
-                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_time" app:tint="#757575" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" 60 Menit" android:textColor="#757575" android:textSize="12sp" android:layout_marginStart="4dp"/>
-                            <View android:layout_width="1dp" android:layout_height="12dp" android:background="#E0E0E0" android:layout_marginHorizontal="8dp" />
-                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_check_circle" app:tint="#4CAF50" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" Lulus" android:textColor="#757575" android:textSize="12sp" android:layout_marginStart="4dp"/>
-                        </LinearLayout>
-                        <ImageView android:layout_width="20dp" android:layout_height="20dp" android:layout_alignParentRight="true" android:layout_centerVertical="true" android:src="@drawable/ic_chevron_right" app:tint="#BDBDBD" />
-                    </RelativeLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSejarah"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:checkable="true"
+                android:text="Sejarah"
+                android:textColor="@color/chip_text_color"
+                android:textSize="13sp"
+                app:checkedIconVisible="false"
+                app:chipBackgroundColor="@color/chip_color_selector"
+                app:chipCornerRadius="20dp"
+                app:chipStrokeColor="#40000000"
+                app:chipStrokeWidth="1dp" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardEnglish"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp" android:layout_marginVertical="8dp"
-                android:clickable="true" android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                app:cardCornerRadius="14dp" app:cardElevation="2dp">
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
-                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <androidx.cardview.widget.CardView android:id="@+id/iconEng" android:layout_width="48dp" android:layout_height="48dp" app:cardBackgroundColor="#0055FF" app:cardCornerRadius="10dp" app:cardElevation="0dp">
-                            <ImageView android:layout_width="26dp" android:layout_height="26dp" android:layout_gravity="center" android:src="@drawable/ic_inggris" app:tint="#FFFFFF" />
-                        </androidx.cardview.widget.CardView>
-                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toRightOf="@id/iconEng" android:layout_marginStart="14dp" android:orientation="vertical">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mata Pelajaran: B. Inggris" android:textColor="#000000" android:textStyle="bold" android:textSize="14sp" />
-                            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:gravity="center_vertical">
-                                <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_calendar" app:tint="#757575"/>
-                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" 17 Jan, 11:30" android:textColor="#757575" android:textSize="11sp"/>
-                            </LinearLayout>
-                        </LinearLayout>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:text="43%" android:textColor="@color/orange_primary" android:textSize="16sp" android:textStyle="bold" />
-                    </RelativeLayout>
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F5F5F5" android:layout_marginVertical="12dp" />
-                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center_vertical">
-                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_time" app:tint="#757575" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" 60 Menit" android:textColor="#757575" android:textSize="12sp" android:layout_marginStart="4dp"/>
-                            <View android:layout_width="1dp" android:layout_height="12dp" android:background="#E0E0E0" android:layout_marginHorizontal="8dp" />
-                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_refresh" app:tint="@color/orange_primary" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" Tidak Lulus" android:textColor="#757575" android:textSize="12sp" android:layout_marginStart="4dp"/>
-                        </LinearLayout>
-                        <ImageView android:layout_width="20dp" android:layout_height="20dp" android:layout_alignParentRight="true" android:layout_centerVertical="true" android:src="@drawable/ic_chevron_right" app:tint="#BDBDBD" />
-                    </RelativeLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipBahasaInggris"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:checkable="true"
+                android:text="Bahasa Inggris"
+                android:textColor="@color/chip_text_color"
+                android:textSize="13sp"
+                app:checkedIconVisible="false"
+                app:chipBackgroundColor="@color/chip_color_selector"
+                app:chipCornerRadius="20dp"
+                app:chipStrokeColor="#40000000"
+                app:chipStrokeWidth="1dp" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardIndo"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp" android:layout_marginVertical="8dp"
-                android:clickable="true" android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                app:cardCornerRadius="14dp" app:cardElevation="2dp">
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
-                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <androidx.cardview.widget.CardView android:id="@+id/iconIndo" android:layout_width="48dp" android:layout_height="48dp" app:cardBackgroundColor="#FF9800" app:cardCornerRadius="10dp" app:cardElevation="0dp">
-                            <ImageView android:layout_width="26dp" android:layout_height="26dp" android:layout_gravity="center" android:src="@drawable/ic_book" app:tint="#FFFFFF" />
-                        </androidx.cardview.widget.CardView>
-                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toRightOf="@id/iconIndo" android:layout_marginStart="14dp" android:orientation="vertical">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mata Pelajaran: B. Indonesia" android:textColor="#000000" android:textStyle="bold" android:textSize="14sp" />
-                            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:gravity="center_vertical">
-                                <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_calendar" app:tint="#757575"/>
-                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" 18 Jan, 08:00" android:textColor="#757575" android:textSize="11sp"/>
-                            </LinearLayout>
-                        </LinearLayout>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:text="92%" android:textColor="#4CAF50" android:textSize="16sp" android:textStyle="bold" />
-                    </RelativeLayout>
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F5F5F5" android:layout_marginVertical="12dp" />
-                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center_vertical">
-                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_time" app:tint="#757575" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" 90 Menit" android:textColor="#757575" android:textSize="12sp" android:layout_marginStart="4dp"/>
-                            <View android:layout_width="1dp" android:layout_height="12dp" android:background="#E0E0E0" android:layout_marginHorizontal="8dp" />
-                            <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_check_circle" app:tint="#4CAF50" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" Lulus" android:textColor="#757575" android:textSize="12sp" android:layout_marginStart="4dp"/>
-                        </LinearLayout>
-                        <ImageView android:layout_width="20dp" android:layout_height="20dp" android:layout_alignParentRight="true" android:layout_centerVertical="true" android:src="@drawable/ic_chevron_right" app:tint="#BDBDBD" />
-                    </RelativeLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipBahasaIndonesia"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:checkable="true"
+                android:text="Bahasa Indonesia"
+                android:textColor="@color/chip_text_color"
+                android:textSize="13sp"
+                app:checkedIconVisible="false"
+                app:chipBackgroundColor="@color/chip_color_selector"
+                app:chipCornerRadius="20dp"
+                app:chipStrokeColor="#40000000"
+                app:chipStrokeWidth="1dp" />
 
-            <TextView
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Anda telah mencapai akhir riwayat"
-                android:gravity="center" android:textColor="#BDBDBD"
-                android:textSize="13sp" android:layout_marginTop="32dp"
-                android:layout_marginBottom="16dp"/>
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipAgama"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:checkable="true"
+                android:text="Agama"
+                android:textColor="@color/chip_text_color"
+                android:textSize="13sp"
+                app:checkedIconVisible="false"
+                app:chipBackgroundColor="@color/chip_color_selector"
+                app:chipCornerRadius="20dp"
+                app:chipStrokeColor="#40000000"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipMPP"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:checkable="true"
+                android:text="MPP"
+                android:textColor="@color/chip_text_color"
+                android:textSize="13sp"
+                app:checkedIconVisible="false"
+                app:chipBackgroundColor="@color/chip_color_selector"
+                app:chipCornerRadius="20dp"
+                app:chipStrokeColor="#40000000"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipKK"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:checkable="true"
+                android:text="KK"
+                android:textColor="@color/chip_text_color"
+                android:textSize="13sp"
+                app:checkedIconVisible="false"
+                app:chipBackgroundColor="@color/chip_color_selector"
+                app:chipCornerRadius="20dp"
+                app:chipStrokeColor="#40000000"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipOlahRaga"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:checkable="true"
+                android:text="Olah Raga"
+                android:textColor="@color/chip_text_color"
+                android:textSize="13sp"
+                app:checkedIconVisible="false"
+                app:chipBackgroundColor="@color/chip_color_selector"
+                app:chipCornerRadius="20dp"
+                app:chipStrokeColor="#40000000"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipPKK"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:checkable="true"
+                android:text="PKK"
+                android:textColor="@color/chip_text_color"
+                android:textSize="13sp"
+                app:checkedIconVisible="false"
+                app:chipBackgroundColor="@color/chip_color_selector"
+                app:chipCornerRadius="20dp"
+                app:chipStrokeColor="#40000000"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipPKN"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:checkable="true"
+                android:text="PKN"
+                android:textColor="@color/chip_text_color"
+                android:textSize="13sp"
+                app:checkedIconVisible="false"
+                app:chipBackgroundColor="@color/chip_color_selector"
+                app:chipCornerRadius="20dp"
+                app:chipStrokeColor="#40000000"
+                app:chipStrokeWidth="1dp" />
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+        </HorizontalScrollView>
 
+        <!-- Label "HASIL TERBARU" -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HASIL TERBARU"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="#757575"
+            android:layout_margin="16dp" />
+    </LinearLayout>
+
+    <!-- RECYCLERVIEW UNTUK DAFTAR RIWAYAT (SCROLLABLE) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerHistory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/headerContainer"
+        android:layout_above="@id/bottomNavigation"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp"
+        android:scrollbars="vertical" />
+
+    <!-- BOTTOM NAVIGATION -->
     <LinearLayout
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
@@ -449,14 +367,15 @@
         android:background="@drawable/btn_blue"
         android:elevation="10dp"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="10dp">
 
         <ImageView
             android:id="@+id/navHome"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="22dp"
+            android:padding="10dp"
             android:src="@drawable/ic_home"
             app:tint="#FFFFFF" />
 
@@ -465,7 +384,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="22dp"
+            android:padding="9dp"
             android:src="@drawable/ic_history"
             app:tint="#FFFFFF" />
 
@@ -474,7 +393,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="22dp"
+            android:padding="10dp"
             android:src="@drawable/ic_person"
             app:tint="#FFFFFF" />
     </LinearLayout>
