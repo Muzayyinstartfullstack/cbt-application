@@ -1,3 +1,4 @@
+import com.example.cbt.BuildConfig
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 
@@ -7,7 +8,6 @@ object SupabaseClient {
         supabaseUrl = BuildConfig.SUPABASE_URL,
         supabaseKey = BuildConfig.SUPABASE_ANON_KEY
     ) {
-        install(Posgrest)
+        install(Postgrest)
     }
-
 }
