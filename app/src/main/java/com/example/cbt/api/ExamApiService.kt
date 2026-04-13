@@ -4,59 +4,60 @@ import com.example.cbt.model.*
 import retrofit2.Response
 import retrofit2.http.*
 
-data class TokenRequest(val token: String)
-
 interface ExamApiService {
 
+    // ==================== AUTH ====================
+    // POST /auth/login → tabel: users (cari by nisn_nip, cocokkan password_hash)
     @POST("auth/login")
     suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
 
-    @POST("exams/check-token")
-    suspend fun checkExamToken(@Body request: TokenRequest): Response<ExamResponse>
+    // ==================== EXAMS ====================
+    // GET /exams/{id} → tabel: ujian
+    @GET("exams/{id}")
+    suspend fun getExamDetail(@Path("id") examId: String): Response<ExamResponse>
 
-    @GET("exams/{exam_id}")
-    suspend fun getExamDetail(@Path("exam_id") examId: String): Response<ExamResponse>
+    // GET /exams/check-token/{token} → tabel: ujian (cari by kolom token)
+    @GET("exams/check-token/{token}")
+    suspend fun checkExamToken(@Path("token") token: String): Response<ExamResponse>
 
-    @GET("exams/{exam_id}/questions")
-    suspend fun getQuestions(@Path("exam_id") examId: String): Response<QuestionListResponse>
+    // ==================== QUESTIONS ====================
+    // GET /questions/exam/{idUjian} → tabel: soal (join opsi_jawaban)
+    @GET("questions/exam/{idUjian}")
+    suspend fun getQuestions(@Path("idUjian") examId: String): Response<List<Question>>
 
-    @GET("exams/{exam_id}/questions/{question_id}")
-    suspend fun getQuestionDetail(
-        @Path("exam_id") examId: String,
-        @Path("question_id") questionId: String
-    ): Response<Question>
+    // GET /questions/{id} → tabel: soal + opsi_jawaban
+    @GET("questions/{id}")
+    suspend fun getQuestionDetail(@Path("id") questionId: String): Response<Question>
 
-    @POST("exams/{exam_id}/answers")
+    // ==================== ATTEMPTS ====================
+    // POST /attempts/start → tabel: attempt (buat sesi pengerjaan)
+    @POST("attempts/start")
+    suspend fun startAttempt(@Body request: StartAttemptRequest): Response<AttemptResponse>
+
+    // POST /attempts/{id}/answer → tabel: student_answer (simpan jawaban)
+    @POST("attempts/{id}/answer")
     suspend fun submitAnswer(
-        @Path("exam_id") examId: String,
+        @Path("id") attemptId: String,
         @Body answerRequest: AnswerRequest
-    ): Response<AnswerResponse>
+    ): Response<StudentAnswerResponse>
 
-    @GET("exams/{exam_id}/answers")
-    suspend fun getExamAnswers(@Path("exam_id") examId: String): Response<List<AnswerResponse>>
+    // POST /attempts/{id}/submit → tabel: attempt (ubah status jadi submitted)
+    @POST("attempts/{id}/submit")
+    suspend fun submitAttempt(@Path("id") attemptId: String): Response<AttemptResponse>
 
-    @PUT("exams/{exam_id}/answers/{question_id}")
-    suspend fun updateAnswer(
-        @Path("exam_id") examId: String,
-        @Path("question_id") questionId: String,
-        @Body answerRequest: AnswerRequest
-    ): Response<AnswerResponse>
+    // GET /attempts/{id} → tabel: attempt (detail satu attempt)
+    @GET("attempts/{id}")
+    suspend fun getAttemptDetail(@Path("id") attemptId: String): Response<AttemptResponse>
 
-    @POST("exams/{exam_id}/submit")
-    suspend fun submitExam(
-        @Path("exam_id") examId: String,
-        @Body resultRequest: ExamResultRequest
-    ): Response<ExamResultResponse>
+    // GET /attempts/my → tabel: attempt (list milik user yang login)
+    @GET("attempts/my")
+    suspend fun getMyAttempts(): Response<List<AttemptResponse>>
 
-    @GET("exam-results")
-    suspend fun getExamHistory(@Query("student_id") studentId: String): Response<ExamHistoryResponse>
+    // GET /attempts/{id}/answers → tabel: student_answer (semua jawaban per sesi)
+    @GET("attempts/{id}/answers")
+    suspend fun getAttemptAnswers(@Path("id") attemptId: String): Response<List<AnswerResponse>>
 
-    @GET("exam-results/{result_id}")
-    suspend fun getExamResult(@Path("result_id") resultId: String): Response<ExamResultResponse>
-
-    @GET("exam-results/subject/{subject}")
-    suspend fun getExamHistoryBySubject(
-        @Query("student_id") studentId: String,
-        @Path("subject") subject: String
-    ): Response<ExamHistoryResponse>
+    // GET /attempts/exam/{idUjian} → tabel: attempt (list per ujian, untuk admin/pengawas)
+    @GET("attempts/exam/{idUjian}")
+    suspend fun getAttemptsByExam(@Path("idUjian") examId: String): Response<List<AttemptResponse>>
 }

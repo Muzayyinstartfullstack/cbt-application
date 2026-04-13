@@ -67,8 +67,8 @@ class HistoryDetailActivity : AppCompatActivity() {
 
                 result.onSuccess { examHistory ->
                     progressBar.visibility = View.GONE
-
-                    val exam = examHistory.find { it.id == examId }
+                    val results = examHistory.data
+                    val exam = results.find { it.id == examId }
                     if (exam != null) {
                         displayExamResult(
                             subject = exam.examTitle,

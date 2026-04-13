@@ -3,7 +3,6 @@ package com.example.cbt.repository
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.cbt.api.ExamApiService
-import com.example.cbt.api.TokenRequest
 import com.example.cbt.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,6 +17,7 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
         private const val KEY_STUDENT_ID = "student_id"
         private const val KEY_STUDENT_NAME = "student_name"
         private const val KEY_NIS = "nis"
+        private const val KEY_ATTEMPT_ID = "attempt_id"
     }
 
     // ==================== AUTH ====================
@@ -31,13 +31,19 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
                     val loginData = response.body()!!
                     saveAuthData(
                         token = loginData.token,
-                        studentId = loginData.id.toString(),
+                        studentId = loginData.id,   // id dari backend adalah String (UUID)
                         studentName = loginData.nama,
-                        nis = ""
+                        nis = nis
                     )
                     Result.success(loginData)
                 } else {
-                    Result.failure(Exception("Login gagal: ${response.code()}"))
+                    val errorMsg = when (response.code()) {
+                        401 -> "NISN/NIP atau password salah"
+                        404 -> "User tidak ditemukan"
+                        500 -> "Server error, coba lagi nanti"
+                        else -> "Login gagal: ${response.code()}"
+                    }
+                    Result.failure(Exception(errorMsg))
                 }
             } catch (e: Exception) {
                 Result.failure(e)
@@ -53,6 +59,11 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
     fun getStudentName(): String = sharedPreferences.getString(KEY_STUDENT_NAME, "") ?: ""
     fun getNis(): String = sharedPreferences.getString(KEY_NIS, "") ?: ""
     fun isLoggedIn(): Boolean = getJwtToken().isNotEmpty()
+    fun getCurrentAttemptId(): String = sharedPreferences.getString(KEY_ATTEMPT_ID, "") ?: ""
+
+    fun saveAttemptId(attemptId: String) {
+        sharedPreferences.edit().putString(KEY_ATTEMPT_ID, attemptId).apply()
+    }
 
     private fun saveAuthData(token: String, studentId: String, studentName: String, nis: String) {
         sharedPreferences.edit().apply {
@@ -65,10 +76,11 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
     }
 
     // ==================== EXAM ====================
+    // Validasi token ujian → GET /exams/check-token/{token} → tabel: ujian
     suspend fun checkExamToken(token: String): Result<ExamResponse> =
         withContext(Dispatchers.IO) {
             try {
-                val response = apiService.checkExamToken(TokenRequest(token))
+                val response = apiService.checkExamToken(token)
                 if (response.isSuccessful && response.body() != null) {
                     Result.success(response.body()!!)
                 } else {
@@ -84,6 +96,7 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
             }
         }
 
+    // Detail ujian → GET /exams/{id} → tabel: ujian
     suspend fun getExamDetail(examId: String): Result<ExamResponse> =
         withContext(Dispatchers.IO) {
             try {
@@ -99,12 +112,13 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
         }
 
     // ==================== QUESTIONS ====================
+    // GET /questions/exam/{idUjian} → tabel: soal + opsi_jawaban
     suspend fun getQuestions(examId: String): Result<List<Question>> =
         withContext(Dispatchers.IO) {
             try {
                 val response = apiService.getQuestions(examId)
                 if (response.isSuccessful && response.body() != null) {
-                    Result.success(response.body()!!.data)
+                    Result.success(response.body()!!)
                 } else {
                     Result.failure(Exception("Gagal mengambil daftar soal"))
                 }
@@ -113,10 +127,11 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
             }
         }
 
-    suspend fun getQuestionDetail(examId: String, questionId: String): Result<Question> =
+    // GET /questions/{id} → tabel: soal + opsi_jawaban
+    suspend fun getQuestionDetail(questionId: String): Result<Question> =
         withContext(Dispatchers.IO) {
             try {
-                val response = apiService.getQuestionDetail(examId, questionId)
+                val response = apiService.getQuestionDetail(questionId)
                 if (response.isSuccessful && response.body() != null) {
                     Result.success(response.body()!!)
                 } else {
@@ -127,17 +142,39 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
             }
         }
 
-    // ==================== ANSWERS ====================
+    // ==================== ATTEMPTS ====================
+    // POST /attempts/start → tabel: attempt (mulai sesi ujian)
+    suspend fun startAttempt(idUjian: String, deviceInfo: String? = null): Result<AttemptResponse> =
+        withContext(Dispatchers.IO) {
+            try {
+                val request = StartAttemptRequest(idUjian = idUjian, deviceInfo = deviceInfo)
+                val response = apiService.startAttempt(request)
+                if (response.isSuccessful && response.body() != null) {
+                    val attempt = response.body()!!
+                    saveAttemptId(attempt.id)
+                    Result.success(attempt)
+                } else {
+                    Result.failure(Exception("Gagal memulai ujian: ${response.code()}"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+    // POST /attempts/{id}/answer → tabel: student_answer (simpan jawaban)
     suspend fun submitAnswer(
-        examId: String,
-        questionId: String,
-        nomorSoal: Int,
-        jawaban: String,
-        isBookmarked: Boolean = false
-    ): Result<AnswerResponse> = withContext(Dispatchers.IO) {
+        attemptId: String,
+        soalId: String,
+        idOpsiPilihan: String? = null,
+        teksJawaban: String? = null
+    ): Result<StudentAnswerResponse> = withContext(Dispatchers.IO) {
         try {
-            val request = AnswerRequest(examId, questionId, nomorSoal, jawaban, isBookmarked)
-            val response = apiService.submitAnswer(examId, request)
+            val request = AnswerRequest(
+                soalId = soalId,
+                idOpsiPilihan = idOpsiPilihan,
+                teksJawaban = teksJawaban
+            )
+            val response = apiService.submitAnswer(attemptId, request)
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!)
             } else {
@@ -148,10 +185,56 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
         }
     }
 
-    suspend fun getExamAnswers(examId: String): Result<List<AnswerResponse>> =
+    // POST /attempts/{id}/submit → tabel: attempt (kumpul ujian)
+    suspend fun submitAttempt(attemptId: String): Result<AttemptResponse> =
         withContext(Dispatchers.IO) {
             try {
-                val response = apiService.getExamAnswers(examId)
+                val response = apiService.submitAttempt(attemptId)
+                if (response.isSuccessful && response.body() != null) {
+                    Result.success(response.body()!!)
+                } else {
+                    Result.failure(Exception("Gagal submit ujian"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+    // GET /attempts/{id} → tabel: attempt
+    suspend fun getAttemptDetail(attemptId: String): Result<AttemptResponse> =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.getAttemptDetail(attemptId)
+                if (response.isSuccessful && response.body() != null) {
+                    Result.success(response.body()!!)
+                } else {
+                    Result.failure(Exception("Gagal mengambil detail attempt"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+    // GET /attempts/my → tabel: attempt (riwayat ujian siswa)
+    suspend fun getMyAttempts(): Result<List<AttemptResponse>> =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.getMyAttempts()
+                if (response.isSuccessful && response.body() != null) {
+                    Result.success(response.body()!!)
+                } else {
+                    Result.failure(Exception("Gagal mengambil riwayat ujian"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+    // GET /attempts/{id}/answers → tabel: student_answer (semua jawaban dalam satu sesi)
+    suspend fun getAttemptAnswers(attemptId: String): Result<List<AnswerResponse>> =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.getAttemptAnswers(attemptId)
                 if (response.isSuccessful && response.body() != null) {
                     Result.success(response.body()!!)
                 } else {
@@ -161,27 +244,31 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
                 Result.failure(e)
             }
         }
-
-    suspend fun updateAnswer(
-        examId: String,
-        questionId: String,
-        jawaban: String,
-        isBookmarked: Boolean = false
-    ): Result<AnswerResponse> = withContext(Dispatchers.IO) {
+    // ==================== BACKWARD COMPATIBILITY ====================
+    suspend fun getExamHistory(): Result<ExamHistoryResponse> = withContext(Dispatchers.IO) {
         try {
-            val request = AnswerRequest(examId, questionId, 0, jawaban, isBookmarked)
-            val response = apiService.updateAnswer(examId, questionId, request)
+            val response = apiService.getMyAttempts()
             if (response.isSuccessful && response.body() != null) {
-                Result.success(response.body()!!)
+                val attempts = response.body()!!
+                val legacyHistory = attempts.map { attempt ->
+                    ExamResultResponse(
+                        id = attempt.id,
+                        examTitle = "Ujian #" + attempt.idUjian.takeLast(4), // Placeholder
+                        scorePercentage = attempt.score,
+                        tanggalUjian = attempt.waktuKirim ?: attempt.waktuMulai ?: "-",
+                        waktuTempuhDetik = 0, // Dihitung jika perlu
+                        status = attempt.status
+                    )
+                }
+                Result.success(ExamHistoryResponse(legacyHistory))
             } else {
-                Result.failure(Exception("Gagal mengupdate jawaban"))
+                Result.failure(Exception("Gagal riwayat"))
             }
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    // ==================== EXAM RESULTS ====================
     suspend fun submitExam(
         examId: String,
         totalSoal: Int,
@@ -191,48 +278,23 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
         waktuTempuhDetik: Long
     ): Result<ExamResultResponse> = withContext(Dispatchers.IO) {
         try {
-            val studentId = getStudentId()
-            val status = if (scorePercentage >= 70) "PASSED" else "FAILED"
-            val request = ExamResultRequest(
-                examId, studentId, totalSoal, jumlahTerjawab,
-                jumlahBenar, scorePercentage, waktuTempuhDetik, status
-            )
-            val response = apiService.submitExam(examId, request)
+            val attemptId = getCurrentAttemptId()
+            val response = apiService.submitAttempt(attemptId)
             if (response.isSuccessful && response.body() != null) {
-                Result.success(response.body()!!)
+                val attempt = response.body()!!
+                Result.success(ExamResultResponse(
+                    id = attempt.id,
+                    examTitle = "Hasil Ujian",
+                    scorePercentage = attempt.score,
+                    tanggalUjian = attempt.waktuKirim ?: "-",
+                    waktuTempuhDetik = waktuTempuhDetik.toInt(),
+                    status = attempt.status
+                ))
             } else {
-                Result.failure(Exception("Gagal submit ujian"))
+                Result.failure(Exception("Gagal submit"))
             }
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
-
-    suspend fun getExamHistory(): Result<List<ExamResultResponse>> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.getExamHistory(getStudentId())
-                if (response.isSuccessful && response.body() != null) {
-                    Result.success(response.body()!!.data)
-                } else {
-                    Result.failure(Exception("Gagal mengambil riwayat ujian"))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-
-    suspend fun getExamHistoryBySubject(subject: String): Result<List<ExamResultResponse>> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.getExamHistoryBySubject(getStudentId(), subject)
-                if (response.isSuccessful && response.body() != null) {
-                    Result.success(response.body()!!.data)
-                } else {
-                    Result.failure(Exception("Gagal mengambil riwayat ujian"))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
 }

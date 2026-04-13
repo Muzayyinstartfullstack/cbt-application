@@ -89,18 +89,30 @@ class DetailUjianActivity : AppCompatActivity() {
                 val result = repository.checkExamToken(inputToken)
 
                 result.onSuccess { exam ->
-                    progressBar.visibility = View.GONE
-                    Toast.makeText(this@DetailUjianActivity, "Berhasil: ${exam.judul}", Toast.LENGTH_SHORT).show()
+                    // 1. Mulai Attempt Ujian di Backend
+                    lifecycleScope.launch {
+                        progressBar.visibility = View.VISIBLE
+                        val attemptResult = repository.startAttempt(exam.id)
+                        
+                        progressBar.visibility = View.GONE
+                        attemptResult.onSuccess { attempt ->
+                            Toast.makeText(this@DetailUjianActivity, "Berhasil: ${exam.judul}", Toast.LENGTH_SHORT).show()
 
-                    // Pindah ke SoalUjianActivity dengan data lengkap
-                    val intent = Intent(this@DetailUjianActivity, SoalUjianActivity::class.java).apply {
-                        putExtra("EXAM_ID", exam.id)
-                        putExtra("EXAM_TITLE", exam.judul)
-                        putExtra("EXAM_DURATION", exam.durasi)
-                        putExtra("TOTAL_QUESTIONS", exam.totalSoal)
+                            // 2. Pindah ke SoalUjianActivity dengan data lengkap
+                            val intent = Intent(this@DetailUjianActivity, SoalUjianActivity::class.java).apply {
+                                putExtra("EXAM_ID", exam.id)
+                                putExtra("EXAM_TITLE", exam.judul)
+                                putExtra("EXAM_DURATION", exam.durasi)
+                                putExtra("TOTAL_QUESTIONS", exam.totalSoal)
+                                putExtra("ATTEMPT_ID", attempt.id)
+                            }
+                            startActivity(intent)
+                            finish()
+                        }.onFailure { error ->
+                            resetUIState()
+                            Toast.makeText(this@DetailUjianActivity, "Gagal memulai ujian: ${error.message}", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                    startActivity(intent)
-                    finish()
                 }
 
                 result.onFailure { error ->

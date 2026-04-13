@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cbt.adapter.UpcomingExamAdapter
 import com.example.cbt.api.RetrofitClient
+import com.example.cbt.api.TokenManager
 import com.example.cbt.model.ExamResultResponse
 import com.example.cbt.repository.ExamRepository
 import kotlinx.coroutines.launch
@@ -36,6 +37,8 @@ class DashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_dashboard)
+
+        TokenManager.init(this)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_dashboard)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -99,8 +102,9 @@ class DashboardActivity : AppCompatActivity() {
             try {
                 val result = repository.getExamHistory()
 
-                result.onSuccess { exams ->
+                result.onSuccess { examHistory ->
                     progressBar.visibility = View.GONE
+                    val exams = examHistory.data
 
                     if (exams.isNotEmpty()) {
                         // Filter upcoming exams (bisa disesuaikan dengan data dari server)

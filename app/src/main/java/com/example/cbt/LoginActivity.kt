@@ -25,6 +25,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        com.example.cbt.api.TokenManager.init(this)
         repository = ExamRepository(RetrofitClient.instance, this)
 
         if (repository.isLoggedIn()) {
@@ -57,6 +58,8 @@ class LoginActivity : AppCompatActivity() {
                 val result = repository.login(inputNis, inputPassword)
 
                 result.onSuccess { loginResponse ->
+                    // Simpan token ke TokenManager agar bisa dipakai di setiap request
+                    com.example.cbt.api.TokenManager.saveToken(this@LoginActivity, loginResponse.token)
                     Toast.makeText(
                         this@LoginActivity,
                         "Login berhasil! Selamat datang ${loginResponse.nama}",

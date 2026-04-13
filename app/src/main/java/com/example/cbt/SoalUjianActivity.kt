@@ -32,6 +32,7 @@ class SoalUjianActivity : AppCompatActivity() {
     private var passingGrade: Int = 70
 
     private var selectedOption = -1
+    private var attemptId: String = ""
     private var currentQuestion = 0
     private var timeRemaining = 0L
     private var countDownTimer: CountDownTimer? = null
@@ -40,6 +41,7 @@ class SoalUjianActivity : AppCompatActivity() {
     // Data
     private lateinit var questions: List<Question>
     private var answersMap = mutableMapOf<String, String>() // question_id -> jawaban (A, B, C, D, E)
+    private var answersOptionIdMap = mutableMapOf<String, String>() // question_id -> option_id
     private var bookmarkedQuestions = mutableSetOf<String>() // question_id
 
     private lateinit var optionA: LinearLayout
@@ -68,6 +70,7 @@ class SoalUjianActivity : AppCompatActivity() {
         durasiMenit = intent.getIntExtra("EXAM_DURATION", 60)
         totalQuestions = intent.getIntExtra("TOTAL_QUESTIONS", 45)
         passingGrade = intent.getIntExtra("PASSING_GRADE", 70)
+        attemptId = intent.getStringExtra("ATTEMPT_ID") ?: ""
 
         if (examId.isEmpty()) {
             Toast.makeText(this, "Data ujian tidak valid", Toast.LENGTH_SHORT).show()
@@ -174,24 +177,30 @@ class SoalUjianActivity : AppCompatActivity() {
 
         // Simpan jawaban
         if (currentQuestion < questions.size) {
-            val questionId = questions[currentQuestion].id
+            val question = questions[currentQuestion]
+            val questionId = question.id
             answersMap[questionId] = optionLabel
+            
+            // Simpan ID opsi jika tersedia
+            val optionId = question.opsiJawaban.getOrNull(optionIndex)?.id
+            if (optionId != null) {
+                answersOptionIdMap[questionId] = optionId
+            }
 
             // Submit to API
-            submitAnswerToApi(questionId, optionLabel)
+            submitAnswerToApi(questionId, optionLabel, optionId)
         }
     }
 
-    private fun submitAnswerToApi(questionId: String, jawaban: String) {
+    private fun submitAnswerToApi(questionId: String, jawaban: String, optionId: String?) {
         lifecycleScope.launch {
             try {
-                val nomorSoal = questions[currentQuestion].nomor
+                // Gunakan attemptId yang baru
                 val result = repository.submitAnswer(
-                    examId = examId,
-                    questionId = questionId,
-                    nomorSoal = nomorSoal,
-                    jawaban = jawaban,
-                    isBookmarked = isBookmarked
+                    attemptId = attemptId,
+                    soalId = questionId,
+                    idOpsiPilihan = optionId,
+                    teksJawaban = jawaban
                 )
 
                 result.onSuccess {
@@ -257,7 +266,7 @@ class SoalUjianActivity : AppCompatActivity() {
             val question = questions[currentQuestion]
 
             // Set pertanyaan
-            questionView.text = "${question.nomor}. ${question.pertanyaan}"
+            questionView.text = "${currentQuestion + 1}. ${question.teksSoal}"
 
             // Set opsi (Anda perlu update layout XML untuk menampilkan opsi ini)
             val optionAText = findViewById<TextView>(R.id.option_a_text)
@@ -266,11 +275,11 @@ class SoalUjianActivity : AppCompatActivity() {
             val optionDText = findViewById<TextView>(R.id.option_d_text)
             val optionEText = findViewById<TextView>(R.id.option_e_text)
 
-            optionAText.text = question.opsiA
-            optionBText.text = question.opsiB
-            optionCText.text = question.opsiC
-            optionDText.text = question.opsiD
-            optionEText.text = question.opsiE
+            optionAText.text = question.opsiJawaban.getOrNull(0)?.opsiText ?: ""
+            optionBText.text = question.opsiJawaban.getOrNull(1)?.opsiText ?: ""
+            optionCText.text = question.opsiJawaban.getOrNull(2)?.opsiText ?: ""
+            optionDText.text = question.opsiJawaban.getOrNull(3)?.opsiText ?: ""
+            optionEText.text = question.opsiJawaban.getOrNull(4)?.opsiText ?: ""
 
             // Load jawaban yang sudah ada
             val questionId = question.id
@@ -309,7 +318,7 @@ class SoalUjianActivity : AppCompatActivity() {
 
             // Submit bookmark status ke API
             if (answersMap.containsKey(questionId)) {
-                submitAnswerToApi(questionId, answersMap[questionId]!!)
+                submitAnswerToApi(questionId, answersMap[questionId]!!, answersOptionIdMap[questionId])
             }
         }
     }

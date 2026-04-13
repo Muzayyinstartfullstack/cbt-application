@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
     // Ganti dengan IP PC lo (cek via ipconfig) atau URL ngrok
-    private const val BASE_URL = "http://192.168.1.x:8080/"
+    private const val BASE_URL = "http://10.230.13.73:8080"
 
     private fun getOkHttpClient(): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {

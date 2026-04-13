@@ -29,7 +29,7 @@ class HistoryActivity : AppCompatActivity() {
     private var isUpdatingChip = false
     private var allExamHistory = listOf<com.example.cbt.model.ExamResultResponse>()
 
-    val recyclerView = findViewById<RecyclerView>(R.id.recyclerHistory)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,9 +141,10 @@ class HistoryActivity : AppCompatActivity() {
 
                 result.onSuccess { examHistory ->
                     progressBar.visibility = View.GONE
-                    allExamHistory = examHistory
+                    val results = examHistory.data
+                    allExamHistory = results
 
-                    if (examHistory.isNotEmpty()) {
+                    if (results.isNotEmpty()) {
                         historyAdapter = ExamHistoryAdapter { exam ->
                             val intent = Intent(this@HistoryActivity, HistoryDetailActivity::class.java)
                             intent.putExtra("exam_id", exam.id)
@@ -155,9 +156,7 @@ class HistoryActivity : AppCompatActivity() {
                             startActivity(intent)
                         }
 
-                        recyclerView.adapter = historyAdapter
-
-                        historyAdapter.submitList(examHistory)
+                        historyAdapter.submitList(results)
                         recyclerHistory.adapter = historyAdapter
 
                     } else {
