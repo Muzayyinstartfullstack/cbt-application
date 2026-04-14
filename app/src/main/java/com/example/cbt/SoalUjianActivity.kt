@@ -14,18 +14,18 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.lifecycleScope
 import com.example.cbt.database.SupabaseClient
 import com.example.cbt.model.Question
-import com.example.cbt.model.QuestionOption
-import com.example.cbt.model.ExamSession
+import com.example.cbt.model.SessionQuestion
 import com.example.cbt.repository.ExamRepository
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.coroutines.launch
 
 class SoalUjianActivity : AppCompatActivity() {
 
     private lateinit var repository: ExamRepository
 
-    // Views
+    // ─── VIEWS ────────────────────────────────────────────────────────────────
     private lateinit var timerView: TextView
     private lateinit var questionView: TextView
     private lateinit var progressButton: TextView
@@ -47,7 +47,7 @@ class SoalUjianActivity : AppCompatActivity() {
     private lateinit var btnSizeDecrease: ImageButton
     private lateinit var btnNavigasi: AppCompatButton
 
-    // Data dari intent
+    // ─── DATA DARI INTENT ─────────────────────────────────────────────────────
     private var examId: String = ""
     private var sessionId: String = ""
     private var examTitle: String = ""
@@ -55,21 +55,26 @@ class SoalUjianActivity : AppCompatActivity() {
     private var totalQuestions: Int = 0
     private var profileId: String = ""
 
-    // State
+    // ─── STATE ────────────────────────────────────────────────────────────────
     private var selectedOption = -1
     private var currentQuestion = 0
     private var timeRemaining = 0L
     private var countDownTimer: CountDownTimer? = null
     private var isBookmarked = false
 
-    // Data soal
+    // ─── DATA SOAL ────────────────────────────────────────────────────────────
     private var questions: List<Question> = emptyList()
 
-    // question_id -> option_id yang dipilih
+    // question_id -> option_id yang dipilih siswa
     private var answersOptionIdMap = mutableMapOf<String, String>()
 
-    // question_id yang di-bookmark (ragu-ragu)
+    // question_id -> session_question_id (untuk FK ke session_answers)
+    private var sessionQuestionIdMap = mutableMapOf<String, String>()
+
+    // question_id yang di-ragu-ragu
     private var bookmarkedQuestions = mutableSetOf<String>()
+
+    // ─── LIFECYCLE ────────────────────────────────────────────────────────────
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +82,6 @@ class SoalUjianActivity : AppCompatActivity() {
 
         repository = ExamRepository()
 
-        // Ambil data dari intent
         examId      = intent.getStringExtra("EXAM_ID") ?: ""
         sessionId   = intent.getStringExtra("SESSION_ID") ?: ""
         examTitle   = intent.getStringExtra("EXAM_TITLE") ?: "Ujian"
@@ -95,7 +99,12 @@ class SoalUjianActivity : AppCompatActivity() {
         loadQuestions()
     }
 
-    // ─── INIT ─────────────────────────────────────────────────────────────────
+    override fun onDestroy() {
+        super.onDestroy()
+        countDownTimer?.cancel()
+    }
+
+    // ─── INIT VIEWS ───────────────────────────────────────────────────────────
 
     private fun initializeViews() {
         timerView        = findViewById(R.id.tv_timer)
@@ -115,26 +124,24 @@ class SoalUjianActivity : AppCompatActivity() {
         optionDText = findViewById(R.id.option_d_text)
         optionEText = findViewById(R.id.option_e_text)
 
-        btnPrevious    = findViewById(R.id.btn_previous)
-        btnNext        = findViewById(R.id.btn_next)
-        btnBookmark    = findViewById(R.id.btn_bookmark)
+        btnPrevious     = findViewById(R.id.btn_previous)
+        btnNext         = findViewById(R.id.btn_next)
+        btnBookmark     = findViewById(R.id.btn_bookmark)
         btnSizeIncrease = findViewById(R.id.btn_size_increase)
         btnSizeDecrease = findViewById(R.id.btn_size_decrease)
-        btnNavigasi    = findViewById(R.id.btn_navigasi)
+        btnNavigasi     = findViewById(R.id.btn_navigasi)
     }
 
     private fun setupClickListeners() {
-        // Pilih opsi berdasarkan index dan option_label dari question_options
         optionA.setOnClickListener { selectOption(0) }
         optionB.setOnClickListener { selectOption(1) }
         optionC.setOnClickListener { selectOption(2) }
         optionD.setOnClickListener { selectOption(3) }
         optionE.setOnClickListener { selectOption(4) }
 
-        btnPrevious.setOnClickListener { goToPreviousQuestion() }
-        btnNext.setOnClickListener     { goToNextQuestion() }
-        btnBookmark.setOnClickListener { toggleBookmark() }
-
+        btnPrevious.setOnClickListener     { goToPreviousQuestion() }
+        btnNext.setOnClickListener         { goToNextQuestion() }
+        btnBookmark.setOnClickListener     { toggleBookmark() }
         btnSizeIncrease.setOnClickListener { increaseFontSize() }
         btnSizeDecrease.setOnClickListener { decreaseFontSize() }
 
@@ -151,7 +158,7 @@ class SoalUjianActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                // Ambil session_questions beserta relasi questions dan question_options
+                // Ambil session_questions + relasi questions + question_options sekaligus
                 val sessionQuestions = SupabaseClient.client
                     .from("session_questions")
                     .select(
@@ -164,12 +171,18 @@ class SoalUjianActivity : AppCompatActivity() {
                         )
                     ) {
                         filter { eq("session_id", sessionId) }
-                        order("question_order", io.github.jan.supabase.postgrest.query.Order.ASCENDING)
+                        order("question_order", Order.ASCENDING)
                     }
-                    .decodeList<com.example.cbt.model.SessionQuestion>()
+                    .decodeList<SessionQuestion>()
 
-                // Ekstrak Question dari relasi
-                questions = sessionQuestions.mapNotNull { it.questions }
+                // Isi mapping question_id -> session_question_id
+                // Dibutuhkan saat insert ke tabel session_answers
+                sessionQuestionIdMap = sessionQuestions
+                    .associate { sq -> (sq.questions?.id ?: "") to sq.id }
+                    .toMutableMap()
+
+                // Ekstrak list Question dari relasi
+                questions      = sessionQuestions.mapNotNull { it.questions }
                 totalQuestions = questions.size
 
                 loadingIndicator.visibility = View.GONE
@@ -205,10 +218,10 @@ class SoalUjianActivity : AppCompatActivity() {
 
         val question = questions[currentQuestion]
 
-        // Tampilkan teks soal — field: question_text
+        // question_text dari tabel questions
         questionView.text = "${currentQuestion + 1}. ${question.questionText}"
 
-        // Urutkan opsi berdasarkan option_label (A, B, C, D, E)
+        // Urutkan option_label A, B, C, D, E dari tabel question_options
         val sortedOptions = question.options.sortedBy { it.optionLabel }
 
         optionAText.text = sortedOptions.getOrNull(0)?.optionText ?: ""
@@ -217,10 +230,10 @@ class SoalUjianActivity : AppCompatActivity() {
         optionDText.text = sortedOptions.getOrNull(3)?.optionText ?: ""
         optionEText.text = sortedOptions.getOrNull(4)?.optionText ?: ""
 
-        // Sembunyikan opsi yang kosong
+        // Sembunyikan opsi E jika tidak ada
         optionE.visibility = if (sortedOptions.size >= 5) View.VISIBLE else View.GONE
 
-        // Restore pilihan sebelumnya jika ada
+        // Restore jawaban yang sudah dipilih sebelumnya
         val chosenOptionId = answersOptionIdMap[question.id]
         selectedOption = if (chosenOptionId != null) {
             sortedOptions.indexOfFirst { it.id == chosenOptionId }
@@ -228,9 +241,9 @@ class SoalUjianActivity : AppCompatActivity() {
             -1
         }
 
-        // Restore status bookmark
-        isBookmarked = bookmarkedQuestions.contains(question.id)
-        btnBookmark.text = if (isBookmarked) "✓ Ragu-ragu" else "Ragu-ragu"
+        // Restore status ragu-ragu
+        isBookmarked      = bookmarkedQuestions.contains(question.id)
+        btnBookmark.text  = if (isBookmarked) "✓ Ragu-ragu" else "Ragu-ragu"
         btnBookmark.alpha = if (isBookmarked) 0.8f else 1.0f
 
         updateOptionUI()
@@ -247,41 +260,29 @@ class SoalUjianActivity : AppCompatActivity() {
         val chosenOption  = sortedOptions.getOrNull(optionIndex) ?: return
 
         selectedOption = optionIndex
-
-        // Simpan option_id yang dipilih
         answersOptionIdMap[question.id] = chosenOption.id
 
         updateOptionUI()
 
-        // Simpan jawaban ke tabel session_answers (upsert)
-        saveAnswerToSupabase(
-            sessionQuestionId = getSessionQuestionId(question.id),
-            chosenOptionId    = chosenOption.id,
-            isCorrect         = chosenOption.isCorrect
-        )
+        // Simpan ke tabel session_answers via upsert
+        val sessionQuestionId = sessionQuestionIdMap[question.id] ?: ""
+        if (sessionQuestionId.isNotEmpty()) {
+            saveAnswerToSupabase(
+                sessionQuestionId = sessionQuestionId,
+                chosenOptionId    = chosenOption.id,
+                isCorrect         = chosenOption.isCorrect
+            )
+        }
     }
-
-    private fun getSessionQuestionId(questionId: String): String {
-        // Dicari dari data session_questions yang sudah diload
-        // Karena kita perlu session_question.id untuk foreign key di session_answers
-        // Simpan mapping saat load soal
-        return sessionQuestionIdMap[questionId] ?: ""
-    }
-
-    // Mapping question_id -> session_question_id (diisi saat loadQuestions)
-    private var sessionQuestionIdMap = mutableMapOf<String, String>()
 
     private fun saveAnswerToSupabase(
         sessionQuestionId: String,
         chosenOptionId: String,
         isCorrect: Boolean
     ) {
-        if (sessionQuestionId.isEmpty()) return
-
         lifecycleScope.launch {
             try {
-                // Upsert ke tabel session_answers
-                // UNIQUE constraint: session_question_id
+                // UNIQUE constraint pada session_question_id → pakai upsert
                 SupabaseClient.client
                     .from("session_answers")
                     .upsert(
@@ -349,7 +350,7 @@ class SoalUjianActivity : AppCompatActivity() {
         }
     }
 
-    // ─── BOOKMARK / RAGU-RAGU ────────────────────────────────────────────────
+    // ─── BOOKMARK / RAGU-RAGU ─────────────────────────────────────────────────
 
     private fun toggleBookmark() {
         if (currentQuestion >= questions.size) return
@@ -402,16 +403,14 @@ class SoalUjianActivity : AppCompatActivity() {
     private fun submitExam() {
         lifecycleScope.launch {
             try {
-                // Hitung skor dari is_correct di question_options
-                val totalJawaban = answersOptionIdMap.size
-                val jumlahBenar  = hitungJumlahBenar()
-                val score        = if (totalQuestions > 0) {
+                val jumlahBenar = hitungJumlahBenar()
+                val score = if (totalQuestions > 0) {
                     (jumlahBenar.toDouble() / totalQuestions) * 100
                 } else 0.0
 
                 val now = java.time.Instant.now().toString()
 
-                // 1. Update status exam_sessions → submitted
+                // 1. Update exam_sessions → submitted
                 SupabaseClient.client
                     .from("exam_sessions")
                     .update(
@@ -438,11 +437,11 @@ class SoalUjianActivity : AppCompatActivity() {
 
                 // 3. Navigasi ke halaman hasil
                 val intent = Intent(this@SoalUjianActivity, DetailHasilActivity::class.java)
-                intent.putExtra("SESSION_ID",  sessionId)
-                intent.putExtra("EXAM_TITLE",  examTitle)
-                intent.putExtra("SCORE",       score)
-                intent.putExtra("TOTAL",       totalQuestions)
-                intent.putExtra("BENAR",       jumlahBenar)
+                intent.putExtra("SESSION_ID", sessionId)
+                intent.putExtra("EXAM_TITLE", examTitle)
+                intent.putExtra("SCORE",      score)
+                intent.putExtra("TOTAL",      totalQuestions)
+                intent.putExtra("BENAR",      jumlahBenar)
                 startActivity(intent)
                 finish()
 
@@ -456,10 +455,8 @@ class SoalUjianActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Hitung jawaban benar berdasarkan is_correct di tabel question_options.
-     * Tidak perlu request ke server — data sudah ada di question.options.
-     */
+    // Hitung jawaban benar dari is_correct di question_options
+    // Data sudah ada di memory — tidak perlu request ke server
     private fun hitungJumlahBenar(): Int {
         var benar = 0
         for (question in questions) {
@@ -480,12 +477,5 @@ class SoalUjianActivity : AppCompatActivity() {
     private fun decreaseFontSize() {
         val current = questionView.textSize / resources.displayMetrics.scaledDensity
         if (current > 12) questionView.textSize = current - 2
-    }
-
-    // ─── LIFECYCLE ────────────────────────────────────────────────────────────
-
-    override fun onDestroy() {
-        super.onDestroy()
-        countDownTimer?.cancel()
     }
 }
