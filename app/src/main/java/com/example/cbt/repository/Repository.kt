@@ -1,3 +1,9 @@
+package com.example.cbt.repository
+
+import com.example.cbt.database.SupabaseClient
+import com.example.cbt.model.Exam
+import com.example.cbt.model.Subject
+import com.example.cbt.model.TopicGroup
 import io.github.jan.supabase.postgrest.from
 
 class Repository {
@@ -9,7 +15,7 @@ class Repository {
             .decodeList<Subject>()
     }
 
-    suspend fun getExams(subjectId: Int): List<Exam> {
+    suspend fun getExams(subjectId: String): List<Exam> {
         return SupabaseClient.client
             .from("exams")
             .select {
@@ -20,7 +26,7 @@ class Repository {
             .decodeList<Exam>()
     }
 
-    suspend fun getTopics(subjectId: Int): List<TopicGroup> {
+    suspend fun getTopics(subjectId: String): List<TopicGroup> {
         return SupabaseClient.client
             .from("topic_groups")
             .select {
@@ -30,5 +36,4 @@ class Repository {
             }
             .decodeList<TopicGroup>()
     }
-
 }

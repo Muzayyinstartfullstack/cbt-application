@@ -1,298 +1,392 @@
 package com.example.cbt.repository
 
-import android.content.Context
-import android.content.SharedPreferences
-import com.example.cbt.api.ExamApiService
+import com.example.cbt.database.SupabaseClient
 import com.example.cbt.model.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.query.Order
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
-class ExamRepository(private val apiService: ExamApiService, context: Context) {
+class ExamRepository {
 
-    private val sharedPreferences: SharedPreferences =
-        context.getSharedPreferences("CBT_PREF", Context.MODE_PRIVATE)
+    private val db   = SupabaseClient.client
+    private val auth = SupabaseClient.client.auth
 
-    companion object {
-        private const val KEY_JWT_TOKEN = "jwt_token"
-        private const val KEY_STUDENT_ID = "student_id"
-        private const val KEY_STUDENT_NAME = "student_name"
-        private const val KEY_NIS = "nis"
-        private const val KEY_ATTEMPT_ID = "attempt_id"
-    }
+    // ─── AUTH ─────────────────────────────────────────────────────────────────
 
-    // ==================== AUTH ====================
-    suspend fun login(nis: String, password: String): Result<LoginResponse> =
-        withContext(Dispatchers.IO) {
-            try {
-                val request = LoginRequest(nisnNip = nis, password = password)
-                val response = apiService.login(request)
+    suspend fun login(nisnip: String, password: String): Result<Profile> {
+        return try {
+            val virtualEmail = "${nisnip}@cbt.internal"
 
-                if (response.isSuccessful && response.body() != null) {
-                    val loginData = response.body()!!
-                    saveAuthData(
-                        token = loginData.token,
-                        studentId = loginData.id,   // id dari backend adalah String (UUID)
-                        studentName = loginData.nama,
-                        nis = nis
-                    )
-                    Result.success(loginData)
-                } else {
-                    val errorMsg = when (response.code()) {
-                        401 -> "NISN/NIP atau password salah"
-                        404 -> "User tidak ditemukan"
-                        500 -> "Server error, coba lagi nanti"
-                        else -> "Login gagal: ${response.code()}"
-                    }
-                    Result.failure(Exception(errorMsg))
+            auth.signInWith(io.github.jan.supabase.auth.providers.builtin.Email) {
+                this.email    = virtualEmail
+                this.password = password
+            }
+
+            val profile = db.from("profiles")
+                .select(Columns.ALL) {
+                    filter { eq("nisnip", nisnip) }
                 }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
+                .decodeSingle<Profile>()
 
-    fun logout() {
-        sharedPreferences.edit().clear().apply()
-    }
-
-    fun getJwtToken(): String = sharedPreferences.getString(KEY_JWT_TOKEN, "") ?: ""
-    fun getStudentId(): String = sharedPreferences.getString(KEY_STUDENT_ID, "") ?: ""
-    fun getStudentName(): String = sharedPreferences.getString(KEY_STUDENT_NAME, "") ?: ""
-    fun getNis(): String = sharedPreferences.getString(KEY_NIS, "") ?: ""
-    fun isLoggedIn(): Boolean = getJwtToken().isNotEmpty()
-    fun getCurrentAttemptId(): String = sharedPreferences.getString(KEY_ATTEMPT_ID, "") ?: ""
-
-    fun saveAttemptId(attemptId: String) {
-        sharedPreferences.edit().putString(KEY_ATTEMPT_ID, attemptId).apply()
-    }
-
-    private fun saveAuthData(token: String, studentId: String, studentName: String, nis: String) {
-        sharedPreferences.edit().apply {
-            putString(KEY_JWT_TOKEN, token)
-            putString(KEY_STUDENT_ID, studentId)
-            putString(KEY_STUDENT_NAME, studentName)
-            putString(KEY_NIS, nis)
-            apply()
-        }
-    }
-
-    // ==================== EXAM ====================
-    // Validasi token ujian → GET /exams/check-token/{token} → tabel: ujian
-    suspend fun checkExamToken(token: String): Result<ExamResponse> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.checkExamToken(token)
-                if (response.isSuccessful && response.body() != null) {
-                    Result.success(response.body()!!)
-                } else {
-                    val errorMsg = when (response.code()) {
-                        401 -> "Token JWT tidak valid"
-                        404 -> "Kode ujian tidak ditemukan"
-                        else -> "Error: ${response.code()}"
-                    }
-                    Result.failure(Exception(errorMsg))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-
-    // Detail ujian → GET /exams/{id} → tabel: ujian
-    suspend fun getExamDetail(examId: String): Result<ExamResponse> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.getExamDetail(examId)
-                if (response.isSuccessful && response.body() != null) {
-                    Result.success(response.body()!!)
-                } else {
-                    Result.failure(Exception("Gagal mengambil detail ujian"))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-
-    // ==================== QUESTIONS ====================
-    // GET /questions/exam/{idUjian} → tabel: soal + opsi_jawaban
-    suspend fun getQuestions(examId: String): Result<List<Question>> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.getQuestions(examId)
-                if (response.isSuccessful && response.body() != null) {
-                    Result.success(response.body()!!)
-                } else {
-                    Result.failure(Exception("Gagal mengambil daftar soal"))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-
-    // GET /questions/{id} → tabel: soal + opsi_jawaban
-    suspend fun getQuestionDetail(questionId: String): Result<Question> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.getQuestionDetail(questionId)
-                if (response.isSuccessful && response.body() != null) {
-                    Result.success(response.body()!!)
-                } else {
-                    Result.failure(Exception("Gagal mengambil detail soal"))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-
-    // ==================== ATTEMPTS ====================
-    // POST /attempts/start → tabel: attempt (mulai sesi ujian)
-    suspend fun startAttempt(idUjian: String, deviceInfo: String? = null): Result<AttemptResponse> =
-        withContext(Dispatchers.IO) {
-            try {
-                val request = StartAttemptRequest(idUjian = idUjian, deviceInfo = deviceInfo)
-                val response = apiService.startAttempt(request)
-                if (response.isSuccessful && response.body() != null) {
-                    val attempt = response.body()!!
-                    saveAttemptId(attempt.id)
-                    Result.success(attempt)
-                } else {
-                    Result.failure(Exception("Gagal memulai ujian: ${response.code()}"))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-
-    // POST /attempts/{id}/answer → tabel: student_answer (simpan jawaban)
-    suspend fun submitAnswer(
-        attemptId: String,
-        soalId: String,
-        idOpsiPilihan: String? = null,
-        teksJawaban: String? = null
-    ): Result<StudentAnswerResponse> = withContext(Dispatchers.IO) {
-        try {
-            val request = AnswerRequest(
-                soalId = soalId,
-                idOpsiPilihan = idOpsiPilihan,
-                teksJawaban = teksJawaban
-            )
-            val response = apiService.submitAnswer(attemptId, request)
-            if (response.isSuccessful && response.body() != null) {
-                Result.success(response.body()!!)
-            } else {
-                Result.failure(Exception("Gagal menyimpan jawaban"))
-            }
+            Result.success(profile)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    // POST /attempts/{id}/submit → tabel: attempt (kumpul ujian)
-    suspend fun submitAttempt(attemptId: String): Result<AttemptResponse> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.submitAttempt(attemptId)
-                if (response.isSuccessful && response.body() != null) {
-                    Result.success(response.body()!!)
-                } else {
-                    Result.failure(Exception("Gagal submit ujian"))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-
-    // GET /attempts/{id} → tabel: attempt
-    suspend fun getAttemptDetail(attemptId: String): Result<AttemptResponse> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.getAttemptDetail(attemptId)
-                if (response.isSuccessful && response.body() != null) {
-                    Result.success(response.body()!!)
-                } else {
-                    Result.failure(Exception("Gagal mengambil detail attempt"))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-
-    // GET /attempts/my → tabel: attempt (riwayat ujian siswa)
-    suspend fun getMyAttempts(): Result<List<AttemptResponse>> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.getMyAttempts()
-                if (response.isSuccessful && response.body() != null) {
-                    Result.success(response.body()!!)
-                } else {
-                    Result.failure(Exception("Gagal mengambil riwayat ujian"))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-
-    // GET /attempts/{id}/answers → tabel: student_answer (semua jawaban dalam satu sesi)
-    suspend fun getAttemptAnswers(attemptId: String): Result<List<AnswerResponse>> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.getAttemptAnswers(attemptId)
-                if (response.isSuccessful && response.body() != null) {
-                    Result.success(response.body()!!)
-                } else {
-                    Result.failure(Exception("Gagal mengambil jawaban"))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-    // ==================== BACKWARD COMPATIBILITY ====================
-    suspend fun getExamHistory(): Result<ExamHistoryResponse> = withContext(Dispatchers.IO) {
+    suspend fun logout() {
         try {
-            val response = apiService.getMyAttempts()
-            if (response.isSuccessful && response.body() != null) {
-                val attempts = response.body()!!
-                val legacyHistory = attempts.map { attempt ->
-                    ExamResultResponse(
-                        id = attempt.id,
-                        examTitle = "Ujian #" + attempt.idUjian.takeLast(4), // Placeholder
-                        scorePercentage = attempt.score,
-                        tanggalUjian = attempt.waktuKirim ?: attempt.waktuMulai ?: "-",
-                        waktuTempuhDetik = 0, // Dihitung jika perlu
-                        status = attempt.status
-                    )
+            auth.signOut()
+        } catch (e: Exception) {
+            // abaikan error saat logout
+        }
+    }
+
+    fun getCurrentUserId(): String? {
+        return auth.currentUserOrNull()?.id
+    }
+
+    fun isLoggedIn(): Boolean {
+        return auth.currentUserOrNull() != null
+    }
+
+    suspend fun getProfile(userId: String): Result<Profile> {
+        return try {
+            val profile = db.from("profiles")
+                .select(Columns.ALL) {
+                    filter { eq("id", userId) }
                 }
-                Result.success(ExamHistoryResponse(legacyHistory))
-            } else {
-                Result.failure(Exception("Gagal riwayat"))
-            }
+                .decodeSingle<Profile>()
+            Result.success(profile)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
+
+    // ─── EXAM ─────────────────────────────────────────────────────────────────
+
+    suspend fun getExamDetail(examId: String): Result<Exam> {
+        return try {
+            val exam = db.from("exams")
+                .select(Columns.ALL) {
+                    filter { eq("id", examId) }
+                }
+                .decodeSingle<Exam>()
+            Result.success(exam)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getAvailableExams(profileId: String): Result<List<Exam>> {
+        return try {
+            // Ambil exam_id dari exam_participants lalu join ke exams
+            val participants = db.from("exam_participants")
+                .select(Columns.raw("exam_id, exams(*)")) {
+                    filter { eq("profile_id", profileId) }
+                }
+                .decodeList<ExamParticipant>()
+
+            val exams = participants.mapNotNull { it.exams }
+            Result.success(exams)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // ─── SESSION ──────────────────────────────────────────────────────────────
+
+    suspend fun getOrCreateSession(
+        examId: String,
+        profileId: String
+    ): Result<ExamSession> {
+        return try {
+            // Cek apakah sesi sudah ada
+            val existing = db.from("exam_sessions")
+                .select(Columns.ALL) {
+                    filter {
+                        eq("exam_id",    examId)
+                        eq("profile_id", profileId)
+                    }
+                }
+                .decodeList<ExamSession>()
+
+            if (existing.isNotEmpty()) {
+                return Result.success(existing.first())
+            }
+
+            // Buat sesi baru
+            val session = db.from("exam_sessions")
+                .insert(
+                    buildJsonObject {
+                        put("exam_id",    examId)
+                        put("profile_id", profileId)
+                        put("status",     "ongoing")
+                        put("start_time", java.time.Instant.now().toString())
+                    }
+                ) {
+                    select(Columns.ALL)
+                }
+                .decodeSingle<ExamSession>()
+
+            Result.success(session)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getSessionById(sessionId: String): Result<ExamSession> {
+        return try {
+            val session = db.from("exam_sessions")
+                .select(Columns.ALL) {
+                    filter { eq("id", sessionId) }
+                }
+                .decodeSingle<ExamSession>()
+            Result.success(session)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // ─── QUESTIONS ────────────────────────────────────────────────────────────
+
+    suspend fun getQuestions(examId: String): Result<List<Question>> {
+        return try {
+            val exam = getExamDetail(examId).getOrThrow()
+
+            val questions = db.from("questions")
+                .select(
+                    Columns.raw(
+                        "id, question_text, image_url, topic_id, subject_id, " +
+                                "question_options(id, option_label, option_text, is_correct)"
+                    )
+                ) {
+                    filter { eq("subject_id", exam.subjectId) }
+                }
+                .decodeList<Question>()
+
+            Result.success(questions)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getSessionQuestions(sessionId: String): Result<List<SessionQuestion>> {
+        return try {
+            val sessionQuestions = db.from("session_questions")
+                .select(
+                    Columns.raw(
+                        "id, question_order, question_id, " +
+                                "questions(" +
+                                "  id, question_text, image_url, topic_id, subject_id, " +
+                                "  question_options(id, option_label, option_text, is_correct)" +
+                                ")"
+                    )
+                ) {
+                    filter { eq("session_id", sessionId) }
+                    order("question_order", Order.ASCENDING)
+                }
+                .decodeList<SessionQuestion>()
+            Result.success(sessionQuestions)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun insertSessionQuestions(
+        sessionId: String,
+        questions: List<Question>
+    ): Result<Unit> {
+        return try {
+            val payload = questions.mapIndexed { index, q ->
+                buildJsonObject {
+                    put("session_id",     sessionId)
+                    put("question_id",    q.id)
+                    put("question_order", index + 1)
+                }
+            }
+            db.from("session_questions").insert(payload)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // ─── ANSWERS ──────────────────────────────────────────────────────────────
+
+    suspend fun upsertAnswer(
+        sessionQuestionId: String,
+        chosenOptionId: String,
+        isCorrect: Boolean
+    ): Result<Unit> {
+        return try {
+            db.from("session_answers")
+                .upsert(
+                    buildJsonObject {
+                        put("session_question_id", sessionQuestionId)
+                        put("chosen_option_id",    chosenOptionId)
+                        put("is_correct",          isCorrect)
+                        put("answered_at",         java.time.Instant.now().toString())
+                    }
+                ) {
+                    onConflict = "session_question_id"
+                }
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getAnswersBySession(sessionId: String): Result<List<SessionAnswer>> {
+        return try {
+            val answers = db.from("session_answers")
+                .select(
+                    Columns.raw(
+                        "id, chosen_option_id, is_correct, answered_at, " +
+                                "session_questions!inner(id, session_id)"
+                    )
+                ) {
+                    filter { eq("session_questions.session_id", sessionId) }
+                }
+                .decodeList<SessionAnswer>()
+            Result.success(answers)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // ─── SUBMIT ───────────────────────────────────────────────────────────────
 
     suspend fun submitExam(
-        examId: String,
-        totalSoal: Int,
-        jumlahTerjawab: Int,
+        sessionId: String,
+        totalQuestions: Int,
         jumlahBenar: Int,
-        scorePercentage: Double,
-        waktuTempuhDetik: Long
-    ): Result<ExamResultResponse> = withContext(Dispatchers.IO) {
-        try {
-            val attemptId = getCurrentAttemptId()
-            val response = apiService.submitAttempt(attemptId)
-            if (response.isSuccessful && response.body() != null) {
-                val attempt = response.body()!!
-                Result.success(ExamResultResponse(
-                    id = attempt.id,
-                    examTitle = "Hasil Ujian",
-                    scorePercentage = attempt.score,
-                    tanggalUjian = attempt.waktuKirim ?: "-",
-                    waktuTempuhDetik = waktuTempuhDetik.toInt(),
-                    status = attempt.status
-                ))
-            } else {
-                Result.failure(Exception("Gagal submit"))
+        score: Double
+    ): Result<ExamResult> {
+        return try {
+            val now = java.time.Instant.now().toString()
+
+            // 1. Update exam_sessions
+            db.from("exam_sessions")
+                .update(
+                    buildJsonObject {
+                        put("status",   "submitted")
+                        put("end_time", now)
+                        put("score",    score)
+                    }
+                ) {
+                    filter { eq("id", sessionId) }
+                }
+
+            // 2. Insert exam_results
+            val result = db.from("exam_results")
+                .insert(
+                    buildJsonObject {
+                        put("session_id",      sessionId)
+                        put("total_questions", totalQuestions)
+                        put("correct_answers", jumlahBenar)
+                        put("score",           score)
+                    }
+                ) {
+                    select(Columns.ALL)
+                }
+                .decodeSingle<ExamResult>()
+
+            Result.success(result)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // ─── HISTORY ──────────────────────────────────────────────────────────────
+
+    suspend fun getExamHistory(profileId: String): Result<List<ExamSession>> {
+        return try {
+            val sessions = db.from("exam_sessions")
+                .select(Columns.ALL) {
+                    filter {
+                        eq("profile_id", profileId)
+                        neq("status",    "not_started")
+                    }
+                    order("created_at", Order.DESCENDING)
+                }
+                .decodeList<ExamSession>()
+            Result.success(sessions)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getExamResult(sessionId: String): Result<ExamResult> {
+        return try {
+            val result = db.from("exam_results")
+                .select(Columns.ALL) {
+                    filter { eq("session_id", sessionId) }
+                }
+                .decodeSingle<ExamResult>()
+            Result.success(result)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // ─── SUBJECTS & TOPICS ────────────────────────────────────────────────────
+
+    suspend fun getAllSubjects(): Result<List<Subject>> {
+        return try {
+            val subjects = db.from("subjects")
+                .select(Columns.ALL)
+                .decodeList<Subject>()
+            Result.success(subjects)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getTopics(subjectId: String): Result<List<TopicGroup>> {
+        return try {
+            val topics = db.from("topic_groups")
+                .select(Columns.ALL) {
+                    filter { eq("subject_id", subjectId) }
+                }
+                .decodeList<TopicGroup>()
+            Result.success(topics)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // ─── TOPIC STATS ──────────────────────────────────────────────────────────
+
+    suspend fun saveTopicStats(stats: List<ResultTopicStat>): Result<Unit> {
+        return try {
+            val payload = stats.map { stat ->
+                buildJsonObject {
+                    put("session_id", stat.sessionId)
+                    put("topic_id",   stat.topicId)
+                    put("correct",    stat.correct)
+                    put("total",      stat.total)
+                    put("percentage", stat.percentage)
+                }
             }
+            db.from("result_topic_stats").insert(payload)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getTopicStats(sessionId: String): Result<List<ResultTopicStat>> {
+        return try {
+            val stats = db.from("result_topic_stats")
+                .select(Columns.ALL) {
+                    filter { eq("session_id", sessionId) }
+                }
+                .decodeList<ResultTopicStat>()
+            Result.success(stats)
         } catch (e: Exception) {
             Result.failure(e)
         }

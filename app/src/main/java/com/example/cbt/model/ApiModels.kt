@@ -1,20 +1,25 @@
 package com.example.cbt.model
 
-// ==================== AUTH ====================
-// POST /auth/login → body: { nisnNip, password }
-data class LoginRequest(val nisnNip: String, val password: String)
+// File ini hanya untuk model REST API lama (Retrofit).
+// Model Supabase sudah ada di:
+//   Profile.kt, Subject.kt, TopicGroup.kt, Exam.kt, Question.kt
 
-// Response dari backend: { token, id, nama, role }
+// ==================== AUTH ====================
+
+data class LoginRequest(
+    val nisnNip: String,
+    val password: String
+)
+
 data class LoginResponse(
     val token: String,
-    val id: String,       // backend kirim id sebagai String (UUID)
+    val id: String,
     val nama: String,
     val role: String
 )
 
-// ==================== EXAM ====================
-// GET /exams/{id} → tabel: ujian
-// GET /exams/check-token/{token} → tabel: ujian (cari by token)
+// ==================== EXAM (REST lama) ====================
+
 data class ExamResponse(
     val id: String,
     val judul: String,
@@ -29,8 +34,8 @@ data class ExamResponse(
     val createdBy: String?
 )
 
-// ==================== QUESTIONS ====================
-// GET /questions/exam/{idUjian} → tabel: soal + opsi_jawaban
+// ==================== QUESTIONS (REST lama) ====================
+
 data class AnswerOptionResponse(
     val id: String,
     val idSoal: String,
@@ -39,7 +44,8 @@ data class AnswerOptionResponse(
     val isCorrect: Boolean
 )
 
-data class Question(
+// Diganti nama: Questions → QuestionApi (hindari bentrok dengan Question.kt)
+data class QuestionApi(
     val id: String,
     val idUjian: String,
     val tipeSoal: String,
@@ -48,10 +54,8 @@ data class Question(
     val poin: Int,
     val opsiJawaban: List<AnswerOptionResponse> = emptyList()
 ) {
-    // Helper untuk backward compatibility dengan kode UI lama
     val pertanyaan: String get() = teksSoal
-    val nomor: Int get() = 0 // Akan diisi manual di Activity atau dihitung
-    
+    val nomor: Int get() = 0
     val opsiA: String get() = opsiJawaban.getOrNull(0)?.opsiText ?: ""
     val opsiB: String get() = opsiJawaban.getOrNull(1)?.opsiText ?: ""
     val opsiC: String get() = opsiJawaban.getOrNull(2)?.opsiText ?: ""
@@ -59,10 +63,10 @@ data class Question(
     val opsiE: String get() = opsiJawaban.getOrNull(4)?.opsiText ?: ""
 }
 
-data class QuestionListResponse(val data: List<Question>)
+data class QuestionListResponse(val data: List<QuestionApi>)
 
 // ==================== ATTEMPTS ====================
-// POST /attempts/start → tabel: attempt
+
 data class StartAttemptRequest(
     val idUjian: String,
     val deviceInfo: String? = null
@@ -83,7 +87,6 @@ data class AttemptResponse(
     val dikirim: Boolean
 )
 
-// POST /attempts/{id}/answer → tabel: student_answer
 data class AnswerRequest(
     val soalId: String,
     val idOpsiPilihan: String? = null,
@@ -98,12 +101,6 @@ data class StudentAnswerResponse(
     val teksJawaban: String?
 )
 
-// POST /attempts/{id}/submit
-// GET /attempts/{id}
-// GET /attempts/my → tabel: attempt (list milik user)
-// GET /attempts/exam/{idUjian} → tabel: attempt (per ujian)
-
-// GET /attempts/{id}/answers → tabel: student_answer
 data class AnswerResponse(
     val id: String,
     val attempId: String,
@@ -112,9 +109,7 @@ data class AnswerResponse(
     val teksJawaban: String?
 )
 
-// ==================== LEGACY (bisa dihapus jika tidak dipakai) ====================
-// Model-model di bawah ini tidak cocok dengan backend saat ini,
-// dipertahankan sementara agar tidak break aktivitas lain
+// ==================== LEGACY ====================
 
 data class ExamResultRequest(
     val examId: String,
@@ -138,7 +133,8 @@ data class ExamResultResponse(
     val durasiMenit: Int? = null
 )
 
-data class Exam(
+// Diganti nama: Exams → ExamLegacy (hindari bentrok dengan Exam.kt)
+data class ExamLegacy(
     val id: String,
     val subjectId: String,
     val subjectName: String,
@@ -151,5 +147,5 @@ data class Exam(
     val passingGrade: Double? = null
 )
 
-data class ExamListResponse(val data: List<Exam>)
+data class ExamListResponse(val data: List<ExamLegacy>)
 data class ExamHistoryResponse(val data: List<ExamResultResponse>)

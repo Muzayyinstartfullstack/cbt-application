@@ -4,6 +4,5 @@ enum class QuestionFilter {
     ALL,
     DIJAWAB,
     RAGU_RAGU,
-
     BELUM
 }
