@@ -19,6 +19,7 @@ import com.example.cbt.model.ExamSession // Pastikan import model yang benar
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
 
+
 class HistoryActivity : AppCompatActivity() {
 
     private lateinit var repository: ExamRepository
@@ -67,11 +68,6 @@ class HistoryActivity : AppCompatActivity() {
 
         findViewById<ImageView>(R.id.navProfile).setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
-            finish()
-        }
-
-        findViewById<ImageView>(R.id.btnFilter).setOnClickListener {
-            startActivity(Intent(this, HistoryFilterActivity::class.java))
             finish()
         }
 

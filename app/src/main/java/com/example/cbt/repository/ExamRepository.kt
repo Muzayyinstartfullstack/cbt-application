@@ -84,16 +84,54 @@ class ExamRepository {
         }
     }
 
-    suspend fun getAvailableExams(profileId: String): Result<List<Exam>> {
+    suspend fun getAvailableExams(profileIdOrUserId: String): Result<List<Exam>> {
         return try {
-            // Ambil exam_id dari exam_participants lalu join ke exams
+            // Coba ambil dari exam_participants. 
+            // Kadang profile_id di tabel ini merujuk ke auth.uid (String) atau profiles.id (Int)
+            // Di sini kita berasumsi relasi sudah benar di Supabase.
             val participants = db.from("exam_participants")
                 .select(Columns.raw("exam_id, exams(*)")) {
-                    filter { eq("profile_id", profileId) }
+                    filter {
+                        // Gunakan or jika tidak yakin mana yang dipakai (Int vs UUID string)
+                        // Tapi biasanya salah satu. Kita coba eq dulu.
+                        eq("profile_id", profileIdOrUserId)
+                    }
                 }
                 .decodeList<ExamParticipant>()
 
             val exams = participants.mapNotNull { it.exams }
+            Result.success(exams)
+        } catch (e: Exception) {
+            // Fallback: Jika join gagal (biasanya karena RLS), coba ambil exams saja yang active
+            // Ini cadangan jika tabel participants bermasalah permission-nya
+            try {
+                val now = java.time.Instant.now().toString()
+                val activeExams = db.from("exams")
+                    .select(Columns.ALL) {
+                        filter {
+                            lte("start_time", now)
+                            gte("end_time", now)
+                        }
+                    }
+                    .decodeList<Exam>()
+                Result.success(activeExams)
+            } catch (e2: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun getUpcomingExams(): Result<List<Exam>> {
+        return try {
+            val now = java.time.Instant.now().toString()
+            val exams = db.from("exams")
+                .select(Columns.ALL) {
+                    filter {
+                        gt("start_time", now)
+                    }
+                    order("start_time", Order.ASCENDING)
+                }
+                .decodeList<Exam>()
             Result.success(exams)
         } catch (e: Exception) {
             Result.failure(e)

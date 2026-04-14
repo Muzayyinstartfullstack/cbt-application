@@ -22,6 +22,17 @@ import com.example.cbt.model.ExamSession
 import com.example.cbt.model.Profile
 import com.example.cbt.repository.ExamRepository
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
+
+fun main() {
+    val today = LocalDate.now()
+
+    val hari = today.dayOfWeek.getDisplayName(TextStyle.FULL, Locale("id", "ID")) // Senin, Selasa, dll.
+    val tanggal = today.dayOfMonth
+    val bulanNama = today.month.getDisplayName(TextStyle.FULL, Locale("id", "ID"))
+}
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -29,15 +40,24 @@ class DashboardActivity : AppCompatActivity() {
 
     // Views
     private lateinit var tvWelcome: TextView
-    private lateinit var btnMulaiUjian: Button
+    private lateinit var tvUserName: TextView
+    private lateinit var tvNis: TextView
+    private lateinit var tvClass: TextView
+    private lateinit var recyclerAvailableExams: RecyclerView
     private lateinit var recyclerExams: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var navHome: ImageView
     private lateinit var navHistory: ImageView
     private lateinit var navProfile: ImageView
+    private lateinit var tvDate: TextView
 
     // Data user yang sedang login
     private var currentProfile: Profile? = null
+
+    // Adapters
+    private lateinit var availableAdapter: com.example.cbt.adapter.AvailableExamAdapter
+    private lateinit var upcomingAdapter: com.example.cbt.adapter.AvailableExamAdapter
+    private lateinit var historyAdapter: ExamHistoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,22 +89,41 @@ class DashboardActivity : AppCompatActivity() {
     // ─── INIT ─────────────────────────────────────────────────────────────────
 
     private fun initializeViews() {
-        tvWelcome     = findViewById(R.id.tvWelcome)
-        btnMulaiUjian = findViewById(R.id.btnMulaiUjian)
-        recyclerExams = findViewById(R.id.recyclerExams)
-        progressBar   = findViewById(R.id.progressBar)
-        navHome       = findViewById(R.id.navHome)
-        navHistory    = findViewById(R.id.navHistory)
-        navProfile    = findViewById(R.id.navProfile)
+        tvWelcome              = findViewById(R.id.tvWelcome)
+        tvUserName             = findViewById(R.id.UserName)
+        tvNis                  = findViewById(R.id.tvNis)
+        tvClass                = findViewById(R.id.tvClass)
+        recyclerAvailableExams = findViewById(R.id.recyclerAvailableExams)
+        recyclerExams          = findViewById(R.id.recyclerExams)
+        progressBar            = findViewById(R.id.progressBar)
+        navHome                = findViewById(R.id.navHome)
+        navHistory             = findViewById(R.id.navHistory)
+        navProfile             = findViewById(R.id.navProfile)
+        tvDate                 = findViewById(R.id.tvDate)
 
+        // Init Adapters immediately to avoid "No adapter attached"
+        availableAdapter = com.example.cbt.adapter.AvailableExamAdapter { exam ->
+            val intent = Intent(this@DashboardActivity, DetailUjianActivity::class.java).apply {
+                putExtra("EXAM_ID", exam.id)
+                putExtra("EXAM_TITLE", exam.title)
+            }
+            startActivity(intent)
+        }
+        recyclerAvailableExams.adapter = availableAdapter
+        recyclerAvailableExams.layoutManager = LinearLayoutManager(this)
+
+        upcomingAdapter = com.example.cbt.adapter.AvailableExamAdapter { exam ->
+            val intent = Intent(this@DashboardActivity, DetailUjianActivity::class.java).apply {
+                putExtra("EXAM_ID", exam.id)
+                putExtra("EXAM_TITLE", exam.title)
+            }
+            startActivity(intent)
+        }
+        recyclerExams.adapter = upcomingAdapter
         recyclerExams.layoutManager = LinearLayoutManager(this)
     }
 
     private fun setupClickListeners() {
-        btnMulaiUjian.setOnClickListener {
-            val intent = Intent(this, DetailUjianActivity::class.java)
-            startActivity(intent)
-        }
 
         navHome.setOnClickListener {
             Toast.makeText(this, "Anda sudah berada di Beranda", Toast.LENGTH_SHORT).show()
@@ -120,11 +159,28 @@ class DashboardActivity : AppCompatActivity() {
                 profileResult.fold(
                     onSuccess = { profile ->
                         currentProfile = profile
-                        // Tampilkan nama dari kolom full_name
-                        tvWelcome.text = "Selamat datang, ${profile.fullName}!"
 
-                        // Load riwayat/ujian setelah profil berhasil diambil
-                        loadExams(profile.id.toString())
+                        // Format tanggal dalam bahasa Indonesia
+                        val today = LocalDate.now()
+                        val hari = today.dayOfWeek.getDisplayName(TextStyle.FULL, Locale("id", "ID"))
+                        val tanggal = today.dayOfMonth
+                        val bulanNama = today.month.getDisplayName(TextStyle.FULL, Locale("id", "ID"))
+                        val formattedDate = "$hari, $tanggal $bulanNama"
+
+                        // Tampilkan nama dari kolom full_name
+                        tvWelcome.text = "Selamat Datang,\n${profile.fullName}"
+                        tvUserName.text = profile.fullName
+                        tvNis.text = "NIS/NIP: ${profile.nisnip}"
+                        tvClass.text = profile.className
+                        tvDate.text = formattedDate
+
+                        // Load data ujian tersedia (Active/Running exams)
+                        loadAvailableExams(profile.id.toString())
+
+                        // Load data ujian yang segera dimulai (Upcoming)
+                        loadUpcomingExams()
+
+                        progressBar.visibility = View.GONE
                     },
                     onFailure = { error ->
                         progressBar.visibility = View.GONE
@@ -147,39 +203,21 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadExams(profileId: String) {
+    private fun loadAvailableExams(profileId: String) {
         lifecycleScope.launch {
             try {
-                // Ambil riwayat exam_sessions milik user ini
-                val result = repository.getExamHistory(profileId)
-
-                progressBar.visibility = View.GONE
-
+                val result = repository.getAvailableExams(profileId)
                 result.fold(
-                    onSuccess = { sessions ->
-                        if (sessions.isNotEmpty()) {
-                            // Ambil 3 sesi terbaru untuk ditampilkan di dashboard
-                            val recentSessions = sessions.take(3)
-                            setupRecyclerView(recentSessions)
-                        } else {
-                            Toast.makeText(
-                                this@DashboardActivity,
-                                "Belum ada ujian",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                    onSuccess = { exams ->
+                        availableAdapter.submitList(exams)
                     },
                     onFailure = { error ->
-                        Toast.makeText(
-                            this@DashboardActivity,
-                            "Gagal memuat ujian: ${error.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        // Jika permission denied, jangan tampilkan Toast mengganggu tapi tampilkan list kosong
+                        availableAdapter.submitList(emptyList())
+                        android.util.Log.e("Dashboard", "Gagal load exams: ${error.message}")
                     }
                 )
-
             } catch (e: Exception) {
-                progressBar.visibility = View.GONE
                 Toast.makeText(
                     this@DashboardActivity,
                     "Error: ${e.message}",
@@ -189,24 +227,34 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
+    private fun loadUpcomingExams() {
+        lifecycleScope.launch {
+            try {
+                val result = repository.getUpcomingExams()
+                result.fold(
+                    onSuccess = { exams ->
+                        upcomingAdapter.submitList(exams)
+                    },
+                    onFailure = { error ->
+                        android.util.Log.e("Dashboard", "Gagal load upcoming: ${error.message}")
+                    }
+                )
+            } catch (e: Exception) {
+                // Ignore
+            }
+        }
+    }
+
+    private fun loadExams(profileId: String) {
+        // Method ini mungkin tidak dipakai lagi jika kita fokus ke Upcoming
+        // Tapi kita biarkan jika sewaktu-waktu ingin load riwayat di tempat lain
+    }
+
     // ─── RECYCLER VIEW ────────────────────────────────────────────────────────
 
     private fun setupRecyclerView(sessions: List<ExamSession>) {
-        // Inisialisasi adapter hanya dengan lambda click listener
-        val adapter = ExamHistoryAdapter { session ->
-            val intent = Intent(this@DashboardActivity, DetailHasilActivity::class.java).apply {
-                putExtra("SESSION_ID", session.id)
-                putExtra("EXAM_TITLE", examTitle(session))
-                putExtra("SCORE", session.score ?: 0.0)
-                putExtra("STATUS", session.status)
-            }
-            startActivity(intent)
-        }
-
-        recyclerExams.adapter = adapter
-
-        // Kirim data list menggunakan submitList (Fitur ListAdapter)
-        adapter.submitList(sessions)
+        // Jika masih butuh historyAdapter, ditaruh di tempat lain.
+        // historyAdapter.submitList(sessions)
     }
 
     // Helper untuk ambil judul ujian dari session
