@@ -119,9 +119,10 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tvUjianSelesai"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="2"
+                        android:text="0"
                         android:textColor="#2B8CEE"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -150,9 +151,10 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tvRataNilaiProfile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="88"
+                        android:text="0"
                         android:textColor="#2B8CEE"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -181,9 +183,10 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tvRemedial"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1"
+                        android:text="0"
                         android:textColor="#2B8CEE"
                         android:textSize="20sp"
                         android:textStyle="bold" />

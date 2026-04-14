@@ -76,6 +76,21 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
     }
 
     // ==================== EXAM ====================
+    // GET /exams → tabel: ujian (list semua ujian yang tersedia)
+    suspend fun getAvailableExams(): Result<List<ExamResponse>> =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.getAvailableExams()
+                if (response.isSuccessful && response.body() != null) {
+                    Result.success(response.body()!!)
+                } else {
+                    Result.failure(Exception("Gagal mengambil daftar ujian"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
     // Validasi token ujian → GET /exams/check-token/{token} → tabel: ujian
     suspend fun checkExamToken(token: String): Result<ExamResponse> =
         withContext(Dispatchers.IO) {
@@ -251,22 +266,36 @@ class ExamRepository(private val apiService: ExamApiService, context: Context) {
             if (response.isSuccessful && response.body() != null) {
                 val attempts = response.body()!!
                 val legacyHistory = attempts.map { attempt ->
+                    // Calculate waktuTempuhDetik from waktuMulai and waktuKirim/waktuHabis
+                    val waktuTempuh = calculateDurationSeconds(attempt.waktuMulai, attempt.waktuKirim ?: attempt.waktuHabis)
                     ExamResultResponse(
                         id = attempt.id,
-                        examTitle = "Ujian #" + attempt.idUjian.takeLast(4), // Placeholder
+                        examTitle = "Ujian #" + attempt.idUjian.takeLast(4),
                         scorePercentage = attempt.score,
                         tanggalUjian = attempt.waktuKirim ?: attempt.waktuMulai ?: "-",
-                        waktuTempuhDetik = 0, // Dihitung jika perlu
-                        status = attempt.status
+                        waktuTempuhDetik = waktuTempuh,
+                        status = attempt.status,
+                        durasiMenit = null
                     )
                 }
                 Result.success(ExamHistoryResponse(legacyHistory))
             } else {
-                Result.failure(Exception("Gagal riwayat"))
+                val errBody = response.errorBody()?.string()
+                Result.failure(Exception("Gagal memuat riwayat: ${response.code()} $errBody"))
             }
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    private fun calculateDurationSeconds(start: String?, end: String?): Int {
+        if (start == null || end == null) return 0
+        return try {
+            val sdf = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.getDefault())
+            val startTime = sdf.parse(start)
+            val endTime = sdf.parse(end)
+            ((endTime.time - startTime.time) / 1000).toInt().coerceAtLeast(0)
+        } catch (_: Exception) { 0 }
     }
 
     suspend fun submitExam(

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -28,8 +29,6 @@ class HistoryActivity : AppCompatActivity() {
 
     private var isUpdatingChip = false
     private var allExamHistory = listOf<com.example.cbt.model.ExamResultResponse>()
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,6 +143,9 @@ class HistoryActivity : AppCompatActivity() {
                     val results = examHistory.data
                     allExamHistory = results
 
+                    // Update stats dynamically
+                    updateStats(results)
+
                     if (results.isNotEmpty()) {
                         historyAdapter = ExamHistoryAdapter { exam ->
                             val intent = Intent(this@HistoryActivity, HistoryDetailActivity::class.java)
@@ -152,7 +154,7 @@ class HistoryActivity : AppCompatActivity() {
                             intent.putExtra("score", "${exam.scorePercentage.toInt()}%")
                             intent.putExtra("date", exam.tanggalUjian)
                             intent.putExtra("duration", "${exam.waktuTempuhDetik / 60} Menit")
-                            intent.putExtra("isPassed", exam.status == "PASSED")
+                            intent.putExtra("isPassed", exam.status.equals("PASSED", ignoreCase = true) || exam.scorePercentage >= 55)
                             startActivity(intent)
                         }
 
@@ -181,6 +183,16 @@ class HistoryActivity : AppCompatActivity() {
                 ).show()
             }
         }
+    }
+
+    private fun updateStats(results: List<com.example.cbt.model.ExamResultResponse>) {
+        val avgScore = if (results.isNotEmpty()) {
+            results.map { it.scorePercentage }.average()
+        } else 0.0
+        val completedCount = results.size
+
+        findViewById<TextView>(R.id.tvRataNilai)?.text = "${avgScore.toInt()}%"
+        findViewById<TextView>(R.id.tvJumlahSelesai)?.text = completedCount.toString()
     }
 
     private fun filterExamResults(selectedSubject: String) {

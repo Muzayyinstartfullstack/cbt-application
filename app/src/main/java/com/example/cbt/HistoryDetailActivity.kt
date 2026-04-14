@@ -74,8 +74,8 @@ class HistoryDetailActivity : AppCompatActivity() {
                             subject = exam.examTitle,
                             score = "${exam.scorePercentage.toInt()}%",
                             date = exam.tanggalUjian,
-                            duration = "${exam.waktuTempuhDetik / 60} Menit",
-                            isPassed = exam.status == "PASSED"
+                            duration = if (exam.waktuTempuhDetik > 0) "${exam.waktuTempuhDetik / 60} Menit" else "- Menit",
+                            isPassed = exam.status.equals("PASSED", ignoreCase = true) || exam.scorePercentage >= 55
                         )
                     } else {
                         Toast.makeText(this@HistoryDetailActivity, "Data ujian tidak ditemukan", Toast.LENGTH_SHORT).show()
@@ -122,22 +122,23 @@ class HistoryDetailActivity : AppCompatActivity() {
         val durationValue = duration.replace(" Menit", "").replace("Menit", "").trim()
         findViewById<TextView>(R.id.tvWaktu).text = "${durationValue}m"
 
-        // Hitung jumlah soal benar dan salah (asumsi total 45 soal)
-        val totalSoal = 45
-        val jumlahBenar = (scoreValue * totalSoal / 100).toInt()
-        val jumlahSalah = totalSoal - jumlahBenar
-
-        // Set statistik jawaban
-        findViewById<TextView>(R.id.tvBenar).text = "$jumlahBenar/$totalSoal"
-        findViewById<TextView>(R.id.tvSalah).text = jumlahSalah.toString()
+        // Hitung jumlah soal benar dan salah
+        val totalSoal = intent.getIntExtra("total_soal", 0)
+        if (totalSoal > 0) {
+            val jumlahBenar = (scoreValue * totalSoal / 100).toInt()
+            val jumlahSalah = totalSoal - jumlahBenar
+            findViewById<TextView>(R.id.tvBenar).text = "$jumlahBenar/$totalSoal"
+            findViewById<TextView>(R.id.tvSalah).text = jumlahSalah.toString()
+        }
 
         // Set peringkat berdasarkan score
         val peringkat = calculateRank(scoreValue)
         findViewById<TextView>(R.id.tvPeringkat).text = peringkat
 
         // Set status passed/failed
-        val statusColor = if (isPassed) android.graphics.Color.GREEN else android.graphics.Color.RED
-        val statusText = if (isPassed) "LULUS" else "TIDAK LULUS"
+        val actualPassed = isPassed || scoreValue >= 55
+        val statusColor = if (actualPassed) android.graphics.Color.GREEN else android.graphics.Color.RED
+        val statusText = if (actualPassed) "LULUS" else "TIDAK LULUS"
         val tvStatus = findViewById<TextView>(R.id.tvStatus)
         tvStatus.text = statusText
         tvStatus.setTextColor(statusColor)

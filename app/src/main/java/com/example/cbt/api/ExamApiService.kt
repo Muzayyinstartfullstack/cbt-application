@@ -12,6 +12,10 @@ interface ExamApiService {
     suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
 
     // ==================== EXAMS ====================
+    // GET /exams → tabel: ujian (list semua ujian yang tersedia)
+    @GET("exams")
+    suspend fun getAvailableExams(): Response<List<ExamResponse>>
+
     // GET /exams/{id} → tabel: ujian
     @GET("exams/{id}")
     suspend fun getExamDetail(@Path("id") examId: String): Response<ExamResponse>

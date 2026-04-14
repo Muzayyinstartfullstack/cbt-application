@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -15,10 +16,12 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cbt.adapter.UpcomingExamAdapter
+import com.example.cbt.adapter.AvailableExamAdapter
+import com.example.cbt.adapter.OngoingExamAdapter
 import com.example.cbt.api.RetrofitClient
 import com.example.cbt.api.TokenManager
-import com.example.cbt.model.ExamResultResponse
+import com.example.cbt.model.AttemptResponse
+import com.example.cbt.model.ExamResponse
 import com.example.cbt.repository.ExamRepository
 import kotlinx.coroutines.launch
 
@@ -28,10 +31,13 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var tvWelcome: TextView
     private lateinit var btnMulaiUjian: Button
     private lateinit var recyclerExams: RecyclerView
+    private lateinit var recyclerOngoing: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var navHome: ImageView
     private lateinit var navHistory: ImageView
     private lateinit var navProfile: ImageView
+    private lateinit var sectionOngoing: LinearLayout
+    private lateinit var tvNoExams: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,15 +70,22 @@ class DashboardActivity : AppCompatActivity() {
         navHistory = findViewById(R.id.navHistory)
         navProfile = findViewById(R.id.navProfile)
 
+        // Ongoing exams section
+        recyclerOngoing = findViewById(R.id.recyclerOngoing)
+        sectionOngoing = findViewById(R.id.sectionOngoing)
+        tvNoExams = findViewById(R.id.tvNoExams)
+
         // Set welcome message
         val studentName = repository.getStudentName()
         tvWelcome.text = "Selamat datang, $studentName!"
 
-        // Setup recycler view
+        // Setup recycler views
         recyclerExams.layoutManager = LinearLayoutManager(this)
+        recyclerOngoing.layoutManager = LinearLayoutManager(this)
 
-        // Load upcoming exams
-        loadUpcomingExams()
+        // Load data
+        loadAvailableExams()
+        loadOngoingExams()
 
         // Setup click listeners
         btnMulaiUjian.setOnClickListener {
@@ -95,55 +108,67 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadUpcomingExams() {
+    private fun loadAvailableExams() {
         progressBar.visibility = View.VISIBLE
 
         lifecycleScope.launch {
             try {
-                val result = repository.getExamHistory()
+                val result = repository.getAvailableExams()
 
-                result.onSuccess { examHistory ->
+                result.onSuccess { exams ->
                     progressBar.visibility = View.GONE
-                    val exams = examHistory.data
 
                     if (exams.isNotEmpty()) {
-                        // Filter upcoming exams (bisa disesuaikan dengan data dari server)
-                        val upcomingExams = exams.take(3) // Ambil 3 ujian terbaru/mendatang
-
-                        val adapter = UpcomingExamAdapter(upcomingExams) { exam ->
-                            // Navigate to detail when clicked
-                            val intent = Intent(this@DashboardActivity, HistoryDetailActivity::class.java)
-                            intent.putExtra("exam_id", exam.id)
-                            intent.putExtra("exam_title", exam.examTitle)
-                            intent.putExtra("score", "${exam.scorePercentage.toInt()}%")
-                            intent.putExtra("date", exam.tanggalUjian)
-                            intent.putExtra("duration", "${exam.waktuTempuhDetik / 60} Menit")
-                            intent.putExtra("isPassed", exam.status == "PASSED")
+                        tvNoExams.visibility = View.GONE
+                        val adapter = AvailableExamAdapter(exams) { exam ->
+                            val intent = Intent(this@DashboardActivity, DetailUjianActivity::class.java)
                             startActivity(intent)
                         }
-
                         recyclerExams.adapter = adapter
                     } else {
-                        // Show empty state
-                        Toast.makeText(this@DashboardActivity, "Tidak ada ujian", Toast.LENGTH_SHORT).show()
+                        tvNoExams.visibility = View.VISIBLE
                     }
                 }
 
                 result.onFailure { error ->
                     progressBar.visibility = View.GONE
-                    Toast.makeText(
-                        this@DashboardActivity,
-                        "Gagal memuat ujian: ${error.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    tvNoExams.visibility = View.VISIBLE
+                    // Jangan tampilkan toast error untuk upcoming exams, biarkan silent fail
                 }
             } catch (e: Exception) {
                 progressBar.visibility = View.GONE
-                Toast.makeText(
-                    this@DashboardActivity,
-                    "Error: ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                tvNoExams.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun loadOngoingExams() {
+        lifecycleScope.launch {
+            try {
+                val result = repository.getOngoingAttempts()
+
+                result.onSuccess { ongoingAttempts ->
+                    if (ongoingAttempts.isNotEmpty()) {
+                        sectionOngoing.visibility = View.VISIBLE
+                        val adapter = OngoingExamAdapter(ongoingAttempts) { attempt ->
+                            // Resume ongoing exam
+                            val intent = Intent(this@DashboardActivity, SoalUjianActivity::class.java).apply {
+                                putExtra("EXAM_ID", attempt.idUjian)
+                                putExtra("ATTEMPT_ID", attempt.id)
+                            }
+                            startActivity(intent)
+                        }
+                        recyclerOngoing.adapter = adapter
+                    } else {
+                        sectionOngoing.visibility = View.GONE
+                    }
+                }
+
+                result.onFailure {
+                    sectionOngoing.visibility = View.GONE
+                }
+            } catch (e: Exception) {
+                sectionOngoing.visibility = View.GONE
             }
         }
     }

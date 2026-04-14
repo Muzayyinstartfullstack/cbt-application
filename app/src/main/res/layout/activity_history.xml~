@@ -32,6 +32,14 @@
                 android:textColor="#000000"
                 android:textSize="24sp"
                 android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/btnFilter"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_tune"
+                app:tint="#000000" />
         </RelativeLayout>
 
         <!-- Statistik Cards -->
@@ -77,7 +85,7 @@
                         android:id="@+id/tvRataNilai"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0%"
+                        android:text="85%"
                         android:textColor="#FFFFFF"
                         android:textSize="32sp"
                         android:textStyle="bold"
@@ -119,7 +127,7 @@
                         android:id="@+id/tvJumlahSelesai"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:text="12"
                         android:textColor="#000000"
                         android:textSize="32sp"
                         android:textStyle="bold"

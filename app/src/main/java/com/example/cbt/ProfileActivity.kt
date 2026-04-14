@@ -5,14 +5,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.cbt.api.RetrofitClient
 import com.example.cbt.repository.ExamRepository
+import kotlinx.coroutines.launch
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -49,6 +52,33 @@ class ProfileActivity : AppCompatActivity() {
 
         tvUserName.text = studentName.ifEmpty { "User" }
         tvUserNis.text = "NIS: $studentNis"
+
+        // Load stats from API
+        loadProfileStats()
+    }
+
+    private fun loadProfileStats() {
+        lifecycleScope.launch {
+            try {
+                val result = repository.getExamHistory()
+                result.onSuccess { examHistory ->
+                    val results = examHistory.data
+                    val completedCount = results.size
+                    val avgScore = if (results.isNotEmpty()) {
+                        results.map { it.scorePercentage }.average()
+                    } else 0.0
+                    val remedialCount = results.count {
+                        !it.status.equals("PASSED", ignoreCase = true)
+                    }
+
+                    findViewById<TextView>(R.id.tvUjianSelesai)?.text = completedCount.toString()
+                    findViewById<TextView>(R.id.tvRataNilaiProfile)?.text = avgScore.toInt().toString()
+                    findViewById<TextView>(R.id.tvRemedial)?.text = remedialCount.toString()
+                }
+            } catch (_: Exception) {
+                // Silently fail, stats will show default values
+            }
+        }
     }
 
     private fun setupClickListeners() {
@@ -57,8 +87,8 @@ class ProfileActivity : AppCompatActivity() {
             finish()
         }
 
-        // Logout button
-        val btnLogout = findViewById<TextView>(R.id.btnLogout)
+        // Logout button (LinearLayout in XML, not TextView)
+        val btnLogout = findViewById<LinearLayout>(R.id.btnLogout)
         btnLogout?.setOnClickListener {
             showLogoutDialog()
         }
