@@ -3,6 +3,7 @@ package com.example.cbt
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,8 +12,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.cbt.api.RetrofitClient
+import androidx.lifecycle.lifecycleScope
 import com.example.cbt.repository.ExamRepository
+import kotlinx.coroutines.launch
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -23,19 +25,20 @@ class ProfileActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_profile)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_profile)) { v, insets ->
+        // Gunakan ID yang sesuai dengan XML kamu, atau gunakan android.R.id.content agar aman
+        val rootView = findViewById<View>(android.R.id.content)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Initialize repository
-        repository = ExamRepository(RetrofitClient.instance, this)
+        // PERBAIKAN: Constructor kosong sesuai ExamRepository.kt
+        repository = ExamRepository()
 
-        // Load user data
+        // Load data user dari Supabase
         loadUserData()
 
-        // Setup click listeners
         setupClickListeners()
     }
 
@@ -43,36 +46,51 @@ class ProfileActivity : AppCompatActivity() {
         val tvUserName = findViewById<TextView>(R.id.tvUserName)
         val tvUserNis = findViewById<TextView>(R.id.tvUserId)
 
-        // Get data dari repository
-        val studentName = repository.getStudentName()
-        val studentNis = repository.getNis()
+        lifecycleScope.launch {
+            try {
+                // 1. Ambil User ID yang sedang login
+                val userId = repository.getCurrentUserId()
 
-        tvUserName.text = studentName.ifEmpty { "User" }
-        tvUserNis.text = "NIS: $studentNis"
+                if (userId != null) {
+                    // 2. Ambil profile lengkap dari table 'profiles'
+                    val result = repository.getProfile(userId)
+
+                    result.fold(
+                        onSuccess = { profile ->
+                            // PERBAIKAN: Gunakan fullName dan nisnip sesuai model Profile.kt
+                            tvUserName.text = profile.fullName
+                            tvUserNis.text = "NIS/NIP: ${profile.nisnip}"
+                        },
+                        onFailure = { error ->
+                            Toast.makeText(this@ProfileActivity, "Gagal memuat profil: ${error.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@ProfileActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun setupClickListeners() {
-        // Back button
+        // Tombol Back
         findViewById<ImageButton>(R.id.btn_back).setOnClickListener {
             finish()
         }
 
-        // Logout button
-        val btnLogout = findViewById<TextView>(R.id.btnLogout)
-        btnLogout?.setOnClickListener {
+        // Tombol Logout
+        findViewById<TextView>(R.id.btnLogout)?.setOnClickListener {
             showLogoutDialog()
         }
 
-        // Bottom navigation
+        // Bottom Navigation
         findViewById<ImageView>(R.id.navHome).setOnClickListener {
-            val intent = Intent(this, DashboardActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, DashboardActivity::class.java))
             finish()
         }
 
         findViewById<ImageView>(R.id.navHistory).setOnClickListener {
-            val intent = Intent(this, HistoryActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, HistoryActivity::class.java))
             finish()
         }
 
@@ -85,7 +103,7 @@ class ProfileActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle("Keluar")
             .setMessage("Anda yakin ingin keluar?")
-            .setCancelable(false)
+            .setCancelable(true)
             .setPositiveButton("Ya") { _, _ ->
                 performLogout()
             }
@@ -94,15 +112,17 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun performLogout() {
-        // Clear session dari repository
-        repository.logout()
+        lifecycleScope.launch {
+            // Memanggil fungsi logout di repository (Supabase auth.signOut)
+            repository.logout()
 
-        Toast.makeText(this, "Anda telah keluar", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@ProfileActivity, "Anda telah keluar", Toast.LENGTH_SHORT).show()
 
-        // Navigate to LoginActivity
-        val intent = Intent(this, LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
-        finish()
+            // Kembali ke Login dan bersihkan history stack
+            val intent = Intent(this@ProfileActivity, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }
     }
 }

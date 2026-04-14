@@ -80,6 +80,8 @@ class SoalUjianActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_soal_ujian)
 
+        // Di dalam DetailUjianActivity.kt
+// Ganti inisialisasi repository jika error "Too many arguments"
         repository = ExamRepository()
 
         examId      = intent.getStringExtra("EXAM_ID") ?: ""

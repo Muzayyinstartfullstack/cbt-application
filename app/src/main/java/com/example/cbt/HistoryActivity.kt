@@ -14,8 +14,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cbt.adapter.ExamHistoryAdapter
-import com.example.cbt.api.RetrofitClient
 import com.example.cbt.repository.ExamRepository
+import com.example.cbt.model.ExamSession // Pastikan import model yang benar
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
 
@@ -27,9 +27,9 @@ class HistoryActivity : AppCompatActivity() {
     private lateinit var historyAdapter: ExamHistoryAdapter
 
     private var isUpdatingChip = false
-    private var allExamHistory = listOf<com.example.cbt.model.ExamResultResponse>()
 
-
+    // PERBAIKAN: Ubah tipe data List sesuai dengan yang diharapkan Adapter (ExamSession)
+    private var allExamHistory = listOf<ExamSession>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,8 +42,8 @@ class HistoryActivity : AppCompatActivity() {
             insets
         }
 
-        // Initialize repository
-        repository = ExamRepository(RetrofitClient.instance, this)
+        // PERBAIKAN: Gunakan constructor kosong sesuai dengan log error sebelumnya
+        repository = ExamRepository()
 
         // Initialize views
         recyclerHistory = findViewById(R.id.recyclerHistory)
@@ -60,33 +60,21 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun setupClickListeners() {
-        // Card listeners - sudah tidak digunakan, diganti dengan adapter
-
-        // Bottom Navigation
         findViewById<ImageView>(R.id.navHome).setOnClickListener {
-            val intent = Intent(this, DashboardActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, DashboardActivity::class.java))
             finish()
-        }
-
-        findViewById<ImageView>(R.id.navHistory).setOnClickListener {
-            Toast.makeText(this, "Anda sudah berada di History", Toast.LENGTH_SHORT).show()
         }
 
         findViewById<ImageView>(R.id.navProfile).setOnClickListener {
-            val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, ProfileActivity::class.java))
             finish()
         }
 
-        // Filter button
         findViewById<ImageView>(R.id.btnFilter).setOnClickListener {
-            val intent = Intent(this, HistoryFilterActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, HistoryFilterActivity::class.java))
             finish()
         }
 
-        // Chip listeners - untuk filter by subject
         setupChipListeners()
     }
 
@@ -108,25 +96,16 @@ class HistoryActivity : AppCompatActivity() {
         chips.forEach { (chipId, subjectName) ->
             findViewById<Chip>(chipId).setOnCheckedChangeListener { _, isChecked ->
                 if (isUpdatingChip) return@setOnCheckedChangeListener
-
                 isUpdatingChip = true
 
                 if (isChecked) {
-                    // Uncheck semua chip lain
                     chips.keys.forEach { otherId ->
-                        if (otherId != chipId) {
-                            findViewById<Chip>(otherId).isChecked = false
-                        }
+                        if (otherId != chipId) findViewById<Chip>(otherId).isChecked = false
                     }
-                    // Filter berdasarkan subject yang dipilih
                     filterExamResults(subjectName)
-                } else {
-                    // Jika di-uncheck, set "Semua" sebagai default
-                    if (subjectName != "Semua") {
-                        findViewById<Chip>(R.id.chipSemua).isChecked = true
-                    }
+                } else if (subjectName != "Semua") {
+                    findViewById<Chip>(R.id.chipSemua).isChecked = true
                 }
-
                 isUpdatingChip = false
             }
         }
@@ -137,60 +116,73 @@ class HistoryActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                val result = repository.getExamHistory()
+                // PERBAIKAN: Berikan profileId (ID User) jika repository memintanya
+                val profileId = repository.getCurrentUserId() ?: ""
+                val result = repository.getExamHistory(profileId)
 
-                result.onSuccess { examHistory ->
-                    progressBar.visibility = View.GONE
-                    val results = examHistory.data
-                    allExamHistory = results
+                result.fold(
+                    onSuccess = { historyList ->
+                        progressBar.visibility = View.GONE
+                        // PERBAIKAN: Gunakan data langsung dari result (historyList)
+                        allExamHistory = historyList
 
-                    if (results.isNotEmpty()) {
-                        historyAdapter = ExamHistoryAdapter { exam ->
-                            val intent = Intent(this@HistoryActivity, HistoryDetailActivity::class.java)
-                            intent.putExtra("exam_id", exam.id)
-                            intent.putExtra("subject", exam.examTitle)
-                            intent.putExtra("score", "${exam.scorePercentage.toInt()}%")
-                            intent.putExtra("date", exam.tanggalUjian)
-                            intent.putExtra("duration", "${exam.waktuTempuhDetik / 60} Menit")
-                            intent.putExtra("isPassed", exam.status == "PASSED")
-                            startActivity(intent)
+                        if (allExamHistory.isNotEmpty()) {
+                            historyAdapter = ExamHistoryAdapter { exam ->
+                                val intent =
+                                    Intent(this@HistoryActivity, HistoryDetailActivity::class.java)
+
+                                // PERBAIKAN: Gunakan properti yang ada di model ExamSession kamu
+                                intent.putExtra("exam_id", exam.id)
+
+                                // Judul diambil dari objek 'exams' di dalam 'ExamSession'
+                                intent.putExtra("subject", exam.exams?.title ?: "Tanpa Judul")
+
+                                // Skor menggunakan properti 'score'
+                                intent.putExtra("score", "${exam.score ?: 0.0}%")
+
+                                // Tanggal menggunakan 'createdAt' (karena 'date' tidak ada)
+                                intent.putExtra("date", exam.startTime)
+
+                                intent.putExtra("isPassed", exam.status == "submitted")
+                                startActivity(intent)
+                            }
+
+                            historyAdapter.submitList(allExamHistory)
+                            recyclerHistory.adapter = historyAdapter
+                        } else {
+                            Toast.makeText(
+                                this@HistoryActivity,
+                                "Tidak ada riwayat",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-
-                        historyAdapter.submitList(results)
-                        recyclerHistory.adapter = historyAdapter
-
-                    } else {
-                        Toast.makeText(this@HistoryActivity, "Tidak ada riwayat ujian", Toast.LENGTH_SHORT).show()
+                    },
+                    onFailure = { error ->
+                        progressBar.visibility = View.GONE
+                        Toast.makeText(
+                            this@HistoryActivity,
+                            "Gagal: ${error.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                }
-
-                result.onFailure { error ->
-                    progressBar.visibility = View.GONE
-                    Toast.makeText(
-                        this@HistoryActivity,
-                        "Gagal memuat riwayat: ${error.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                )
             } catch (e: Exception) {
                 progressBar.visibility = View.GONE
-                Toast.makeText(
-                    this@HistoryActivity,
-                    "Error: ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this@HistoryActivity, "Error: ${e.message}", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
 
     private fun filterExamResults(selectedSubject: String) {
+        if (!::historyAdapter.isInitialized) return
+
         if (selectedSubject == "Semua") {
             historyAdapter.submitList(allExamHistory)
         } else {
-            val filtered = allExamHistory.filter { exam ->
-                exam.examTitle.contains(selectedSubject, ignoreCase = true)
+            val filtered = allExamHistory.filter {
+                it.exams?.title?.contains(selectedSubject, ignoreCase = true) == true
             }
-            historyAdapter.submitList(filtered)
         }
     }
 }

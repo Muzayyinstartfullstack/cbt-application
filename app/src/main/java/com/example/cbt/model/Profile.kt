@@ -12,7 +12,7 @@ enum class UserRole {
 // Tabel: profiles
 @Serializable
 data class Profile(
-    val id: String = "",
+    val id: Int = 0,
 
     // nisnip VARCHAR(20) UNIQUE NOT NULL
     val nisnip: String = "",

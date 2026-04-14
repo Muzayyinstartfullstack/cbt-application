@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import com.example.cbt.api.RetrofitClient
 import com.example.cbt.repository.ExamRepository
 import kotlinx.coroutines.launch
 
@@ -32,7 +31,6 @@ class DetailUjianActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_detail_ujian)
 
-        // 1. Handling System Bars (Edge-to-Edge)
         val rootView = findViewById<View>(R.id.activity_detail_ujian)
         rootView?.let {
             ViewCompat.setOnApplyWindowInsetsListener(it) { v, insets ->
@@ -42,8 +40,9 @@ class DetailUjianActivity : AppCompatActivity() {
             }
         }
 
-        // 2. Initialize Repository & Views
-        repository = ExamRepository(RetrofitClient.instance, this)
+        // PERBAIKAN: Gunakan constructor kosong sesuai error log
+        repository = ExamRepository()
+
         initializeViews()
         setupClickListeners()
     }
@@ -58,19 +57,17 @@ class DetailUjianActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
         tvMapel = findViewById(R.id.tv_mapel_detail)
 
-        // Setup auto-focus movement
         setupTokenAutoMove(et1, et2, et3, et4)
     }
 
     private fun setupClickListeners() {
         btnBack.setOnClickListener { finish() }
-
-        btnMulai.setOnClickListener {
-            verifyExamToken()
-        }
+        btnMulai.setOnClickListener { verifyExamToken() }
     }
 
     private fun verifyExamToken() {
+        // Di sini kita asumsikan inputToken adalah ID Ujian (Exam ID)
+        // karena di repository kamu tidak ada pengecekan string token khusus.
         val inputToken = "${et1.text}${et2.text}${et3.text}${et4.text}".trim()
 
         if (inputToken.length < 4) {
@@ -78,51 +75,52 @@ class DetailUjianActivity : AppCompatActivity() {
             return
         }
 
-        // UI State: Loading
         btnMulai.isEnabled = false
         btnMulai.text = "Memverifikasi..."
         progressBar.visibility = View.VISIBLE
 
         lifecycleScope.launch {
             try {
-                // Menggunakan Repository Pattern agar kode clean
-                val result = repository.checkExamToken(inputToken)
+                // PERBAIKAN 1: Gunakan getExamDetail (karena checkExamToken tidak ada di repository)
+                val result = repository.getExamDetail(inputToken)
 
-                result.onSuccess { exam ->
-                    // 1. Mulai Attempt Ujian di Backend
-                    lifecycleScope.launch {
-                        progressBar.visibility = View.VISIBLE
-                        val attemptResult = repository.startAttempt(exam.id)
-                        
+                result.fold(
+                    onSuccess = { exam ->
+                        // Ambil ID User yang sedang login
+                        val profileId = repository.getCurrentUserId() ?: ""
+
+                        // PERBAIKAN 2: Gunakan getOrCreateSession (pengganti startAttempt)
+                        val sessionResult = repository.getOrCreateSession(exam.id, profileId)
+
                         progressBar.visibility = View.GONE
-                        attemptResult.onSuccess { attempt ->
-                            Toast.makeText(this@DetailUjianActivity, "Berhasil: ${exam.judul}", Toast.LENGTH_SHORT).show()
+                        sessionResult.fold(
+                            onSuccess = { session ->
+                                Toast.makeText(this@DetailUjianActivity, "Berhasil: ${exam.title}", Toast.LENGTH_SHORT).show()
 
-                            // 2. Pindah ke SoalUjianActivity dengan data lengkap
-                            val intent = Intent(this@DetailUjianActivity, SoalUjianActivity::class.java).apply {
-                                putExtra("EXAM_ID", exam.id)
-                                putExtra("EXAM_TITLE", exam.judul)
-                                putExtra("EXAM_DURATION", exam.durasi)
-                                putExtra("TOTAL_QUESTIONS", exam.totalSoal)
-                                putExtra("ATTEMPT_ID", attempt.id)
+                                val intent = Intent(this@DetailUjianActivity, SoalUjianActivity::class.java).apply {
+                                    putExtra("EXAM_ID", exam.id)
+                                    putExtra("EXAM_TITLE", exam.title)
+                                    putExtra("EXAM_DURATION", exam.durationMinutes)
+                                    putExtra("SESSION_ID", session.id) // Di repository kamu pakainya session
+                                }
+                                startActivity(intent)
+                                finish()
+                            },
+                            onFailure = { error ->
+                                resetUIState()
+                                Toast.makeText(this@DetailUjianActivity, "Gagal sesi: ${error.message}", Toast.LENGTH_SHORT).show()
                             }
-                            startActivity(intent)
-                            finish()
-                        }.onFailure { error ->
-                            resetUIState()
-                            Toast.makeText(this@DetailUjianActivity, "Gagal memulai ujian: ${error.message}", Toast.LENGTH_SHORT).show()
-                        }
+                        )
+                    },
+                    onFailure = { error ->
+                        resetUIState()
+                        Toast.makeText(this@DetailUjianActivity, "Ujian tidak ditemukan!", Toast.LENGTH_SHORT).show()
+                        clearTokenFields(et1, et2, et3, et4)
                     }
-                }
-
-                result.onFailure { error ->
-                    resetUIState()
-                    Toast.makeText(this@DetailUjianActivity, "Kode Ujian Salah!", Toast.LENGTH_SHORT).show()
-                    clearTokenFields(et1, et2, et3, et4)
-                }
+                )
             } catch (e: Exception) {
                 resetUIState()
-                Toast.makeText(this@DetailUjianActivity, "Server Error: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@DetailUjianActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -139,13 +137,8 @@ class DetailUjianActivity : AppCompatActivity() {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable?) {
-                    // Jika user input 1 karakter, pindah ke kotak selanjutnya
                     if (s?.length == 1 && i < editTexts.size - 1) {
                         editTexts[i + 1].requestFocus()
-                    }
-                    // Opsi tambahan: Jika user hapus, balik ke kotak sebelumnya
-                    if (s?.length == 0 && i > 0) {
-                        editTexts[i - 1].requestFocus()
                     }
                 }
             })

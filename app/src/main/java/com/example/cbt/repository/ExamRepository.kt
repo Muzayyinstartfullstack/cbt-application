@@ -55,9 +55,12 @@ class ExamRepository {
 
     suspend fun getProfile(userId: String): Result<Profile> {
         return try {
+            val email = auth.currentUserOrNull()?.email ?: ""
+            val nisnip = email.substringBefore("@")
+
             val profile = db.from("profiles")
                 .select(Columns.ALL) {
-                    filter { eq("id", userId) }
+                    filter { eq("nisnip", nisnip) }
                 }
                 .decodeSingle<Profile>()
             Result.success(profile)

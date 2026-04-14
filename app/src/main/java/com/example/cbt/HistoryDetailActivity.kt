@@ -11,7 +11,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import android.view.View
-import com.example.cbt.api.RetrofitClient
 import com.example.cbt.repository.ExamRepository
 import kotlinx.coroutines.launch
 
@@ -31,17 +30,16 @@ class HistoryDetailActivity : AppCompatActivity() {
             insets
         }
 
-        // Initialize repository
-        repository = ExamRepository(RetrofitClient.instance, this)
+        // Initialize repository (Constructor kosong sesuai file ExamRepository.kt kamu)
+        repository = ExamRepository()
 
         progressBar = findViewById(R.id.progressBar)
 
         // Get data from intent
-        val examId = intent.getStringExtra("exam_id") ?: ""
+        val sessionId = intent.getStringExtra("exam_id") ?: "" // ID Session dari riwayat
         val subject = intent.getStringExtra("subject") ?: "Unknown"
-        val score = intent.getStringExtra("score") ?: "0%"
+        val scoreStr = intent.getStringExtra("score") ?: "0%"
         val date = intent.getStringExtra("date") ?: "-"
-        val duration = intent.getStringExtra("duration") ?: "-"
         val isPassed = intent.getBooleanExtra("isPassed", false)
 
         // Back button
@@ -49,54 +47,52 @@ class HistoryDetailActivity : AppCompatActivity() {
             finish()
         }
 
-        // If we have exam_id, fetch from API, otherwise use intent data
-        if (examId.isNotEmpty()) {
-            loadExamResultFromApi(examId)
+        // Jika kita punya sessionId, fetch detail hasil ujian dari repository
+        if (sessionId.isNotEmpty()) {
+            loadExamResultFromApi(sessionId)
         } else {
-            displayExamResult(subject, score, date, duration, isPassed)
+            // Jika tidak ada ID, tampilkan data mentah dari intent (dengan durasi default)
+            displayExamResult(subject, scoreStr, date, "0", isPassed)
         }
     }
 
-    private fun loadExamResultFromApi(examId: String) {
+    private fun loadExamResultFromApi(sessionId: String) {
         progressBar.visibility = View.VISIBLE
 
         lifecycleScope.launch {
             try {
-                // Fetch riwayat ujian dan cari yang sesuai dengan ID
-                val result = repository.getExamHistory()
+                // PERBAIKAN: Gunakan getExamResult(sessionId) sesuai fungsi di repository kamu
+                val result = repository.getExamResult(sessionId)
 
-                result.onSuccess { examHistory ->
-                    progressBar.visibility = View.GONE
-                    val results = examHistory.data
-                    val exam = results.find { it.id == examId }
-                    if (exam != null) {
+                result.fold(
+                    onSuccess = { examResult ->
+                        progressBar.visibility = View.GONE
+
+                        // PERBAIKAN: Ambil judul dari relasi examSession -> exams
+                        val title = examResult.examSession?.exams?.title ?: "Ujian"
+                        val scoreValue = examResult.score
+                        val totalSoal = examResult.totalQuestions
+                        val benar = examResult.correctAnswers
+                        val tanggal = examResult.createdAt
+
                         displayExamResult(
-                            subject = exam.examTitle,
-                            score = "${exam.scorePercentage.toInt()}%",
-                            date = exam.tanggalUjian,
-                            duration = "${exam.waktuTempuhDetik / 60} Menit",
-                            isPassed = exam.status == "PASSED"
+                            subject = title,
+                            score = "${scoreValue.toInt()}%",
+                            date = tanggal,
+                            duration = "0", // Kamu bisa hitung selisih start_time & end_time jika perlu
+                            isPassed = scoreValue >= 70.0, // Contoh threshold lulus
+                            totalQuestions = totalSoal,
+                            correctCount = benar
                         )
-                    } else {
-                        Toast.makeText(this@HistoryDetailActivity, "Data ujian tidak ditemukan", Toast.LENGTH_SHORT).show()
+                    },
+                    onFailure = { error ->
+                        progressBar.visibility = View.GONE
+                        Toast.makeText(this@HistoryDetailActivity, "Gagal: ${error.message}", Toast.LENGTH_SHORT).show()
                     }
-                }
-
-                result.onFailure { error ->
-                    progressBar.visibility = View.GONE
-                    Toast.makeText(
-                        this@HistoryDetailActivity,
-                        "Gagal memuat detail: ${error.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                )
             } catch (e: Exception) {
                 progressBar.visibility = View.GONE
-                Toast.makeText(
-                    this@HistoryDetailActivity,
-                    "Error: ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this@HistoryDetailActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -106,46 +102,45 @@ class HistoryDetailActivity : AppCompatActivity() {
         score: String,
         date: String,
         duration: String,
-        isPassed: Boolean
+        isPassed: Boolean,
+        totalQuestions: Int = 45, // Default jika tidak dari API
+        correctCount: Int = 0     // Default jika tidak dari API
     ) {
-        // Set data ke UI
+        // Set Subject
         findViewById<TextView>(R.id.tvSubject).text = subject
 
-        // Parse score value
-        val scoreValue = score.replace("%", "").toIntOrNull() ?: 0
+        // Parse Score
+        val scoreValue = score.replace("%", "").toDoubleOrNull()?.toInt() ?: 0
 
-        // Set progress bar dan score
-        findViewById<android.widget.ProgressBar>(R.id.circularProgress).progress = scoreValue
+        // Circular Progress & Score Text
+        findViewById<ProgressBar>(R.id.circularProgress).progress = scoreValue
         findViewById<TextView>(R.id.tvPercent).text = scoreValue.toString()
 
-        // Set waktu
-        val durationValue = duration.replace(" Menit", "").replace("Menit", "").trim()
-        findViewById<TextView>(R.id.tvWaktu).text = "${durationValue}m"
+        // Durasi (Hanya angka menit)
+        findViewById<TextView>(R.id.tvWaktu).text = "${duration}m"
 
-        // Hitung jumlah soal benar dan salah (asumsi total 45 soal)
-        val totalSoal = 45
-        val jumlahBenar = (scoreValue * totalSoal / 100).toInt()
-        val jumlahSalah = totalSoal - jumlahBenar
+        // Statistik Jawaban (Benar/Salah)
+        // Jika correctCount 0 (dari intent), kita hitung manual. Jika dari API, pakai correctCount.
+        val finalCorrect = if (correctCount > 0) correctCount else (scoreValue * totalQuestions / 100)
+        val finalWrong = totalQuestions - finalCorrect
 
-        // Set statistik jawaban
-        findViewById<TextView>(R.id.tvBenar).text = "$jumlahBenar/$totalSoal"
-        findViewById<TextView>(R.id.tvSalah).text = jumlahSalah.toString()
+        findViewById<TextView>(R.id.tvBenar).text = "$finalCorrect/$totalQuestions"
+        findViewById<TextView>(R.id.tvSalah).text = finalWrong.toString()
 
-        // Set peringkat berdasarkan score
-        val peringkat = calculateRank(scoreValue)
-        findViewById<TextView>(R.id.tvPeringkat).text = peringkat
+        // Peringkat (Statik sesuai logic kamu)
+        findViewById<TextView>(R.id.tvPeringkat).text = calculateRank(scoreValue)
 
-        // Set status passed/failed
-        val statusColor = if (isPassed) android.graphics.Color.GREEN else android.graphics.Color.RED
-        val statusText = if (isPassed) "LULUS" else "TIDAK LULUS"
+        // Status Lulus
         val tvStatus = findViewById<TextView>(R.id.tvStatus)
-        tvStatus.text = statusText
-        tvStatus.setTextColor(statusColor)
+        if (isPassed) {
+            tvStatus.text = "LULUS"
+            tvStatus.setTextColor(android.graphics.Color.GREEN)
+        } else {
+            tvStatus.text = "TIDAK LULUS"
+            tvStatus.setTextColor(android.graphics.Color.RED)
+        }
     }
 
-    /**
-     * Menghitung peringkat berdasarkan score
-     */
     private fun calculateRank(score: Int): String {
         return when {
             score >= 90 -> "#1 / 36"

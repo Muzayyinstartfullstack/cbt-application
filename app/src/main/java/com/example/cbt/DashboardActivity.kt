@@ -124,7 +124,7 @@ class DashboardActivity : AppCompatActivity() {
                         tvWelcome.text = "Selamat datang, ${profile.fullName}!"
 
                         // Load riwayat/ujian setelah profil berhasil diambil
-                        loadExams(profile.id)
+                        loadExams(profile.id.toString())
                     },
                     onFailure = { error ->
                         progressBar.visibility = View.GONE
