@@ -2,6 +2,7 @@ package com.example.cbt.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import com.example.cbt.data.model.Profile
 
 // ENUM status — sesuai: CREATE TYPE session_status AS ENUM (...)
 enum class SessionStatus {

@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import com.example.cbt.repository.ExamRepository
+import com.example.cbt.data.repository.ExamRepository
 import kotlinx.coroutines.launch
 
 class DetailUjianActivity : AppCompatActivity() {
@@ -40,8 +40,8 @@ class DetailUjianActivity : AppCompatActivity() {
             }
         }
 
-        // PERBAIKAN: Gunakan constructor kosong sesuai error log
-        repository = ExamRepository()
+        // Inisialisasi repository dengan context
+        repository = ExamRepository(applicationContext)
 
         initializeViews()
         setupClickListeners()
@@ -81,16 +81,16 @@ class DetailUjianActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                // PERBAIKAN 1: Gunakan getExamDetail (karena checkExamToken tidak ada di repository)
-                val result = repository.getExamDetail(inputToken)
+                // Gunakan getExamByToken
+                val result = repository.getExamByToken(inputToken)
 
                 result.fold(
                     onSuccess = { exam ->
                         // Ambil ID User yang sedang login
                         val profileId = repository.getCurrentUserId() ?: ""
 
-                        // PERBAIKAN 2: Gunakan getOrCreateSession (pengganti startAttempt)
-                        val sessionResult = repository.getOrCreateSession(exam.id, profileId)
+                        // Gunakan startNewExamSession
+                        val sessionResult = repository.startNewExamSession(exam.id, profileId)
 
                         progressBar.visibility = View.GONE
                         sessionResult.fold(
@@ -98,10 +98,10 @@ class DetailUjianActivity : AppCompatActivity() {
                                 Toast.makeText(this@DetailUjianActivity, "Berhasil: ${exam.title}", Toast.LENGTH_SHORT).show()
 
                                 val intent = Intent(this@DetailUjianActivity, SoalUjianActivity::class.java).apply {
-                                    putExtra("EXAM_ID", exam.id)
+                                    putExtra("EXAM_ID", exam.id.toString())
                                     putExtra("EXAM_TITLE", exam.title)
                                     putExtra("EXAM_DURATION", exam.durationMinutes)
-                                    putExtra("SESSION_ID", session.id) // Di repository kamu pakainya session
+                                    putExtra("SESSION_ID", session.id.toString())
                                 }
                                 startActivity(intent)
                                 finish()

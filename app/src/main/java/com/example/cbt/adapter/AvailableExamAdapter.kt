@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cbt.R
-import com.example.cbt.model.Exam
+import com.example.cbt.data.model.ExamWithDetails
 
 class AvailableExamAdapter(
-    private val onExamClick: (Exam) -> Unit
-) : ListAdapter<Exam, AvailableExamAdapter.AvailableExamViewHolder>(ExamDiffCallback()) {
+    private val onExamClick: (ExamWithDetails) -> Unit
+) : ListAdapter<ExamWithDetails, AvailableExamAdapter.AvailableExamViewHolder>(ExamDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AvailableExamViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_available_exam, parent, false)
@@ -31,7 +31,7 @@ class AvailableExamAdapter(
         private val btnMulai: Button = itemView.findViewById(R.id.btnMulai)
         private val imgSubject: ImageView = itemView.findViewById(R.id.imgSubject)
 
-        fun bind(exam: Exam) {
+        fun bind(exam: ExamWithDetails) {
             tvTitle.text = exam.title
             tvDetails.text = "${exam.durationMinutes} Menit"
             
@@ -47,12 +47,12 @@ class AvailableExamAdapter(
         }
     }
 
-    private class ExamDiffCallback : DiffUtil.ItemCallback<Exam>() {
-        override fun areItemsTheSame(oldItem: Exam, newItem: Exam): Boolean {
+    private class ExamDiffCallback : DiffUtil.ItemCallback<ExamWithDetails>() {
+        override fun areItemsTheSame(oldItem: ExamWithDetails, newItem: ExamWithDetails): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Exam, newItem: Exam): Boolean {
+        override fun areContentsTheSame(oldItem: ExamWithDetails, newItem: ExamWithDetails): Boolean {
             return oldItem == newItem
         }
     }

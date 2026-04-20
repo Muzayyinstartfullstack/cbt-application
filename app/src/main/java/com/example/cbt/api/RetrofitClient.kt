@@ -33,12 +33,5 @@ object RetrofitClient {
             .build()
     }
 
-    val instance: ExamApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(getOkHttpClient())
-            .build()
-            .create(ExamApiService::class.java)
-    }
+    // ExamApiService sudah tidak digunakan - kita pakai Supabase langsung
 }

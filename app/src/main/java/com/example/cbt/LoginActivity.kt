@@ -1,113 +1,203 @@
 package com.example.cbt
 
+
+
 import android.content.Intent
+
 import android.os.Bundle
+
 import android.view.View
+
 import android.widget.Button
+
 import android.widget.EditText
+
 import android.widget.ProgressBar
+
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
+
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+
 import androidx.lifecycle.lifecycleScope
-import com.example.cbt.repository.ExamRepository
+
+import com.example.cbt.data.repository.ExamRepository
+
 import kotlinx.coroutines.launch
+
+
 
 class LoginActivity : AppCompatActivity() {
 
+
+
     private lateinit var repository: ExamRepository
+
     private lateinit var etNis: EditText
+
     private lateinit var etPassword: EditText
+
     private lateinit var btnLogin: Button
+
     private lateinit var progressBar: ProgressBar
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge() // Menambahkan dukungan layar penuh
+
         setContentView(R.layout.activity_login)
 
-        // Setup Window Insets (Padding Status Bar/Navigation Bar)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_login)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
-        // PERBAIKAN: Gunakan constructor kosong (Supabase tidak butuh RetrofitClient manual di sini)
-        repository = ExamRepository()
 
-        // Cek jika sudah login, langsung ke Dashboard
+        // Inisialisasi repository (biasanya butuh application context)
+
+        repository = ExamRepository(applicationContext)
+
+
+
+        // Jika sudah login, langsung ke dashboard
+
         if (repository.isLoggedIn()) {
+
             navigateToDashboard()
+
             return
+
         }
 
-        initializeViews()
+
+
+        initViews()
+
     }
 
-    private fun initializeViews() {
+
+
+    private fun initViews() {
+
         etNis = findViewById(R.id.etNis)
+
         etPassword = findViewById(R.id.etPassword)
+
         btnLogin = findViewById(R.id.btnLogin)
+
         progressBar = findViewById(R.id.progressBar)
 
+
+
         btnLogin.setOnClickListener { performLogin() }
+
     }
+
+
 
     private fun performLogin() {
-        val inputNis = etNis.text.toString().trim()
-        val inputPassword = etPassword.text.toString().trim()
 
-        if (inputNis.isEmpty() || inputPassword.isEmpty()) {
-            Toast.makeText(this, "Harap isi semua kolom!", Toast.LENGTH_SHORT).show()
+        val nis = etNis.text.toString().trim()
+
+        val password = etPassword.text.toString().trim()
+
+
+
+        if (nis.isEmpty() || password.isEmpty()) {
+
+            Toast.makeText(this, "NIS dan password harus diisi", Toast.LENGTH_SHORT).show()
+
             return
+
         }
 
-        // UI State: Loading
-        btnLogin.isEnabled = false
-        btnLogin.text = "Mohon Tunggu..."
-        progressBar.visibility = View.VISIBLE
+
+
+        // Validasi format password (harus 8 digit angka, YYYYMMDD)
+
+        if (!password.matches(Regex("\\d{8}"))) {
+
+            Toast.makeText(this, "Password harus 8 digit angka (tanggal lahir YYYYMMDD)", Toast.LENGTH_SHORT).show()
+
+            return
+
+        }
+
+
+
+        setLoading(true)
+
+
 
         lifecycleScope.launch {
-            try {
-                val result = repository.login(inputNis, inputPassword)
 
-                result.fold(
-                    onSuccess = { profile ->
-                        // PERBAIKAN: Gunakan fullName sesuai dengan file Profile.kt kamu
-                        Toast.makeText(
-                            this@LoginActivity,
-                            "Login berhasil! Selamat datang ${profile.fullName}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+            val result = repository.loginWithNisCustom(nis, password)
 
-                        navigateToDashboard()
-                    },
-                    onFailure = { error ->
-                        resetUIState()
-                        Toast.makeText(this@LoginActivity, "Gagal: ${error.message}", Toast.LENGTH_SHORT).show()
-                    }
-                )
-            } catch (e: Exception) {
-                resetUIState()
-                Toast.makeText(this@LoginActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
+            setLoading(false)
+
+
+
+            result.fold(
+
+                onSuccess = { profile ->
+
+                    Toast.makeText(
+
+                        this@LoginActivity,
+
+                        "Selamat datang, ${profile.fullName ?: profile.nis}",
+
+                        Toast.LENGTH_SHORT
+
+                    ).show()
+
+                    navigateToDashboard()
+
+                },
+
+                onFailure = { error ->
+
+                    Toast.makeText(
+
+                        this@LoginActivity,
+
+                        "Login gagal: ${error.message}",
+
+                        Toast.LENGTH_LONG
+
+                    ).show()
+
+                }
+
+            )
+
         }
+
     }
 
-    private fun resetUIState() {
-        btnLogin.isEnabled = true
-        btnLogin.text = "Login"
-        progressBar.visibility = View.GONE
+
+
+    private fun setLoading(isLoading: Boolean) {
+
+        btnLogin.isEnabled = !isLoading
+
+        btnLogin.text = if (isLoading) "Memproses..." else "Login"
+
+        progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+
     }
+
+
 
     private fun navigateToDashboard() {
-        val intent = Intent(this, DashboardActivity::class.java)
-        // Clear task agar user tidak bisa kembali ke layar login dengan tombol back
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+        val intent = Intent(this, DashboardActivity::class.java).apply {
+
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+        }
+
         startActivity(intent)
+
         finish()
+
     }
+
 }

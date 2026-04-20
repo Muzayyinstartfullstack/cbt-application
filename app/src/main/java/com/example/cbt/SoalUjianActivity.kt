@@ -15,7 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.cbt.database.SupabaseClient
 import com.example.cbt.model.Question
 import com.example.cbt.model.SessionQuestion
-import com.example.cbt.repository.ExamRepository
+import com.example.cbt.data.repository.ExamRepository
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
@@ -82,7 +82,7 @@ class SoalUjianActivity : AppCompatActivity() {
 
         // Di dalam DetailUjianActivity.kt
 // Ganti inisialisasi repository jika error "Too many arguments"
-        repository = ExamRepository()
+        repository = ExamRepository(applicationContext)
 
         examId      = intent.getStringExtra("EXAM_ID") ?: ""
         sessionId   = intent.getStringExtra("SESSION_ID") ?: ""

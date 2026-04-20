@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cbt.R
-import com.example.cbt.model.ExamSession
+import com.example.cbt.data.model.ExamSessionWithStatus
 
 class ExamHistoryAdapter(
-    private val onItemClick: (ExamSession) -> Unit
-) : ListAdapter<ExamSession, ExamHistoryAdapter.ExamHistoryViewHolder>(ExamHistoryDiffCallback()) {
+    private val onItemClick: (ExamSessionWithStatus) -> Unit
+) : ListAdapter<ExamSessionWithStatus, ExamHistoryAdapter.ExamHistoryViewHolder>(ExamHistoryDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExamHistoryViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_exam_history, parent, false)
@@ -32,18 +32,18 @@ class ExamHistoryAdapter(
         private val statusIndicator = itemView.findViewById<View>(R.id.statusIndicator)
         private val card = itemView.findViewById<LinearLayout>(R.id.cardExam)
 
-        fun bind(session: ExamSession) {
-            // Mengambil judul dari relasi table exams (jika ada) atau fallback ke ID
-            tvSubject.text = session.exams?.title ?: "Ujian ${session.examId.takeLast(4)}"
+        fun bind(session: ExamSessionWithStatus) {
+            // Mengambil judul dari relasi exam (jika ada) atau fallback ke ID
+            tvSubject.text = session.exam?.title ?: "Ujian ${session.examId}"
 
-            // Format Score: Sesuai properti di ExamSession
-            val scoreValue = session.score ?: 0.0
-            tvScore.text = "${scoreValue.toInt()}%"
+            // Format Score
+            val scoreValue = session.score ?: 0
+            tvScore.text = "${scoreValue}%"
 
-            // Tanggal (Pastikan property ini ada di model ExamSession Anda)
-            tvDate.text = session.createdAt ?: "-"
+            // Tanggal
+            tvDate.text = session.createdAt
 
-            // Set status color (COMPLETED vs IN_PROGRESS atau PASSED/FAILED)
+            // Set status color
             val statusColor = if (session.status == "COMPLETED") Color.GREEN else Color.YELLOW
             statusIndicator.setBackgroundColor(statusColor)
 
@@ -53,12 +53,12 @@ class ExamHistoryAdapter(
         }
     }
 
-    private class ExamHistoryDiffCallback : DiffUtil.ItemCallback<ExamSession>() {
-        override fun areItemsTheSame(oldItem: ExamSession, newItem: ExamSession): Boolean {
+    private class ExamHistoryDiffCallback : DiffUtil.ItemCallback<ExamSessionWithStatus>() {
+        override fun areItemsTheSame(oldItem: ExamSessionWithStatus, newItem: ExamSessionWithStatus): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: ExamSession, newItem: ExamSession): Boolean {
+        override fun areContentsTheSame(oldItem: ExamSessionWithStatus, newItem: ExamSessionWithStatus): Boolean {
             return oldItem == newItem
         }
     }

@@ -1,151 +1,243 @@
-package com.example.cbt.model
+package com.example.cbt.data.model
 
-// File ini hanya untuk model REST API lama (Retrofit).
-// Model Supabase sudah ada di:
-//   Profile.kt, Subject.kt, TopicGroup.kt, Exam.kt, Question.kt
 
-// ==================== AUTH ====================
 
-data class LoginRequest(
-    val nisnNip: String,
-    val password: String
-)
+import com.google.gson.annotations.SerializedName
 
-data class LoginResponse(
-    val token: String,
-    val id: String,
-    val nama: String,
-    val role: String
-)
+import java.util.Date
 
-// ==================== EXAM (REST lama) ====================
 
-data class ExamResponse(
-    val id: String,
-    val judul: String,
-    val idMapel: String?,
-    val durasi: Int,
-    val totalSoal: Int,
-    val startTime: String?,
-    val endTime: String?,
-    val status: String,
-    val soalRandom: Boolean,
-    val jawabanRandom: Boolean,
-    val createdBy: String?
-)
 
-// ==================== QUESTIONS (REST lama) ====================
+data class Subject(
 
-data class AnswerOptionResponse(
-    val id: String,
-    val idSoal: String,
-    val opsiText: String,
-    val opsiOrder: Int,
-    val isCorrect: Boolean
-)
+    val id: Int,
 
-// Diganti nama: Questions → QuestionApi (hindari bentrok dengan Question.kt)
-data class QuestionApi(
-    val id: String,
-    val idUjian: String,
-    val tipeSoal: String,
-    val teksSoal: String,
-    val image: String?,
-    val poin: Int,
-    val opsiJawaban: List<AnswerOptionResponse> = emptyList()
-) {
-    val pertanyaan: String get() = teksSoal
-    val nomor: Int get() = 0
-    val opsiA: String get() = opsiJawaban.getOrNull(0)?.opsiText ?: ""
-    val opsiB: String get() = opsiJawaban.getOrNull(1)?.opsiText ?: ""
-    val opsiC: String get() = opsiJawaban.getOrNull(2)?.opsiText ?: ""
-    val opsiD: String get() = opsiJawaban.getOrNull(3)?.opsiText ?: ""
-    val opsiE: String get() = opsiJawaban.getOrNull(4)?.opsiText ?: ""
-}
+    val name: String,
 
-data class QuestionListResponse(val data: List<QuestionApi>)
-
-// ==================== ATTEMPTS ====================
-
-data class StartAttemptRequest(
-    val idUjian: String,
-    val deviceInfo: String? = null
-)
-
-data class AttemptResponse(
-    val id: String,
-    val idUjian: String,
-    val idUser: String,
-    val status: String,
-    val score: Double,
-    val waktuMulai: String?,
-    val waktuHabis: String?,
-    val waktuKirim: String?,
-    val deviceInfo: String?,
-    val ipAddress: String?,
-    val sedangBerlangsung: Boolean,
-    val dikirim: Boolean
-)
-
-data class AnswerRequest(
-    val soalId: String,
-    val idOpsiPilihan: String? = null,
-    val teksJawaban: String? = null
-)
-
-data class StudentAnswerResponse(
-    val id: String,
-    val attempId: String,
-    val soalId: String,
-    val idOpsiPilihan: String?,
-    val teksJawaban: String?
-)
-
-data class AnswerResponse(
-    val id: String,
-    val attempId: String,
-    val soalId: String,
-    val idOpsiPilihan: String?,
-    val teksJawaban: String?
-)
-
-// ==================== LEGACY ====================
-
-data class ExamResultRequest(
-    val examId: String,
-    val studentId: String,
-    val totalSoal: Int,
-    val jumlahTerjawab: Int,
-    val jumlahBenar: Int,
-    val scorePercentage: Double,
-    val waktuTempuhDetik: Long,
-    val status: String
-)
-
-data class ExamResultResponse(
-    val id: String,
-    val examTitle: String,
-    val scorePercentage: Double,
-    val tanggalUjian: String,
-    val waktuTempuhDetik: Int,
-    val status: String,
-    val passingGrade: Double? = null,
-    val durasiMenit: Int? = null
-)
-
-// Diganti nama: Exams → ExamLegacy (hindari bentrok dengan Exam.kt)
-data class ExamLegacy(
-    val id: String,
-    val subjectId: String,
-    val subjectName: String,
-    val title: String,
     val description: String?,
-    val startTime: String,
-    val endTime: String,
-    val durationMinutes: Int,
-    val totalQuestions: Int,
-    val passingGrade: Double? = null
+
+    @SerializedName("image_url") val imageUrl: String?,
+
+    @SerializedName("created_at") val createdAt: String
+
 )
 
-data class ExamListResponse(val data: List<ExamLegacy>)
-data class ExamHistoryResponse(val data: List<ExamResultResponse>)
+
+
+data class Topic(
+
+    val id: Int,
+
+    @SerializedName("subject_id") val subjectId: Int,
+
+    val name: String,
+
+    @SerializedName("created_at") val createdAt: String
+
+)
+
+
+
+data class AnswerOption(
+
+    val id: Int,
+
+    @SerializedName("question_id") val questionId: Int,
+
+    @SerializedName("option_text") val optionText: String,
+
+    @SerializedName("is_correct") val isCorrect: Boolean,
+
+    @SerializedName("created_at") val createdAt: String
+
+)
+
+
+
+data class Question(
+
+    val id: Int,
+
+    @SerializedName("exam_id") val examId: Int,
+
+    @SerializedName("topic_id") val topicId: Int?,
+
+    @SerializedName("question_text") val questionText: String,
+
+    @SerializedName("image_url") val imageUrl: String?,
+
+    val poin: Int,
+
+    @SerializedName("created_at") val createdAt: String,
+
+    @SerializedName("answer_options") val answerOptions: List<AnswerOption> = emptyList()
+
+)
+
+
+
+data class Exam(
+
+    val id: Int,
+
+    val title: String,
+
+    val description: String?,
+
+    @SerializedName("subject_id") val subjectId: Int,
+
+    @SerializedName("start_time") val startTime: String,
+
+    @SerializedName("end_time") val endTime: String,
+
+    @SerializedName("duration_minutes") val durationMinutes: Int,
+
+    @SerializedName("shuffle_questions") val shuffleQuestions: Boolean,
+
+    @SerializedName("shuffle_options") val shuffleOptions: Boolean,
+
+    @SerializedName("image_url") val imageUrl: String?,
+
+    @SerializedName("access_token") val accessToken: String,
+
+    @SerializedName("created_at") val createdAt: String
+
+)
+
+
+
+data class ExamWithDetails(
+
+    val id: Int,
+
+    val title: String,
+
+    val description: String?,
+
+    @SerializedName("subject_id") val subjectId: Int,
+
+    @SerializedName("start_time") val startTime: String,
+
+    @SerializedName("end_time") val endTime: String,
+
+    @SerializedName("duration_minutes") val durationMinutes: Int,
+
+    @SerializedName("shuffle_questions") val shuffleQuestions: Boolean,
+
+    @SerializedName("shuffle_options") val shuffleOptions: Boolean,
+
+    @SerializedName("image_url") val imageUrl: String?,
+
+    @SerializedName("access_token") val accessToken: String,
+
+    @SerializedName("created_at") val createdAt: String,
+
+    @SerializedName("total_questions") val totalQuestions: Int,
+
+    val status: String
+
+)
+
+
+
+data class ExamSession(
+
+    val id: Int,
+
+    @SerializedName("exam_id") val examId: Int,
+
+    @SerializedName("user_id") val userId: String,
+
+    @SerializedName("started_at") val startedAt: String,
+
+    @SerializedName("completed_at") val completedAt: String?,
+
+    val score: Int?,
+
+    @SerializedName("created_at") val createdAt: String
+
+)
+
+
+
+data class ExamSessionWithStatus(
+
+    val exam: Exam? = null,
+
+    val id: Int,
+
+    @SerializedName("exam_id") val examId: Int,
+
+    @SerializedName("user_id") val userId: String,
+
+    @SerializedName("started_at") val startedAt: String,
+
+    @SerializedName("completed_at") val completedAt: String?,
+
+    val score: Int?,
+
+    @SerializedName("created_at") val createdAt: String,
+
+    val status: String
+
+)
+
+
+
+data class UserStatistics(
+
+    val completedExams: Int,
+
+    val averageScore: Double,
+
+    val remedialCount: Int
+
+)
+
+
+
+data class UserAnswer(
+
+    val id: Int,
+
+    @SerializedName("session_id") val sessionId: Int,
+
+    @SerializedName("question_id") val questionId: Int,
+
+    @SerializedName("answer_option_id") val answerOptionId: Int,
+
+    @SerializedName("created_at") val createdAt: String
+
+)
+
+
+
+// Request/Response khusus
+
+data class JoinExamRequest(
+
+    @SerializedName("access_token") val accessToken: String
+
+)
+
+
+
+data class SubmitAnswerRequest(
+
+    @SerializedName("session_id") val sessionId: Int,
+
+    @SerializedName("question_id") val questionId: Int,
+
+    @SerializedName("answer_option_id") val answerOptionId: Int
+
+)
+
+
+
+data class CompleteExamRequest(
+
+    @SerializedName("session_id") val sessionId: Int,
+
+    val score: Int
+
+)
